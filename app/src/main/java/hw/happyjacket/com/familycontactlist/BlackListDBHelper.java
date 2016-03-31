@@ -12,12 +12,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class BlackListDBHelper extends SQLiteOpenHelper {
 
     private static SQLiteOpenHelper mInstance;
-
-    private final static String name = "blackList.db";
+    public final static String DB_FILE_NAME = "blackList.db", BL_TABLE_NAME = "blackList", ID_COLUMN_NAME = "id", PN_COLUMN_NAME = "phoneNumber";
 
     public static SQLiteOpenHelper getInstance(Context context){
         if(mInstance == null){
-            mInstance = new BlackListDBHelper(context, name, null, 1);
+            mInstance = new BlackListDBHelper(context, DB_FILE_NAME, null, 1);
         }
         return mInstance;
     }
@@ -28,7 +27,8 @@ public class BlackListDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table blackList(id integer primary key autoincrement, phoneNumber text)");
+        //db.execSQL(String.format("create table %s(%s integer primary key autoincrement, %s text)", DB_FILE_NAME, ID_COLUMN_NAME, PN_COLUMN_NAME));
+        db.execSQL(String.format("create table %s(%s text primary key)", BL_TABLE_NAME, PN_COLUMN_NAME));
 //        db.execSQL("CREATE INDEX PN ON blackList(phoneNumber)");
     }
 

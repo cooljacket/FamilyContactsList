@@ -1,40 +1,75 @@
 package hw.happyjacket.com.familycontactlist;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-public class MainActivity extends AppCompatActivity {
-    ViewPager mPager;
-    int selected_tab = 0, base_tab_id = 0;
-    RadioGroup tabs_group;
-    RadioButton tab_record, tab_contacts, tab_settings;
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends FragmentActivity {
+    private ViewPager mPager;
+    private int selected_tab = 0, base_tab_id = 0;
+    private RadioGroup tabs_group;
+    private RadioButton tab_record, tab_contacts, tab_settings;
+    private TabRecordFragment mRecordTab;
+    private TabContactsFragment mContactTab;
+    private TabSettingFragment mSettingTab;
+    private List<Fragment> mTabs;
+    private FragmentPagerAdapter mPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        InitFragments();
         mPager = (ViewPager) findViewById(R.id.pager);
-        MyPagerAdapter pagerAdapter = new MyPagerAdapter(this);
-        mPager.setAdapter(pagerAdapter);
+        mPager.setAdapter(mPagerAdapter);
         mPager.setPageTransformer(true, new ZoomOutPageTransformer());
         mPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
             @Override
             public void onPageSelected(int position) {
+//                Intent intent = new Intent("android.intent.action.BLACKLIST");
+//                startActivity(intent);
                 if (selected_tab - base_tab_id != position)
                     ChangeTab(base_tab_id + position);
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {}
+            public void onPageScrollStateChanged(int state) {
+            }
         });
         InitTabHeader();
+    }
+
+    private void InitFragments() {
+        mRecordTab = new TabRecordFragment();
+        mContactTab = new TabContactsFragment();
+        mSettingTab = new TabSettingFragment();
+        mTabs = new ArrayList<Fragment>();
+        mTabs.add(mRecordTab);
+        mTabs.add(mContactTab);
+        mTabs.add(mSettingTab);
+
+        mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
+            @Override
+            public Fragment getItem(int position) {
+                return mTabs.get(position);
+            }
+
+            @Override
+            public int getCount() {
+                return mTabs.size();
+            }
+        };
     }
 
     private void InitTabHeader() {
