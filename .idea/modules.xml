@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/FamilyContactList.iml" filepath="$PROJECT_DIR$/FamilyContactList.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FamilyContactsList.iml" filepath="$PROJECT_DIR$/FamilyContactsList.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

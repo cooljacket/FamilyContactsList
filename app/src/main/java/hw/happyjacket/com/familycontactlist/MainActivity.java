@@ -11,6 +11,9 @@ import android.widget.RadioGroup;
 import java.util.ArrayList;
 import java.util.List;
 
+import hw.happyjacket.com.familycontactlist.extention.XiaoMiAccessory;
+import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
+
 public class MainActivity extends FragmentActivity {
     private ViewPager mPager;
     private int selected_tab = 0, base_tab_id = 0;
@@ -82,7 +85,7 @@ public class MainActivity extends FragmentActivity {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 ChangeTab(checkedId);
-                mPager.setCurrentItem(checkedId-base_tab_id);
+                mPager.setCurrentItem(checkedId - base_tab_id);
             }
         });
 
