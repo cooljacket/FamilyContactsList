@@ -4,8 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:text="我是设置内容，黑名单的修改，备份通讯录等"
+    <Button
+        android:id="@+id/view_black_list"
+        android:text="设置黑名单"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <EditText
+        android:id="@+id/infos"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

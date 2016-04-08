@@ -1,5 +1,9 @@
 package hw.happyjacket.com.familycontactlist;
 
+/**
+ * Created by leo on 2016/3/30.
+ */
+
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
@@ -10,13 +14,10 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -30,11 +31,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-/**
- * Created by jacket on 2016/3/30.
- */
-public class TabContactsFragment extends Fragment {
-    private Context mContext;
+public class ContactList extends AppCompatActivity {
     private ListView listview;
     public static final int PHONES_DISPLAY_NAME_INDEX = 0;
     public static final int PHONES_NUMBER_INDEX =1;
@@ -46,53 +43,32 @@ public class TabContactsFragment extends Fragment {
             ContactsContract.CommonDataKinds.Photo.PHOTO_ID,
             ContactsContract.CommonDataKinds.Phone.CONTACT_ID
     };
-    public ArrayList contacts = new ArrayList();
 
 //    JSONObject data=new JSONObject();
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.contact_list, container, false);
-    }
+    public void onCreate(Bundle savedInstanceState){
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = getContext();
-        // [通话记录]在这里写自己的逻辑，加载页面部分在onCreateView里面自动调用了，tab_contacts_layout
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        listview = (ListView) getView().findViewById(R.id.list_view);
+        this.setContentView(R.layout.contact_list);
+        listview = (ListView) findViewById(R.id.list_view);
 //        CopyOfContactCollector c = new CopyOfContactCollector(this);
 //        c.getContacts();
-        if (contacts.size() < 5)
-            loadList();
-//        Button go = (Button) getView().findViewById(R.id.goToCL);
-//        go.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent intent = new Intent("android.intent.action.CL");
-//                startActivity(intent);
-//            }
-//        });
+        loadList();
     }
 
     private  void loadList(){
         //Toast.makeText(getApplicationContext(), ""+num, Toast.LENGTH_SHORT).show();
-        SimpleAdapter adapter = new SimpleAdapter(mContext, getPhoneContacts(), R.layout.list_item
+        SimpleAdapter adapter = new SimpleAdapter(this,getPhoneContacts(),R.layout.list_item
                 ,new String[]{"contactName", "contactPhone", "contactPhoto"}
                 ,new int[]{R.id.name, R.id.number, R.id.imageView});
         listview.setAdapter(adapter);
-        Toast.makeText(mContext, "" + num, Toast.LENGTH_SHORT).show();
+        Toast.makeText(getApplicationContext(), "" + num, Toast.LENGTH_SHORT).show();
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(mContext, PeopleDetail.class);
-                Toast.makeText(mContext, "aaaaaaaaaaaaaaaa", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(ContactList.this, PeopleDetail.class);
+                Toast.makeText(getApplicationContext(), "aaaaaaaaaaaaaaaa", Toast.LENGTH_SHORT).show();
 
                 HashMap map = (HashMap) parent.getItemAtPosition(position);
 //                SerializableMap tmpmap = new SerializableMap();
@@ -100,7 +76,7 @@ public class TabContactsFragment extends Fragment {
 //
 //                Bundle bundle = new Bundle();
 //                bundle.putSerializable("data", tmpmap);
-                Toast.makeText(mContext, "bbbbbbbbbbbb", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "bbbbbbbbbbbb", Toast.LENGTH_SHORT).show();
 //                intent.putExtras(bundle);
                 intent.putExtra("data", map);
 
@@ -465,7 +441,7 @@ public class TabContactsFragment extends Fragment {
             }
         }
 
-        //        /**
+//        /**
 //         * Get address infomation of given contact.
 //         *
 //         * @param contactId
@@ -513,7 +489,7 @@ public class TabContactsFragment extends Fragment {
             }
         }
 
-        //        /**
+//        /**
 //         * Get the photo of given contact.
 //         *
 //         * @param cr
@@ -529,8 +505,8 @@ public class TabContactsFragment extends Fragment {
             InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(
                     context.getContentResolver(), uri);
             if (input != null) {
-                Bitmap photo =  BitmapFactory.decodeStream(input);
-                data.put(KEY_PHOTO, photo);
+            Bitmap photo =  BitmapFactory.decodeStream(input);
+            data.put(KEY_PHOTO, photo);
             } else {
                 Log.d(TAG, "First try failed to load photo!");
             }
@@ -562,23 +538,21 @@ public class TabContactsFragment extends Fragment {
 
     }
 
-    private int num = 0;
-    //        /**得到手机通讯录联系人信息**/
-    public ArrayList getPhoneContacts() {
-        ContentResolver resolver1 = mContext.getContentResolver();
-//        ArrayList contacts = new ArrayList();
-        // 获取手机联系人
-        Cursor phoneCursor = resolver1.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, PHONES_PROJECTION, null, null, null);
+        private int num = 0;
+//        /**得到手机通讯录联系人信息**/
+        public ArrayList getPhoneContacts() {
+            ContentResolver resolver1 = getContentResolver();
+            ArrayList contacts = new ArrayList();
+            // 获取手机联系人
+            Cursor phoneCursor = resolver1.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, PHONES_PROJECTION, null, null, null);
 
-        if (phoneCursor != null) {
-            while (phoneCursor.moveToNext()) {
-                if(++num >= 5) {
-                    num = 0;
-                    break;
-                }
+            if (phoneCursor != null) {
+                while (phoneCursor.moveToNext()) {
+                    if(++num==5)
+                        break;
 //                    String phoneNumber = new String();
 //                    String homeNumber = new String();
-                //得到手机号码
+                    //得到手机号码
 //                    int index=0;
 //                    int num=0;
 //                    if(phoneCursor.getCount()>0){
@@ -590,38 +564,38 @@ public class TabContactsFragment extends Fragment {
 //                        num++;
 //                    }
 
-                String phoneNumber = phoneCursor.getString(PHONES_NUMBER_INDEX);
-                //当手机号码为空的或者为空字段 跳过当前循环
-                if (TextUtils.isEmpty(phoneNumber))
-                    continue;
+                    String phoneNumber = phoneCursor.getString(PHONES_NUMBER_INDEX);
+                    //当手机号码为空的或者为空字段 跳过当前循环
+                    if (TextUtils.isEmpty(phoneNumber))
+                        continue;
 
-                //得到联系人名称
-                String contactName = phoneCursor.getString(PHONES_DISPLAY_NAME_INDEX);
+                    //得到联系人名称
+                    String contactName = phoneCursor.getString(PHONES_DISPLAY_NAME_INDEX);
 
-                //得到联系人ID
-                Long contactid = phoneCursor.getLong(PHONES_CONTACT_ID_INDEX);
+                    //得到联系人ID
+                    Long contactid = phoneCursor.getLong(PHONES_CONTACT_ID_INDEX);
 
-                String contactID = phoneCursor.getString(PHONES_CONTACT_ID_INDEX);
+                    String contactID = phoneCursor.getString(PHONES_CONTACT_ID_INDEX);
 
-                //debug
-//                    Toast.makeText(mContext, "11111", Toast.LENGTH_SHORT).show();
-                //debug
+                    //debug
+//                    Toast.makeText(getApplicationContext(), "11111", Toast.LENGTH_SHORT).show();
+                    //debug
 
 
 
-                String Group = new String();
-                String email=new String();
-                String remark = new String();
+                    String Group = new String();
+                    String email=new String();
+                    String remark = new String();
 
-                //email
+                    //email
 
-                Cursor dataCursor = resolver1.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
-                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + "=" + contactid, null, null);
-                while (dataCursor.moveToNext()){
-                    email = dataCursor.getString(dataCursor.getColumnIndex(
-                            ContactsContract.CommonDataKinds.Email.DATA));
-                    break;
-                }
+                    Cursor dataCursor = resolver1.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
+                            ContactsContract.CommonDataKinds.Email.CONTACT_ID + "=" + contactid, null, null);
+                    while (dataCursor.moveToNext()){
+                        email = dataCursor.getString(dataCursor.getColumnIndex(
+                                    ContactsContract.CommonDataKinds.Email.DATA));
+                        break;
+                    }
 
 //                    emailCur = context.getContentResolver().query(
 //                            ContactsContract.CommonDataKinds.Email.CONTENT_URI,
@@ -640,7 +614,7 @@ public class TabContactsFragment extends Fragment {
 //                                context.getResources(), type, "").toString();
 
 
-                //Group!!!!!!!!!!!
+                    //Group!!!!!!!!!!!
 //                    dataCursor = resolver1.query(ContactsContract.Groups.CONTENT_URI, null,
 //                            ContactsContract.Groups._ID + "=" + contactid
 //                            , null, null);
@@ -652,63 +626,63 @@ public class TabContactsFragment extends Fragment {
 //                        Group = dataCursor.getString(index);
 //                    }
 
-                //remark
-                dataCursor.close();
+                    //remark
+                    dataCursor.close();
 
-                String noteWhere =
-                        ContactsContract.Data.CONTACT_ID + " = ? AND " +
-                                ContactsContract.Data.MIMETYPE + " = ?";
+                    String noteWhere =
+                            ContactsContract.Data.CONTACT_ID + " = ? AND " +
+                                    ContactsContract.Data.MIMETYPE + " = ?";
 
-                String[] noteWhereParams = new String[]{
-                        ""+contactid,
-                        ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE};
+                    String[] noteWhereParams = new String[]{
+                            ""+contactid,
+                            ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE};
 
-                Cursor noteCursor = resolver1.query(ContactsContract.Data.CONTENT_URI,
-                        null,
-                        noteWhere,
-                        noteWhereParams,
-                        null);
-                if (noteCursor.moveToFirst()) {
-                    remark = noteCursor.getString(noteCursor.getColumnIndex(
-                            ContactsContract.CommonDataKinds.Note.NOTE));
-                }
+                    Cursor noteCursor = resolver1.query(ContactsContract.Data.CONTENT_URI,
+                            null,
+                            noteWhere,
+                            noteWhereParams,
+                            null);
+                    if (noteCursor.moveToFirst()) {
+                        remark = noteCursor.getString(noteCursor.getColumnIndex(
+                                ContactsContract.CommonDataKinds.Note.NOTE));
+                    }
 
-                noteCursor.close();
+                    noteCursor.close();
 
-                //debug
-//                    Toast.makeText(mContext, "3333", Toast.LENGTH_SHORT).show();
-                //debug
+                    //debug
+//                    Toast.makeText(getApplicationContext(), "3333", Toast.LENGTH_SHORT).show();
+                    //debug
 
-                //得到联系人头像ID
-                Long photoid = phoneCursor.getLong(PHONES_PHOTO_ID_INDEX);
+                    //得到联系人头像ID
+                    Long photoid = phoneCursor.getLong(PHONES_PHOTO_ID_INDEX);
 
-                //得到联系人头像Bitamp
-                Bitmap contactPhoto = null;
+                    //得到联系人头像Bitamp
+                    Bitmap contactPhoto = null;
 
-                //photoid 大于0 表示联系人有头像 如果没有给此人设置头像则给他一个默认的
-                if(photoid > 0 ) {
-                    Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactid);//contactid);
-                    InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(resolver1, uri);
-                    contactPhoto = BitmapFactory.decodeStream(input);
-                }else {
-                    contactPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.contact_list_icon);
-                }
-                HashMap map=new HashMap();
-                map.put("contactName",contactName);
-                map.put("contactPhone",phoneNumber);
-                map.put("contactPhoto",contactPhoto);
+                    //photoid 大于0 表示联系人有头像 如果没有给此人设置头像则给他一个默认的
+                    if(photoid > 0 ) {
+                        Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactid);//contactid);
+                        InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(resolver1, uri);
+                        contactPhoto = BitmapFactory.decodeStream(input);
+                    }else {
+                        contactPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.contact_list_icon);
+                    }
+                    HashMap map=new HashMap();
+                    map.put("contactName",contactName);
+                    map.put("contactPhone",phoneNumber);
+                    map.put("contactPhoto",contactPhoto);
 //                    map.put("contactHome",homeNumber);
-                map.put("contactID",contactid);
+                    map.put("contactID",contactid);
 //                    map.put("contactGroup", Group);
-                map.put("contactRemark", remark);
-                map.put("contactEmail", email);
-                // map.put();
-                contacts.add(map);
-                //Log.d("debug",contactName);
-            }
+                    map.put("contactRemark", remark);
+                    map.put("contactEmail", email);
+                   // map.put();
+                    contacts.add(map);
+                    //Log.d("debug",contactName);
+                }
 
-            phoneCursor.close();
+                phoneCursor.close();
+            }
+            return contacts;
         }
-        return contacts;
-    }
 }

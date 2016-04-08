@@ -37,8 +37,6 @@ public class MainActivity extends FragmentActivity {
 
             @Override
             public void onPageSelected(int position) {
-//                Intent intent = new Intent("android.intent.action.BLACKLIST");
-//                startActivity(intent);
                 if (selected_tab - base_tab_id != position)
                     ChangeTab(base_tab_id + position);
             }

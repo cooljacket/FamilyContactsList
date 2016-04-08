@@ -8,11 +8,17 @@
     tools:context="hw.happyjacket.com.familycontactlist.BlackListActivity">
 
     <TextView
-        android:text="hello"
+        android:id="@+id/BL_title"
+        android:textSize="20dp"
+        android:layout_marginLeft="10dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <!--<include layout="@layout/content_black_list" />-->
+    <ListView
+        android:id="@+id/black_list_view"
+        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></ListView>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

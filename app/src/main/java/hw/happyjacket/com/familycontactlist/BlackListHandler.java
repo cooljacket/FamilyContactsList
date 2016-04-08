@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +37,7 @@ public class BlackListHandler {
         if (!db.isOpen())
             return false;
 
-        long result = db.delete(BlackListDBHelper.BL_TABLE_NAME, String.format("%s = >", BlackListDBHelper.PN_COLUMN_NAME), new String[]{phoneNumber});
+        long result = db.delete(BlackListDBHelper.BL_TABLE_NAME, String.format("%s = ?", BlackListDBHelper.PN_COLUMN_NAME), new String[]{phoneNumber});
         db.close();
         return result != -1;
     }
@@ -48,8 +47,9 @@ public class BlackListHandler {
         if (!db.isOpen())
             return false;
 
-        Cursor cursor = db.query(BlackListDBHelper.BL_TABLE_NAME, null, String.format(" = ?", BlackListDBHelper.PN_COLUMN_NAME), new String[]{phoneNumber}, null, null, null);
-        boolean result = cursor.moveToFirst();
+        Cursor cursor = db.query(BlackListDBHelper.BL_TABLE_NAME, null, String.format("%s = ?", BlackListDBHelper.PN_COLUMN_NAME), new String[]{phoneNumber}, null, null, null);
+        boolean result = cursor.getCount() > 0;
+        cursor.close();
         db.close();
         return result;
     }
