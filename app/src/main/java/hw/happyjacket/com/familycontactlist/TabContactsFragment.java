@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -36,6 +37,8 @@ import java.util.HashMap;
 public class TabContactsFragment extends Fragment {
     private Context mContext;
     private ListView listview;
+    private ArrayList AL;
+    private int positionNew;
     public static final int PHONES_DISPLAY_NAME_INDEX = 0;
     public static final int PHONES_NUMBER_INDEX =1;
     public static final int PHONES_PHOTO_ID_INDEX=2;
@@ -56,10 +59,34 @@ public class TabContactsFragment extends Fragment {
         return inflater.inflate(R.layout.contact_list, container, false);
     }
 
+    private int[] image = {R.drawable.contact_list_icon,R.drawable.man,R.drawable.woman,
+            R.drawable.p1,R.drawable.p2,R.drawable.p3
+    };
+
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (resultCode){
+            case 1:
+                HashMap newmap = (HashMap)data.getSerializableExtra("newdata");
+                AL.set(positionNew,newmap);
+                loadList();
+//                SimpleAdapter adapter = new SimpleAdapter(mContext, AL, R.layout.list_item
+//                        ,new String[]{"contactName", "contactPhone", "contactPhoto"}
+//                        ,new int[]{R.id.name, R.id.number, R.id.imageView});
+//                listview.setAdapter(adapter);
+                break;
+            default:
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getContext();
+        AL = getPhoneContacts();
         // [通话记录]在这里写自己的逻辑，加载页面部分在onCreateView里面自动调用了，tab_contacts_layout
     }
 
@@ -67,10 +94,9 @@ public class TabContactsFragment extends Fragment {
     public void onStart() {
         super.onStart();
         listview = (ListView) getView().findViewById(R.id.list_view);
-//        CopyOfContactCollector c = new CopyOfContactCollector(this);
-//        c.getContacts();
-        if (contacts.size() < 5)
-            loadList();
+
+
+        loadList();
 //        Button go = (Button) getView().findViewById(R.id.goToCL);
 //        go.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -83,7 +109,7 @@ public class TabContactsFragment extends Fragment {
 
     private  void loadList(){
         //Toast.makeText(getApplicationContext(), ""+num, Toast.LENGTH_SHORT).show();
-        SimpleAdapter adapter = new SimpleAdapter(mContext, getPhoneContacts(), R.layout.list_item
+        SimpleAdapter adapter = new SimpleAdapter(mContext, AL, R.layout.list_item
                 ,new String[]{"contactName", "contactPhone", "contactPhoto"}
                 ,new int[]{R.id.name, R.id.number, R.id.imageView});
         listview.setAdapter(adapter);
@@ -93,7 +119,7 @@ public class TabContactsFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(mContext, PeopleDetail.class);
                 Toast.makeText(mContext, "aaaaaaaaaaaaaaaa", Toast.LENGTH_SHORT).show();
-
+                positionNew=position;
                 HashMap map = (HashMap) parent.getItemAtPosition(position);
 //                SerializableMap tmpmap = new SerializableMap();
 //                tmpmap.setMap(map);
@@ -105,7 +131,7 @@ public class TabContactsFragment extends Fragment {
                 intent.putExtra("data", map);
 
                 // 当requestCode为3的时候表示请求转向CPD这个页面？？
-                startActivity(intent);
+                startActivityForResult(intent, 3);
             }
         });
     }
@@ -572,8 +598,8 @@ public class TabContactsFragment extends Fragment {
 
         if (phoneCursor != null) {
             while (phoneCursor.moveToNext()) {
-                if(++num >= 5) {
-                    num = 0;
+                if(++num >= 15) {
+//                    num = 0;
                     break;
                 }
 //                    String phoneNumber = new String();
@@ -683,16 +709,20 @@ public class TabContactsFragment extends Fragment {
                 Long photoid = phoneCursor.getLong(PHONES_PHOTO_ID_INDEX);
 
                 //得到联系人头像Bitamp
-                Bitmap contactPhoto = null;
+//                Bitmap contactPhoto = null;
+//
+//                //photoid 大于0 表示联系人有头像 如果没有给此人设置头像则给他一个默认的
+//                if(photoid > 0 ) {
+//                    Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactid);//contactid);
+//                    InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(resolver1, uri);
+//                    contactPhoto = BitmapFactory.decodeStream(input);
+//                }else {
+//                    contactPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.contact_list_icon);
+//                }
+                int contactPhoto=image[0];//头像默认的图片
 
-                //photoid 大于0 表示联系人有头像 如果没有给此人设置头像则给他一个默认的
-                if(photoid > 0 ) {
-                    Uri uri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, contactid);//contactid);
-                    InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(resolver1, uri);
-                    contactPhoto = BitmapFactory.decodeStream(input);
-                }else {
-                    contactPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.contact_list_icon);
-                }
+
+
                 HashMap map=new HashMap();
                 map.put("contactName",contactName);
                 map.put("contactPhone",phoneNumber);

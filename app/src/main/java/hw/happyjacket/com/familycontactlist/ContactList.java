@@ -548,8 +548,8 @@ public class ContactList extends AppCompatActivity {
 
             if (phoneCursor != null) {
                 while (phoneCursor.moveToNext()) {
-                    if(++num==5)
-                        break;
+//                    if(++num==10)
+//                        break;
 //                    String phoneNumber = new String();
 //                    String homeNumber = new String();
                     //得到手机号码

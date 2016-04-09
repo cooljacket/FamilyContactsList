@@ -16,6 +16,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Gallery;
 import android.widget.ImageButton;
@@ -33,13 +34,17 @@ public class ChangePeopleDetail extends AppCompatActivity {
     AlertDialog imageChooseDialog;
     Gallery gallery;
     ImageSwitcher IS;
+    HashMap map;
     int imagePosition;
     EditText et_name;
     EditText et_phone;
     EditText et_home;
     EditText et_email;
     EditText et_remark;
-
+    Button btn_save;
+    Button btn_return;
+    int imageP;//头像序号
+    int imagePic;//头像Rid
 
     private int[] image = {R.drawable.contact_list_icon,R.drawable.man,R.drawable.woman,
             R.drawable.p1,R.drawable.p2,R.drawable.p3
@@ -47,19 +52,38 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
 
     @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){//处理请求
+            default:
+                Toast.makeText(getApplicationContext(), requestCode, Toast.LENGTH_SHORT).show();
+                map = new HashMap();
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onBackPressed() {
+        setResult(0);
+        finish();
+        super.onBackPressed();
+    }
+
+    @Override
     public void onCreate(Bundle savedInstanceState){
 
         super.onCreate(savedInstanceState);
-        Intent intent = getIntent();
-       // HashMap map = intent.getE("data");
-        HashMap map = (HashMap)intent.getSerializableExtra("data");
+        final Intent intent = getIntent();
+        map = (HashMap)intent.getSerializableExtra("data");
 
         this.setContentView(R.layout.edit_people_detail);
 
-        Toast.makeText(getApplicationContext(), map.get("contactID").toString(), Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getApplicationContext(), map.get("contactID").toString(), Toast.LENGTH_SHORT).show();
         //头像选择
         btn_img = (ImageButton) this.findViewById(R.id.btn_img);
-        btn_img.setImageBitmap( (Bitmap)map.get("contactPhoto"));
+        imagePic=(int) map.get("contactPhoto");
+
+        btn_img.setImageResource(imagePic);
         btn_img.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -72,6 +96,8 @@ public class ChangePeopleDetail extends AppCompatActivity {
         et_home=(EditText)findViewById(R.id.et_homephone);
         et_email=(EditText)findViewById(R.id.et_email);
         et_remark=(EditText)findViewById(R.id.et_remark);
+        btn_return=(Button)findViewById(R.id.btn_return);
+        btn_save=(Button)findViewById(R.id.btn_save);
 
         et_name.setText(map.get("contactName").toString());
         et_phone.setText(map.get("contactPhone").toString());
@@ -79,7 +105,40 @@ public class ChangePeopleDetail extends AppCompatActivity {
         et_email.setText(map.get("contactEmail").toString());
         et_remark.setText(map.get("contactRemark").toString());
 
+        btn_save.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                map = getChanged();
+                Intent data = new Intent();
+                data.putExtra("newdata", map);
+                setResult(1, data);
+                finish();
 
+            }
+        });
+        btn_return.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setResult(0);
+
+                finish();
+            }
+        });
+
+
+
+
+
+    }
+
+    private HashMap getChanged(){
+        HashMap newmap=new HashMap();
+        newmap.put("contactName",et_name.getText());
+        newmap.put("contactPhone",et_phone.getText());
+        newmap.put("contactEmail",et_email.getText());
+        newmap.put("contactRemark",et_remark.getText());
+        newmap.put("contactPhoto",image[imageP]);
+        return newmap;
     }
 
 
@@ -90,6 +149,8 @@ public class ChangePeopleDetail extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 btn_img.setImageResource(image[imagePosition]);
+                imageP=imagePosition;
+                imagePic=image[imageP];
             }
         });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
