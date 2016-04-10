@@ -39,6 +39,7 @@ public class TabContactsFragment extends Fragment {
     private ListView listview;
     private ArrayList AL;
     private int positionNew;
+    private View ContactView;
     public static final int PHONES_DISPLAY_NAME_INDEX = 0;
     public static final int PHONES_NUMBER_INDEX =1;
     public static final int PHONES_PHOTO_ID_INDEX=2;
@@ -56,7 +57,7 @@ public class TabContactsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.contact_list, container, false);
+        return ContactView == null ? ContactView = inflater.inflate(R.layout.contact_list, container, false) : ContactView;
     }
 
     private int[] image = {R.drawable.contact_list_icon,R.drawable.man,R.drawable.woman,
@@ -93,10 +94,10 @@ public class TabContactsFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        listview = (ListView) getView().findViewById(R.id.list_view);
-
-
-        loadList();
+        if (listview == null) {
+            listview = (ListView) getView().findViewById(R.id.list_view);
+            loadList();
+        }
 //        Button go = (Button) getView().findViewById(R.id.goToCL);
 //        go.setOnClickListener(new View.OnClickListener() {
 //            @Override

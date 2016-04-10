@@ -245,7 +245,7 @@ public class PhoneList {
 
 
 
-    public HashMap<String,String> addTheNewOne(String table, String pro[], String all[],String number)
+    public HashMap<String,String> addTheNewOne(String pro[], String all[],String number)
     {
         int version = DataBaseDictionary.databaseVersion;
         int id;
@@ -255,9 +255,9 @@ public class PhoneList {
         HashMap<String,String> result = new HashMap<>(1);
         Cursor t = null;
         try {
-            dataBase =  new DataBase(context,table,null,version);
+            dataBase =  new DataBase(context,db,null,version);
             sqLiteDatabase  = dataBase.getWritableDatabase();
-            t = contentResolver.query(uri,all,PhoneDictionary.NUMBER + " = ? ",new String[]{number},CallLog.Calls.DEFAULT_SORT_ORDER + " limit 1");
+            t = contentResolver.query(uri,all,null,null,CallLog.Calls.DEFAULT_SORT_ORDER + " limit 1");
             if(t.moveToFirst())
             {
                 contentValues = new ContentValues();
@@ -269,6 +269,42 @@ public class PhoneList {
                     result.put(all[i],t.getString(i));
                 }
                 sqLiteDatabase.update(table,contentValues,number + " = ? ",new String[]{contentValues.getAsString(number)});
+                sqLiteDatabase.insert(table, null, contentValues);
+            }
+            t.close();
+            sqLiteDatabase.close();
+            dataBase.close();
+        }
+        catch (SecurityException e)
+        {
+            Log.i(TAG, "Read permission denied");
+        }
+        return result;
+    }
+
+    public HashMap<String,String> findTheNewestOne(String pro[], String all[],String number, String num)
+    {
+        int version = DataBaseDictionary.databaseVersion;
+        int id;
+        DataBase dataBase = null;
+        SQLiteDatabase sqLiteDatabase = null;
+        ContentValues contentValues;
+        HashMap<String,String> result = new HashMap<>(1);
+        Cursor t = null;
+        try {
+            dataBase =  new DataBase(context,db,null,version);
+            sqLiteDatabase  = dataBase.getWritableDatabase();
+            t = contentResolver.query(uri,all,number + " = ? ",new String[]{num},CallLog.Calls.DEFAULT_SORT_ORDER + " limit 1 ");
+            if(t.moveToFirst()) {
+                contentValues = new ContentValues();
+                for (int i = 0 ; i < pro.length ; i++) {
+                    id = t.getColumnIndex(pro[i]);
+                    contentValues.put(pro[i],t.getString(id));
+                }
+                for (int i = 0; i < all.length; i++) {
+                    result.put(all[i], t.getString(i));
+                }
+                sqLiteDatabase.update(table,contentValues,number + " = ? ",new String[]{num});
                 sqLiteDatabase.insert(table, null, contentValues);
             }
             t.close();
@@ -366,7 +402,7 @@ public class PhoneList {
                 result.add(pair);
             } while (cursor.moveToNext());
         }
-        Log.i(TAG,result.toString());
+       /* Log.i(TAG,result.toString());*/
         return result;
     }
 

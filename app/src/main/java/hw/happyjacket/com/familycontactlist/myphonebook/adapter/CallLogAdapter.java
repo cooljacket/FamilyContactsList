@@ -48,7 +48,10 @@ public class CallLogAdapter extends PhoneAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
         viewHolder.info1.setText(data.get(PhoneDictionary.DATE));
-        viewHolder.info2.setText(data.get(PhoneDictionary.NUMBER));
+        if(data.get(PhoneDictionary.NUMBER) != null)
+            viewHolder.info2.setText(data.get(PhoneDictionary.NUMBER));
+        else
+            viewHolder.info2.setHeight(0);
         String a = data.get(PhoneDictionary.TYPE) , b = data.get(PhoneDictionary.DURATION);
         if(a != null && b !=null) {
             if (!b.equals("-1"))

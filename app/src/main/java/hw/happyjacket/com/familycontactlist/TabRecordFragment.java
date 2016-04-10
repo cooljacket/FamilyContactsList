@@ -34,6 +34,7 @@ public class TabRecordFragment extends Fragment {
     private MainShow mainShow;
     private AlertDialog.Builder mPhoneBuilder;
     private Context mContext;
+    private View tabView;
 
     public TabRecordFragment() {
     }
@@ -41,7 +42,7 @@ public class TabRecordFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.tab_record_layout, container, false);
+            return tabView == null ? tabView = inflater.inflate(R.layout.tab_record_layout, container,false) : tabView;
     }
 
     @Override
@@ -53,11 +54,13 @@ public class TabRecordFragment extends Fragment {
     @Override
     public void onStart()
     {
-        super.onStart();
-        if(mainShow == null)
+        if(mainShow == null) {
             init();
-        else
+        }
+        else {
             mainShow.refresh(new XiaoMiAccessory(),new String[]{PhoneDictionary.DATE});
+        }
+        super.onStart();
     }
 
     @Override
@@ -77,40 +80,7 @@ public class TabRecordFragment extends Fragment {
             mPhoneBuilder = new AlertDialog.Builder(getContext());
             mPhoneBuilder.setIcon(R.mipmap.ic_launcher);
             mPhoneBuilder.setNegativeButton("取消", null);
-            listView = (ListView) getView().findViewById(R.id.phone_list);
-            listView.setAdapter(mainShow.getPhoneAdapter());
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    new PhoneOperation(getContext()).call(mainShow.getPhoneListElementList().get(position).get(PhoneDictionary.NUMBER));
-                }
-            });
-            listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-                @Override
-                public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
-                    final HashMap<String,String> t = mainShow.getPhoneListElementList().get(position);
-                    mPhoneBuilder.setTitle(t.get(PhoneDictionary.NUMBER));
-                    mPhoneBuilder.setItems(PhoneDictionary.MainItems, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            switch (which)
-                            {
-                                case 0:
-                                    new PhoneOperation(getContext()).delete(t.get(PhoneDictionary.ID));
-                                    PhoneRegister.delete(t.get(PhoneDictionary.ID), t.get(PhoneDictionary.NUMBER));
-                                    break;
-                                case 1:
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    });
-                    mPhoneBuilder.show();
-                    return true;
-                }
-            });
-
+            initListView();
         }
         catch (Exception e)
         {
@@ -118,6 +88,44 @@ public class TabRecordFragment extends Fragment {
         }
         //phoneBlueTooth = new PhoneBlueTooth(this);
         //phoneBlueTooth.startScan();
+
+    }
+
+    public void initListView()
+    {
+        listView = (ListView) getView().findViewById(R.id.phone_list);
+        listView.setAdapter(mainShow.getPhoneAdapter());
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                new PhoneOperation(getContext()).call(mainShow.getPhoneListElementList().get(position).get(PhoneDictionary.NUMBER));
+            }
+        });
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                final HashMap<String,String> t = mainShow.getPhoneListElementList().get(position);
+                mPhoneBuilder.setTitle(t.get(PhoneDictionary.NUMBER));
+                mPhoneBuilder.setItems(PhoneDictionary.MainItems, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which)
+                        {
+                            case 0:
+                                new PhoneOperation(getContext()).delete(t.get(PhoneDictionary.ID));
+                                PhoneRegister.delete(t.get(PhoneDictionary.ID), t.get(PhoneDictionary.NUMBER));
+                                break;
+                            case 1:
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                });
+                mPhoneBuilder.show();
+                return true;
+            }
+        });
 
     }
 

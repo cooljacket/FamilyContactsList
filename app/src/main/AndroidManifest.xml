@@ -87,13 +87,17 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
             </intent-filter>
         </receiver>
+
+        <!-- 监听电话状态 -->
+        <receiver android:name=".phone.phonelistener.PhoneStateReceiver" >
+            <intent-filter android:priority="1000">
+                <action android:name="android.intent.action.PHONE_STATE" />
+                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
+            </intent-filter>
+        </receiver>
+
     </application>
 
-    <receiver android:name="hw.happyjacket.com.familycontactlist.phone.phonelistener.PhoneStateReceiver" >
-        <intent-filter android:priority="1000">
-            <action android:name="android.intent.action.PHONE_STATE" />
-            <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
-        </intent-filter>
-    </receiver>
+
 
 </manifest>

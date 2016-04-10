@@ -21,6 +21,7 @@ public class ContentShow extends PhoneShow {
     private String number;
     final int bound = 5;
     final String defaultList = "通话记录";
+    final String defaultNumber = "电话";
     public ContentShow(Context context, int table) {
         super(context, table);
     }
@@ -36,28 +37,8 @@ public class ContentShow extends PhoneShow {
 
     @Override
     public void AddPhoneElement(Accessory accessory, HashMap<String, String> input) {
-        phoneList.connectContentResolver();
-        mPhoneListElementList_backup = phoneList.getPhoneList();
-        if(mPhoneListElementList_backup.size() <= bound)
-        {
-            Decorate decorate = new Decorate(accessory);
-            HashMap<String,String> num = new HashMap<>();
-            num.put(PhoneDictionary.DATE, number);
-            mPhoneListElementList.removeAllElements();
-            for (HashMap<String,String> i : mPhoneListElementList_backup)
-                mPhoneListElementList.add(new HashMap<String, String>(i));
-            mPhoneListElementList = decorate.decorate(mPhoneListElementList);
-            mPhoneListElementList.insertElementAt(num, 0);
-            Log.i(TAG, mPhoneListElementList.toString());
-            sPhoneAdapter.notifyDataSetChanged();
-        }
-        else
-        {
-            mPhoneListElementList.removeAllElements();
-            mPhoneListElementList.addAll(getDefaultData());
-            sPhoneAdapter.notifyDataSetChanged();
-        }
-
+        refresh(accessory);
+        sPhoneAdapter.notifyDataSetChanged();
     }
 
 
@@ -72,11 +53,36 @@ public class ContentShow extends PhoneShow {
         Vector<HashMap<String,String>> data = new Vector<>(2);
         HashMap<String,String> numbers = new HashMap<>();
         numbers.put(PhoneDictionary.DATE, number);
+        numbers.put(PhoneDictionary.NUMBER,defaultNumber);
         data.add(numbers);
         HashMap<String,String> point = new HashMap<>();
         point.put(PhoneDictionary.DATE, defaultList);
         data.add(point);
         return data;
+    }
+
+    public void refresh(Accessory accessory)
+    {
+        mDecorate = new Decorate(accessory);
+        phoneList.connectContentResolver();
+        mPhoneListElementList_backup = phoneList.getPhoneList();
+        if(mPhoneListElementList_backup.size() <= bound) {
+            status = PhoneDictionary.CONTENT1;
+            HashMap<String,String> num = new HashMap<>();
+            num.put(PhoneDictionary.DATE, number);
+            num.put(PhoneDictionary.NUMBER,defaultNumber);
+            mPhoneListElementList.removeAllElements();
+            for (HashMap<String,String> i : mPhoneListElementList_backup)
+                mPhoneListElementList.add(new HashMap<String, String>(i));
+            mPhoneListElementList = mDecorate.decorate(mPhoneListElementList);
+            mPhoneListElementList.insertElementAt(num, 0);
+
+        }
+        else {
+            status = PhoneDictionary.CONTENT2;
+            mPhoneListElementList = getDefaultData();
+        }
+        sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index);
     }
 
 
@@ -88,29 +94,7 @@ public class ContentShow extends PhoneShow {
         phoneList.setSelection(selection);
         phoneList.setArgument(argument);
         phoneList.setOrderby(orderby);
-        phoneList.connectContentResolver();
-        mPhoneListElementList_backup = phoneList.getPhoneList();
-        if(mPhoneListElementList_backup.size() <= bound)
-        {
-            status = PhoneDictionary.CONTENT1;
-            Decorate decorate = new Decorate(accessory);
-            HashMap<String,String> num = new HashMap<>();
-            num.put(PhoneDictionary.DATE, number);
-            mPhoneListElementList.removeAllElements();
-            for (HashMap<String,String> i : mPhoneListElementList_backup)
-                mPhoneListElementList.add(new HashMap<String, String>(i));
-            mPhoneListElementList = decorate.decorate(mPhoneListElementList);
-            mPhoneListElementList.insertElementAt(num, 0);
-            Log.i(TAG, mPhoneListElementList.toString());
-            sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index);
-        }
-        else
-        {
-            status = PhoneDictionary.CONTENT2;
-            mPhoneListElementList = getDefaultData();
-            sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index);
-        }
-
+        refresh(accessory);
     }
 
 }

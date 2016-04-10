@@ -16,7 +16,6 @@
                 android:scrollbars="none" >
             </ListView>
 
-
         </RelativeLayout>
 
     </LinearLayout>

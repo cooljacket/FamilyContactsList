@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
+import android.util.Log;
 
 import hw.happyjacket.com.familycontactlist.extention.Accessory;
 import hw.happyjacket.com.familycontactlist.extention.Decorate;
@@ -49,7 +50,6 @@ public class MainShow extends PhoneShow {
         String date = PhoneDictionary.DATE;
         String number = PhoneDictionary.NUMBER;
         try {
-
             t = filter(input);
             while (i < mPhoneListElementList.size()) {
                 l = mPhoneListElementList.get(i);
@@ -77,7 +77,7 @@ public class MainShow extends PhoneShow {
 
     public void DeleteTheNewestOne(String id, String number) {
         phoneList.delete(id);
-        phoneList.addTheNewOne(phoneList.getTable(), DataBaseDictionary.CallLog_Projection, PhoneDictionary.PhoneAll, number);
+        phoneList.findTheNewestOne(DataBaseDictionary.CallLog_Projection, PhoneDictionary.PhoneAll, PhoneDictionary.NUMBER, number);
         phoneList.connectDataBase();
         mPhoneListElementList_backup = phoneList.getPhoneList();
         ElementCopy();
