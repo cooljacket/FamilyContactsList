@@ -1,14 +1,23 @@
 package hw.happyjacket.com.familycontactlist;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 //import com.example.menu.MyLetterListView.OnTouchingLetterChangedListener;
 
 import android.app.AlertDialog;
+import android.content.ContentProviderOperation;
+import android.content.ContentProviderResult;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.OperationApplicationException;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.RemoteException;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,6 +49,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
     EditText et_phone;
     EditText et_home;
     EditText et_email;
+    EditText et_work;
     EditText et_remark;
     Button btn_save;
     Button btn_return;
@@ -93,6 +103,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
         });
         et_name=(EditText)findViewById(R.id.et_name);
         et_phone=(EditText)findViewById(R.id.et_mobilephone);
+        et_work=(EditText)findViewById(R.id.et_workphone);
         et_home=(EditText)findViewById(R.id.et_homephone);
         et_email=(EditText)findViewById(R.id.et_email);
         et_remark=(EditText)findViewById(R.id.et_remark);
@@ -100,15 +111,20 @@ public class ChangePeopleDetail extends AppCompatActivity {
         btn_save=(Button)findViewById(R.id.btn_save);
 
         et_name.setText(map.get("contactName").toString());
+        et_work.setText(map.get("contactWork").toString());
         et_phone.setText(map.get("contactPhone").toString());
-//        et_home.setText(map.get("contactHome").toString());
+        et_home.setText(map.get("contactHome").toString());
         et_email.setText(map.get("contactEmail").toString());
         et_remark.setText(map.get("contactRemark").toString());
 
         btn_save.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
+                changePhoneContact();
+
                 map = getChanged();
+
+
                 Intent data = new Intent();
                 data.putExtra("newdata", map);
                 setResult(1, data);
@@ -131,12 +147,86 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
     }
 
+
+    private void changePhoneContact(){
+//        ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+        String contactid = map.get("contactID").toString();
+        ContentValues values ;
+        ContentResolver resolver = this.getApplicationContext().getContentResolver();
+        Toast.makeText(getApplicationContext(),"改改改！！！！", Toast.LENGTH_SHORT).show();
+
+        // 更新Display_name
+
+        values = new ContentValues();
+        values.put(ContactsContract.CommonDataKinds.StructuredName.DISPLAY_NAME, et_name.getText().toString());
+        resolver.update(ContactsContract.Data.CONTENT_URI, values,
+                ContactsContract.Data.CONTACT_ID + "=?" + " AND "
+                        + ContactsContract.Data.MIMETYPE + "=? "
+                , new String[]{contactid,ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE});
+
+        // 更新homePhone
+        values = new ContentValues();
+        values.put(ContactsContract.CommonDataKinds.Phone.NUMBER, et_home.getText().toString());
+        resolver.update(ContactsContract.Data.CONTENT_URI, values,
+                ContactsContract.Data.CONTACT_ID + "=?" + " AND "
+                        + ContactsContract.Data.MIMETYPE + "=? "+" AND "
+                        +ContactsContract.CommonDataKinds.Phone.TYPE + "=?"
+                , new String[]{contactid,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_HOME)});
+
+        // 更新workPhone
+        values = new ContentValues();
+        values.put(ContactsContract.CommonDataKinds.Phone.NUMBER, et_work.getText().toString());
+        resolver.update(ContactsContract.Data.CONTENT_URI, values,
+                ContactsContract.Data.CONTACT_ID + "=?" + " AND "
+                        + ContactsContract.Data.MIMETYPE + "=? "+" AND "
+                        +ContactsContract.CommonDataKinds.Phone.TYPE + "=?"
+                , new String[]{contactid,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_WORK)});
+
+        // 更新mobilePhone
+        values = new ContentValues();
+        values.put(ContactsContract.CommonDataKinds.Phone.NUMBER, et_phone.getText().toString());
+        resolver.update(ContactsContract.Data.CONTENT_URI, values,
+                ContactsContract.Data.CONTACT_ID + "=?" + " AND "
+                        + ContactsContract.Data.MIMETYPE + "=? " + " AND "
+                        + ContactsContract.CommonDataKinds.Phone.TYPE + "=?"
+                , new String[]{contactid, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE, String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)});
+
+        // 更新email
+//        ops.add(ContentProviderOperation.newUpdate(ContactsContract.Data.CONTENT_URI)
+//                .withSelection(ContactsContract.Data.CONTACT_ID + "=?" + " AND "
+//                                + ContactsContract.Data.MIMETYPE + "=?" + " AND "
+//                                + ContactsContract.CommonDataKinds.Email.TYPE + "=?",
+//                        new String[]{contactid, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE, String.valueOf(ContactsContract.CommonDataKinds.Email.TYPE_WORK)})
+//                .withValue(ContactsContract.CommonDataKinds.Email.DATA, et_email.getText())
+//                .build());
+        values = new ContentValues();
+        values.put(ContactsContract.CommonDataKinds.Email.DATA, et_email.getText().toString());
+        resolver.update(ContactsContract.Data.CONTENT_URI, values,
+                ContactsContract.Data.CONTACT_ID + "=?" + " AND "
+                        + ContactsContract.Data.MIMETYPE + "=?"
+                , new String[]{contactid, ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE});
+
+        // 更新remark
+        values = new ContentValues();
+        values.put(ContactsContract.CommonDataKinds.Note.NOTE, et_remark.getText().toString());
+        resolver.update(ContactsContract.Data.CONTENT_URI, values,
+                ContactsContract.Data.CONTACT_ID + "=?" + " AND "
+                        + ContactsContract.Data.MIMETYPE + "=? "
+                , new String[]{contactid, ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE});
+
+
+    }
+
+
     private HashMap getChanged(){
         HashMap newmap=new HashMap();
-        newmap.put("contactName",et_name.getText());
-        newmap.put("contactPhone",et_phone.getText());
-        newmap.put("contactEmail",et_email.getText());
-        newmap.put("contactRemark",et_remark.getText());
+        newmap.put("contactName",et_name.getText().toString());
+        newmap.put("contactPhone",et_phone.getText().toString());
+        newmap.put("contactEmail",et_email.getText().toString());
+        newmap.put("contactHome",et_home.getText().toString());
+        newmap.put("contactWork",et_work.getText().toString());
+        newmap.put("contactID",map.get("contactID"));
+        newmap.put("contactRemark",et_remark.getText().toString());
         newmap.put("contactPhoto",image[imageP]);
         return newmap;
     }

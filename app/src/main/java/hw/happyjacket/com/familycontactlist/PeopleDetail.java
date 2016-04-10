@@ -37,7 +37,7 @@ public class PeopleDetail extends AppCompatActivity {
     TextView name;
     TextView mobilephone;
     TextView homephone;
-    TextView group;
+    TextView workPhone;
     TextView email;
     TextView remark;
     TextView position;
@@ -63,6 +63,9 @@ public class PeopleDetail extends AppCompatActivity {
         newmap.put("contactName", name.getText());
         newmap.put("contactPhone", mobilephone.getText());
         newmap.put("contactPhoto",imagePic);
+        newmap.put("contactID",map.get("contactID"));
+        newmap.put("contactHome",homephone.getText());
+        newmap.put("contactWork",workPhone.getText());
         newmap.put("contactEmail",email.getText());
         newmap.put("contactRemark",remark.getText());
         return newmap;
@@ -87,10 +90,10 @@ public class PeopleDetail extends AppCompatActivity {
         pic=(ImageView) this.findViewById(R.id.p_img);
         name=(TextView)this.findViewById(R.id.p_name);
         mobilephone=(TextView)this.findViewById(R.id.p_mobilephone);
-//        homephone=(TextView)this.findViewById(R.id.p_homephone);
+        homephone=(TextView)this.findViewById(R.id.p_homephone);
         email=(TextView)this.findViewById(R.id.p_email);
         remark=(TextView)this.findViewById(R.id.p_remark);
-//        group=(TextView)this.findViewById(R.id.p_group);
+        workPhone=(TextView)this.findViewById(R.id.p_workphone);
 
         position=(TextView)this.findViewById(R.id.position);
         showDetail();
@@ -135,8 +138,8 @@ public class PeopleDetail extends AppCompatActivity {
 
         name.setText(map.get("contactName").toString());
         mobilephone.setText(map.get("contactPhone").toString());
-        //        homephone.setText(map.get("contactHome").toString());
-        //        group.setText(map.get("contactGroup").toString());
+        homephone.setText(map.get("contactHome").toString());
+        workPhone.setText(map.get("contactWork").toString());
         email.setText(map.get("contactEmail").toString());
         remark.setText(map.get("contactRemark").toString());
 

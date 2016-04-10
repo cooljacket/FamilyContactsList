@@ -615,12 +615,6 @@ public class TabContactsFragment extends Fragment {
 //                        else homeNumber = phoneCursor.getString(index);
 //                        num++;
 //                    }
-
-                String phoneNumber = phoneCursor.getString(PHONES_NUMBER_INDEX);
-                //当手机号码为空的或者为空字段 跳过当前循环
-                if (TextUtils.isEmpty(phoneNumber))
-                    continue;
-
                 //得到联系人名称
                 String contactName = phoneCursor.getString(PHONES_DISPLAY_NAME_INDEX);
 
@@ -628,6 +622,34 @@ public class TabContactsFragment extends Fragment {
                 Long contactid = phoneCursor.getLong(PHONES_CONTACT_ID_INDEX);
 
                 String contactID = phoneCursor.getString(PHONES_CONTACT_ID_INDEX);
+
+                String phoneNumber = phoneCursor.getString(PHONES_NUMBER_INDEX);
+
+                // 根据contact_ID取得MobilePhone号码
+                Cursor mobilePhoneCur = resolver1.query(ContactsContract.Data.CONTENT_URI,
+                        new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
+                        ContactsContract.Data.CONTACT_ID + "=?" + " AND "
+                                + ContactsContract.Data.MIMETYPE + "=? "+" AND "
+                                +ContactsContract.CommonDataKinds.Phone.TYPE + "=?",
+                        new String[]{contactID,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)}, null);
+                if(mobilePhoneCur.moveToFirst()){
+                    phoneNumber=mobilePhoneCur.getString(mobilePhoneCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                }
+                mobilePhoneCur.close();
+
+
+                // 根据contact_ID取得WorkPhone号码
+                String workPhone = new String();
+                Cursor workPhoneCur = resolver1.query(ContactsContract.Data.CONTENT_URI,
+                        new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
+                        ContactsContract.Data.CONTACT_ID + "=?" + " AND "
+                                + ContactsContract.Data.MIMETYPE + "=? "+" AND "
+                                +ContactsContract.CommonDataKinds.Phone.TYPE + "=?",
+                        new String[]{contactID,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_WORK)}, null);
+                if(workPhoneCur.moveToFirst()){
+                    workPhone=workPhoneCur.getString(workPhoneCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                }
+                workPhoneCur.close();
 
                 //debug
 //                    Toast.makeText(mContext, "11111", Toast.LENGTH_SHORT).show();
@@ -722,14 +744,28 @@ public class TabContactsFragment extends Fragment {
                 int contactPhoto=image[0];//头像默认的图片
 
 
+                // 根据contact_ID取得HomePhone号码
+                String homeNumber=new String();
+                Cursor homePhoneCur = resolver1.query(ContactsContract.Data.CONTENT_URI,
+                        new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
+                        ContactsContract.Data.CONTACT_ID + "=?" + " AND "
+                                + ContactsContract.Data.MIMETYPE + "=? "+" AND "
+                                +ContactsContract.CommonDataKinds.Phone.TYPE + "=?",
+                        new String[]{contactID,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_HOME)}, null);
+                if(homePhoneCur.moveToFirst()){
+                    homeNumber=homePhoneCur.getString(homePhoneCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                }
+                homePhoneCur.close();
+
+
 
                 HashMap map=new HashMap();
                 map.put("contactName",contactName);
                 map.put("contactPhone",phoneNumber);
                 map.put("contactPhoto",contactPhoto);
-//                    map.put("contactHome",homeNumber);
+                map.put("contactHome",homeNumber);
                 map.put("contactID",contactid);
-//                    map.put("contactGroup", Group);
+                map.put("contactWork", workPhone);
                 map.put("contactRemark", remark);
                 map.put("contactEmail", email);
                 // map.put();
