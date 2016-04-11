@@ -57,16 +57,36 @@
                             android:textSize="25dp"
                             android:hint="姓名"
                             />
-                        <CheckBox
-                            android:layout_width="fill_parent"
+                        <LinearLayout
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginLeft="10dp"
-                            android:text="家人"
-                            android:textSize="20dp"
-                            android:checked="true"
-                            android:clickable="false"
-                            ></CheckBox>
+                            android:orientation="horizontal"
+                            >
+                            <CheckBox
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginLeft="10dp"
+                                android:id="@+id/p_family"
+                                android:text="家人"
+                                android:textSize="20dp"
+                                >
+
+                            </CheckBox>
+                            <TextView
+                                android:layout_width="100dp"
+                                android:layout_height="wrap_content"
+                                android:id="@+id/p_familyname"
+                                android:gravity="top"
+                                android:layout_marginTop="10dp"
+                                android:layout_marginLeft="10dp"
+                                android:textSize="20dp"
+                                android:enabled="false"
+                                android:layout_gravity="center_vertical"
+                                android:hint=""
+                                />
+
+                        </LinearLayout>
 
 
 
@@ -220,12 +240,32 @@
                     android:hint="备注"
                     />
             </LinearLayout>
-
-            <TextView
+            <LinearLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/position"
-                android:textSize="20dp"/>
+                android:orientation="horizontal"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="群组："
+                    android:textSize="20dp"
+                    ></TextView>
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/p_group"
+                    android:textSize="20dp"
+                    android:gravity="top"
+                    android:hint="群组"
+                    />
+            </LinearLayout>
+
+
 
 
 

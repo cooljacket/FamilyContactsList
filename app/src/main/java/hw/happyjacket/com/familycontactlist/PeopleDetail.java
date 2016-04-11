@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -40,12 +41,15 @@ public class PeopleDetail extends AppCompatActivity {
     TextView workPhone;
     TextView email;
     TextView remark;
-    TextView position;
+//    TextView position;
+    TextView group;
+    CheckBox family;
+    TextView familyname;
+    boolean isfamily;
     HashMap map;
-    int imagePic;
+    int imagePic;//头像
     Button btn_modify;
     boolean flag=false;//默认没修改
-
 
 
     @Override
@@ -68,6 +72,9 @@ public class PeopleDetail extends AppCompatActivity {
         newmap.put("contactWork",workPhone.getText());
         newmap.put("contactEmail",email.getText());
         newmap.put("contactRemark",remark.getText());
+        newmap.put("contactGroup", group.getText());
+        newmap.put("contactFamily", isfamily);
+        newmap.put("contactFamilyname", familyname.getText());
         return newmap;
     }
 
@@ -94,8 +101,10 @@ public class PeopleDetail extends AppCompatActivity {
         email=(TextView)this.findViewById(R.id.p_email);
         remark=(TextView)this.findViewById(R.id.p_remark);
         workPhone=(TextView)this.findViewById(R.id.p_workphone);
-
-        position=(TextView)this.findViewById(R.id.position);
+        group=(TextView)this.findViewById(R.id.p_group);
+        family=(CheckBox)this.findViewById(R.id.p_family);
+        familyname=(TextView)this.findViewById(R.id.p_familyname);
+//        position=(TextView)this.findViewById(R.id.position);
         showDetail();
 
 
@@ -108,7 +117,9 @@ public class PeopleDetail extends AppCompatActivity {
             case 1://有修改
 
                 map =(HashMap)data.getSerializableExtra("newdata");
-                imagePic = (int) map.get("contactPhoto");
+//                imagePic = (int) map.get("contactPhoto");
+//                isfamily=(boolean)map.get("contactFamily");
+
                 flag=true;
                 showDetail();
                 break;
@@ -142,6 +153,18 @@ public class PeopleDetail extends AppCompatActivity {
         workPhone.setText(map.get("contactWork").toString());
         email.setText(map.get("contactEmail").toString());
         remark.setText(map.get("contactRemark").toString());
+        group.setText(map.get("contactGroup").toString());
+        isfamily = (boolean)map.get("contactFamily");
+        family.setEnabled(false);
+        familyname.setText(map.get("contactFamilyname").toString());
+        if(isfamily){
+
+            family.setChecked(true);
+        }
+        else {
+            family.setChecked(false);
+        }
+
 
         Toast.makeText(getApplicationContext(),"啊啊啊debug", Toast.LENGTH_SHORT).show();
 

@@ -26,6 +26,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Gallery;
 import android.widget.ImageButton;
@@ -44,12 +46,16 @@ public class ChangePeopleDetail extends AppCompatActivity {
     Gallery gallery;
     ImageSwitcher IS;
     HashMap map;
+    boolean family = false;
     int imagePosition;
+    CheckBox et_family;
+    EditText et_familyName;
     EditText et_name;
     EditText et_phone;
     EditText et_home;
     EditText et_email;
     EditText et_work;
+    EditText et_group;
     EditText et_remark;
     Button btn_save;
     Button btn_return;
@@ -101,12 +107,14 @@ public class ChangePeopleDetail extends AppCompatActivity {
                 imageChooseDialog.show();
             }
         });
+
         et_name=(EditText)findViewById(R.id.et_name);
         et_phone=(EditText)findViewById(R.id.et_mobilephone);
         et_work=(EditText)findViewById(R.id.et_workphone);
         et_home=(EditText)findViewById(R.id.et_homephone);
         et_email=(EditText)findViewById(R.id.et_email);
         et_remark=(EditText)findViewById(R.id.et_remark);
+        et_group=(EditText)findViewById(R.id.et_group);
         btn_return=(Button)findViewById(R.id.btn_return);
         btn_save=(Button)findViewById(R.id.btn_save);
 
@@ -116,11 +124,77 @@ public class ChangePeopleDetail extends AppCompatActivity {
         et_home.setText(map.get("contactHome").toString());
         et_email.setText(map.get("contactEmail").toString());
         et_remark.setText(map.get("contactRemark").toString());
+        et_group.setText(map.get("contactGroup").toString());
+
+
+        et_family=(CheckBox)findViewById(R.id.et_family);
+        et_familyName=(EditText)findViewById(R.id.et_familyName);
+
+        family = (boolean)map.get("contactFamily");
+        if(family){
+            et_family.setChecked(true);
+            et_familyName.setEnabled(true);
+            et_familyName.setText(map.get("contactFamilyname").toString());
+            et_group.setEnabled(false);
+        }
+        else {
+            et_family.setChecked(false);
+            et_familyName.setEnabled(false);
+            et_familyName.setText("NO");
+            et_group.setEnabled(true);
+        }
+
+        et_family.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    family=true;
+                    et_familyName.setEnabled(true);
+                    et_group.setText("FAMILY");
+                    et_group.setEnabled(false);
+                }
+                else {
+                    family=false;
+                    et_familyName.setEnabled(false);
+                    et_group.setEnabled(true);
+                    et_group.setText("UNKNOWN");
+                }
+            }
+        });
 
         btn_save.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 changePhoneContact();
+
+                for(int i=0;i<5;i++){
+                    if(image[i]==imagePic){
+                        imageP=i;
+                        break;
+                    }
+                }
+                Toast.makeText(getApplicationContext(),"image1  "+imageP
+                        +"image2  "+imagePosition, Toast.LENGTH_SHORT).show();
+
+                User user=new User();
+                user._id=(int)map.get("contactID");
+                user.photo=imageP;
+                user.family=family;
+                if(family){
+                    user.familyName=et_familyName.getText().toString();
+                    user.group="FAMILY";
+                }
+                else {
+                    user.familyName="NO";
+                    user.group="UNKNOWN";
+                }
+                //DBHelper.change(user);
+                //!!!!这里！！！！
+                DBHelper helper = new DBHelper(ChangePeopleDetail.super.getApplicationContext());
+
+                helper.openDatabase();
+                helper.change(user);
+                helper.close();
 
                 map = getChanged();
 
@@ -227,7 +301,10 @@ public class ChangePeopleDetail extends AppCompatActivity {
         newmap.put("contactWork",et_work.getText().toString());
         newmap.put("contactID",map.get("contactID"));
         newmap.put("contactRemark",et_remark.getText().toString());
-        newmap.put("contactPhoto",image[imageP]);
+        newmap.put("contactPhoto", imagePic);
+        newmap.put("contactGroup", et_group.getText().toString());
+        newmap.put("contactFamily", family);
+        newmap.put("contactFamilyname", et_familyName.getText().toString());
         return newmap;
     }
 

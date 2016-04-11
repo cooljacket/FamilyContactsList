@@ -5,6 +5,7 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -39,6 +40,8 @@ public class TabContactsFragment extends Fragment {
     private ListView listview;
     private ArrayList AL;
     private int positionNew;
+    private DBHelper dbHelper = null;
+    private SQLiteDatabase db = null;
     public static final int PHONES_DISPLAY_NAME_INDEX = 0;
     public static final int PHONES_NUMBER_INDEX =1;
     public static final int PHONES_PHOTO_ID_INDEX=2;
@@ -86,7 +89,10 @@ public class TabContactsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getContext();
+        dbHelper = new DBHelper(TabContactsFragment.super.getContext());
+        db = dbHelper.openDatabase();
         AL = getPhoneContacts();
+        dbHelper.close();
         // [通话记录]在这里写自己的逻辑，加载页面部分在onCreateView里面自动调用了，tab_contacts_layout
     }
 
@@ -135,6 +141,9 @@ public class TabContactsFragment extends Fragment {
             }
         });
     }
+
+
+
 
     public class CopyOfContactCollector {
 
@@ -591,6 +600,7 @@ public class TabContactsFragment extends Fragment {
     private int num = 0;
     //        /**得到手机通讯录联系人信息**/
     public ArrayList getPhoneContacts() {
+
         ContentResolver resolver1 = mContext.getContentResolver();
 //        ArrayList contacts = new ArrayList();
         // 获取手机联系人
@@ -619,7 +629,7 @@ public class TabContactsFragment extends Fragment {
                 String contactName = phoneCursor.getString(PHONES_DISPLAY_NAME_INDEX);
 
                 //得到联系人ID
-                Long contactid = phoneCursor.getLong(PHONES_CONTACT_ID_INDEX);
+                int contactid = phoneCursor.getInt(PHONES_CONTACT_ID_INDEX);
 
                 String contactID = phoneCursor.getString(PHONES_CONTACT_ID_INDEX);
 
@@ -741,8 +751,37 @@ public class TabContactsFragment extends Fragment {
 //                }else {
 //                    contactPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.contact_list_icon);
 //                }
-                int contactPhoto=image[0];//头像默认的图片
+                //photo
+                Cursor cursor;
+                cursor = db.query("user",null,"uid="+contactID,null,null,null,null);
+                if(cursor==null){
+                    User user = new User();
+                    user._id=contactid;
+                    user.family=false;
+                    user.group="UNKNOWN";
+                    user.photo=0;
+                    user.familyName="NO";
+                    dbHelper.init(user);
+                }
+                cursor.close();
 
+
+                //photo
+                int contactPhoto=image[0];//头像默认的图片
+                Cursor cursor2 = db.query("user",null,"uid="+contactID,null,null,null,null);
+                cursor2.moveToFirst();
+                contactPhoto = image[cursor2.getInt(2)];
+                //是否family
+                boolean contactFamily;
+                contactFamily = cursor2.getInt(1)>0;
+                //familyname
+                String contactFamilyname;
+                contactFamilyname = cursor2.getString(4);
+                //group
+                String contactGroup;
+                contactGroup = cursor2.getString(3);
+
+                cursor2.close();
 
                 // 根据contact_ID取得HomePhone号码
                 String homeNumber=new String();
@@ -768,9 +807,16 @@ public class TabContactsFragment extends Fragment {
                 map.put("contactWork", workPhone);
                 map.put("contactRemark", remark);
                 map.put("contactEmail", email);
+
+                map.put("contactGroup", contactGroup);
+                map.put("contactFamily", contactFamily);
+                map.put("contactFamilyname", contactFamilyname);
+
                 // map.put();
                 contacts.add(map);
                 //Log.d("debug",contactName);
+
+
             }
 
             phoneCursor.close();
