@@ -12,10 +12,10 @@ import java.util.List;
 /**
  * Created by jacket on 2016/3/30.
  */
-public class BlackListHandler {
+public class BlackListMaster {
     private SQLiteOpenHelper mOpenHelper;
 
-    public BlackListHandler(Context context) {
+    public BlackListMaster(Context context) {
         mOpenHelper = BlackListDBHelper.getInstance(context);
     }
 

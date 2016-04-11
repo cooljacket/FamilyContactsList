@@ -19,7 +19,7 @@ import android.widget.Toast;
 import java.util.List;
 
 public class BlackListActivity extends AppCompatActivity {
-    private final BlackListHandler handler = new BlackListHandler(BlackListActivity.this);
+    private final BlackListMaster handler = new BlackListMaster(BlackListActivity.this);
     private List<String> blackList;
     private TextView title;
     private ListView blackListView;
