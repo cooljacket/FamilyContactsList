@@ -37,14 +37,15 @@ public class ContentShow extends PhoneShow {
 
     @Override
     public void AddPhoneElement(Accessory accessory, HashMap<String, String> input) {
-        refresh(accessory);
+        refresh();
         sPhoneAdapter.notifyDataSetChanged();
     }
 
 
     @Override
     public void DeletePhoneElement(String id,String number) {
-
+        refresh();
+        sPhoneAdapter.notifyDataSetChanged();
     }
 
 
@@ -61,11 +62,12 @@ public class ContentShow extends PhoneShow {
         return data;
     }
 
-    public void refresh(Accessory accessory)
+    public boolean refresh()
     {
-        mDecorate = new Decorate(accessory);
         phoneList.connectContentResolver();
         mPhoneListElementList_backup = phoneList.getPhoneList();
+        if(mPhoneListElementList_backup.size() == 0)
+            return false;
         if(mPhoneListElementList_backup.size() <= bound) {
             status = PhoneDictionary.CONTENT1;
             HashMap<String,String> num = new HashMap<>();
@@ -80,9 +82,10 @@ public class ContentShow extends PhoneShow {
         }
         else {
             status = PhoneDictionary.CONTENT2;
-            mPhoneListElementList = getDefaultData();
+            mPhoneListElementList.removeAllElements();
+            mPhoneListElementList.addAll(getDefaultData());
         }
-        sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index);
+        return true;
     }
 
 
@@ -90,11 +93,13 @@ public class ContentShow extends PhoneShow {
 
     @Override
     public void InitAdapter(Accessory accessory, String[] projection, String selection, String[] argument, String orderby) {
+        mDecorate = new Decorate(accessory);
         phoneList.setProjection(projection);
         phoneList.setSelection(selection);
         phoneList.setArgument(argument);
         phoneList.setOrderby(orderby);
-        refresh(accessory);
+        refresh();
+        sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index);
     }
 
 }

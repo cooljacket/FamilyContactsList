@@ -241,7 +241,6 @@ public class ContactList extends AppCompatActivity {
 
                     emailList.put(item);
                 }
-
                 data.put(KEY_EMAIL, emailList);
             } finally {
                 if (emailCur != null) {

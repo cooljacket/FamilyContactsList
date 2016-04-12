@@ -44,8 +44,23 @@ public class CallLogShow extends PhoneShow {
 
     @Override
     public void DeletePhoneElement(String id, String number) {
-
+        try {
+            int count = 0;
+            for (HashMap<String, String> i : mPhoneListElementList) {
+                if (i.get(PhoneDictionary.ID).equals(id)) {
+                    mPhoneListElementList.remove(count);
+                    mPhoneListElementList_backup.remove(count);
+                    break;
+                }
+                count++;
+            }
+            sPhoneAdapter.notifyDataSetChanged();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
+
+
 
     @Override
     public void InitAdapter(Accessory accessory, String[] projection, String selection, String[] argument, String orderby) {

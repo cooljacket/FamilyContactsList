@@ -20,6 +20,33 @@
     <style name="CallLog_Button" parent="Base.Animation.AppCompat.DropDownUp">
         <item name="android:background">@drawable/button</item>
         <item name="android:textColor">@color/button_color</item>
+
+
     </style>
+
+    <style name="Menu" parent="@style/AlertDialog.AppCompat.Light">
+        <!-- 背景透明 -->
+        <!-- 浮于Activity之上 -->
+        <item name="android:windowIsFloating">true</item>
+        <!-- 边框 -->
+        <item name="android:windowFrame">@null</item>
+        <!-- Dialog以外的区域模糊效果 -->
+        <item name="android:backgroundDimEnabled">true</item>
+        <!-- 无标题 -->
+        <item name="android:windowNoTitle">true</item>
+        <!-- 半透明 -->
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@style/ActionSheetDialogAnimation</item>
+    </style>
+
+    <style name="ActionSheetDialogAnimation" parent="@style/AlertDialog.AppCompat.Light">
+        <item name="android:windowEnterAnimation">@anim/up</item>
+        <item name="android:windowExitAnimation">@anim/down</item>
+    </style>
+
+
+
+
+
 
 </resources>

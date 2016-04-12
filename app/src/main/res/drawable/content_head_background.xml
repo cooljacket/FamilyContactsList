@@ -15,7 +15,7 @@
         android:type="radial"
         android:centerX="0"
         android:centerY="0"
-        android:gradientRadius="500dp"
+        android:gradientRadius="800dp"
         />
 
      <!-- 设置按钮的四个角为弧形 -->
