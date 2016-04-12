@@ -132,7 +132,7 @@ public class MainShow extends PhoneShow {
         Message msg = new Message();
         msg.obj = phoneNumberList;
         msg.what = 0;
-        handler.sendMessage(msg);
+//        handler.sendMessage(msg);
     }
 
     private Handler handler = new Handler() {

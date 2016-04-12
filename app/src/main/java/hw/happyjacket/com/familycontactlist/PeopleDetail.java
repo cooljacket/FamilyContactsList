@@ -3,35 +3,18 @@ package hw.happyjacket.com.familycontactlist;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.os.Message;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
 /**
  * Created by leo on 2016/4/3.
@@ -75,7 +58,7 @@ public class PeopleDetail extends AppCompatActivity {
         newmap.put("contactName", name.getText());
         newmap.put("contactPhone", mobilephone.getText());
         newmap.put("contactPhoto",imagePic);
-        newmap.put("contactID",map.get("contactID"));
+        newmap.put("contactID", map.get("contactID"));
         newmap.put("contactGroup", group.getText());
         newmap.put("contactFamily", isfamily);
         newmap.put("contactFamilyname", familyname.getText());
@@ -90,13 +73,14 @@ public class PeopleDetail extends AppCompatActivity {
                 new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
                 ContactsContract.Data.CONTACT_ID + "=?" + " AND "
                         + ContactsContract.Data.MIMETYPE + "=? "+" AND "
-                        +ContactsContract.CommonDataKinds.Phone.TYPE + "=?",
+                        + ContactsContract.CommonDataKinds.Phone.TYPE + "=?",
                 new String[]{""+contactid,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_HOME)}, null);
-        if(homePhoneCur.moveToFirst()){
-            contactHome=homePhoneCur.getString(homePhoneCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+        if (homePhoneCur.moveToFirst()) {
+            contactHome = homePhoneCur.getString(homePhoneCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
         }
         homePhoneCur.close();
-        //work
+        // work
         Cursor workPhoneCur = resolver1.query(ContactsContract.Data.CONTENT_URI,
                 new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
                 ContactsContract.Data.CONTACT_ID + "=?" + " AND "
@@ -220,6 +204,7 @@ public class PeopleDetail extends AppCompatActivity {
 
         name.setText(map.get("contactName").toString());
         mobilephone.setText(map.get("contactPhone").toString());
+        Log.d("hehe", "" + map.get("cantactHome"));
         homephone.setText(map.get("contactHome").toString());
         workPhone.setText(map.get("contactWork").toString());
         email.setText(map.get("contactEmail").toString());

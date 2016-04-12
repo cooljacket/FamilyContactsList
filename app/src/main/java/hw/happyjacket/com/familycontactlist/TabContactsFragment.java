@@ -78,19 +78,19 @@ public class TabContactsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getContext();
-//        dbHelper = new DBHelper(TabContactsFragment.super.getContext());
-//        db = dbHelper.openDatabase();
-//        AL = getPhoneContacts();
-//        dbHelper.close();
+        dbHelper = new DBHelper(TabContactsFragment.super.getContext());
+        db = dbHelper.openDatabase();
+        AL = getPhoneContacts();
+        dbHelper.close();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-//        if (listview == null) {
-//            listview = (ListView) getView().findViewById(R.id.list_view);
-//            loadList();
-//        }
+        if (listview == null) {
+            listview = (ListView) getView().findViewById(R.id.list_view);
+            loadList();
+        }
 
 //        Button go = (Button) getView().findViewById(R.id.goToCL);
 //        go.setOnClickListener(new View.OnClickListener() {
