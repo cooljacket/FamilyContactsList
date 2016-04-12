@@ -145,10 +145,11 @@ public class TabContactsFragment extends Fragment {
 
         if (phoneCursor != null) {
             while (phoneCursor.moveToNext()) {
-                if(++num >= 15) {
-//                    num = 0;
-                    break;
-                }
+//                if(++num >= 15) {
+////                    num = 0;
+//                    break;
+//                }
+                num++;
 //                    String phoneNumber = new String();
 //                    String homeNumber = new String();
                 //得到手机号码
@@ -186,17 +187,17 @@ public class TabContactsFragment extends Fragment {
 
 
                 // 根据contact_ID取得WorkPhone号码
-                String workPhone = new String();
-                Cursor workPhoneCur = resolver1.query(ContactsContract.Data.CONTENT_URI,
-                        new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
-                        ContactsContract.Data.CONTACT_ID + "=?" + " AND "
-                                + ContactsContract.Data.MIMETYPE + "=? "+" AND "
-                                +ContactsContract.CommonDataKinds.Phone.TYPE + "=?",
-                        new String[]{contactID,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_WORK)}, null);
-                if(workPhoneCur.moveToFirst()){
-                    workPhone=workPhoneCur.getString(workPhoneCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                }
-                workPhoneCur.close();
+//                String workPhone = new String();
+//                Cursor workPhoneCur = resolver1.query(ContactsContract.Data.CONTENT_URI,
+//                        new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
+//                        ContactsContract.Data.CONTACT_ID + "=?" + " AND "
+//                                + ContactsContract.Data.MIMETYPE + "=? "+" AND "
+//                                +ContactsContract.CommonDataKinds.Phone.TYPE + "=?",
+//                        new String[]{contactID,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_WORK)}, null);
+//                if(workPhoneCur.moveToFirst()){
+//                    workPhone=workPhoneCur.getString(workPhoneCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+//                }
+//                workPhoneCur.close();
 
                 //debug
 //                    Toast.makeText(mContext, "11111", Toast.LENGTH_SHORT).show();
@@ -205,77 +206,48 @@ public class TabContactsFragment extends Fragment {
 
 
                 //String Group = new String();
-                String email=new String();
-                String remark = new String();
-
-                //email
-
-                Cursor dataCursor = resolver1.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
-                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + "=" + contactid, null, null);
-                while (dataCursor.moveToNext()){
-                    email = dataCursor.getString(dataCursor.getColumnIndex(
-                            ContactsContract.CommonDataKinds.Email.DATA));
-                    break;
-                }
-
-//                    emailCur = context.getContentResolver().query(
-//                            ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-//                            null,
-//                            ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
-//                            new String[]{contactId},
-//                            null);
+//                String email=new String();
+//                String remark = new String();
 //
-//                    JSONArray emailList = new JSONArray();
-//                    while (emailCur.moveToNext()) {
-//                        String email = emailCur.getString(emailCur.getColumnIndex(
-//                                ContactsContract.CommonDataKinds.Email.DATA));
-//                        int type = emailCur.getInt(emailCur.getColumnIndex(
-//                                ContactsContract.CommonDataKinds.Email.TYPE));
-//                        String emailType = ContactsContract.CommonDataKinds.Email.getTypeLabel(
-//                                context.getResources(), type, "").toString();
+//                //email
+//
+//                Cursor dataCursor = resolver1.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
+//                        ContactsContract.CommonDataKinds.Email.CONTACT_ID + "=" + contactid, null, null);
+//                while (dataCursor.moveToNext()){
+//                    email = dataCursor.getString(dataCursor.getColumnIndex(
+//                            ContactsContract.CommonDataKinds.Email.DATA));
+//                    break;
+//                }
 
 
-                //Group!!!!!!!!!!!
-//                    dataCursor = resolver1.query(ContactsContract.Groups.CONTENT_URI, null,
-//                            ContactsContract.Groups._ID + "=" + contactid
-//                            , null, null);
-//                    if (dataCursor != null){
-//                        if(dataCursor.getCount()>0){
-//                            index=dataCursor.getColumnIndex(ContactsContract.Groups.TITLE);
-//                        }
-//                        if(index!=-1)
-//                        Group = dataCursor.getString(index);
-//                    }
-
-                //remark
-                dataCursor.close();
-
-                String noteWhere =
-                        ContactsContract.Data.CONTACT_ID + " = ? AND " +
-                                ContactsContract.Data.MIMETYPE + " = ?";
-
-                String[] noteWhereParams = new String[]{
-                        ""+contactid,
-                        ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE};
-
-                Cursor noteCursor = resolver1.query(ContactsContract.Data.CONTENT_URI,
-                        null,
-                        noteWhere,
-                        noteWhereParams,
-                        null);
-                if (noteCursor.moveToFirst()) {
-                    remark = noteCursor.getString(noteCursor.getColumnIndex(
-                            ContactsContract.CommonDataKinds.Note.NOTE));
-                }
-
-                noteCursor.close();
+//                dataCursor.close();
+//
+//                String noteWhere =
+//                        ContactsContract.Data.CONTACT_ID + " = ? AND " +
+//                                ContactsContract.Data.MIMETYPE + " = ?";
+//
+//                String[] noteWhereParams = new String[]{
+//                        ""+contactid,
+//                        ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE};
+//
+//                Cursor noteCursor = resolver1.query(ContactsContract.Data.CONTENT_URI,
+//                        null,
+//                        noteWhere,
+//                        noteWhereParams,
+//                        null);
+//                if (noteCursor.moveToFirst()) {
+//                    remark = noteCursor.getString(noteCursor.getColumnIndex(
+//                            ContactsContract.CommonDataKinds.Note.NOTE));
+//                }
+//
+//                noteCursor.close();
 
                 //debug
 //                    Toast.makeText(mContext, "3333", Toast.LENGTH_SHORT).show();
                 //debug
 
                 //得到联系人头像ID
-                Long photoid = phoneCursor.getLong(PHONES_PHOTO_ID_INDEX);
+//                Long photoid = phoneCursor.getLong(PHONES_PHOTO_ID_INDEX);
 
                 //得到联系人头像Bitamp
 //                Bitmap contactPhoto = null;
@@ -332,31 +304,29 @@ public class TabContactsFragment extends Fragment {
 //                cursor2.close();
 
                 // 根据contact_ID取得HomePhone号码
-                String homeNumber=new String();
-                Cursor homePhoneCur = resolver1.query(ContactsContract.Data.CONTENT_URI,
-                        new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
-                        ContactsContract.Data.CONTACT_ID + "=?" + " AND "
-                                + ContactsContract.Data.MIMETYPE + "=? "+" AND "
-                                +ContactsContract.CommonDataKinds.Phone.TYPE + "=?",
-                        new String[]{contactID,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_HOME)}, null);
-                if(homePhoneCur.moveToFirst()){
-                    homeNumber=homePhoneCur.getString(homePhoneCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                }
-                homePhoneCur.close();
+//                String homeNumber=new String();
+//                Cursor homePhoneCur = resolver1.query(ContactsContract.Data.CONTENT_URI,
+//                        new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
+//                        ContactsContract.Data.CONTACT_ID + "=?" + " AND "
+//                                + ContactsContract.Data.MIMETYPE + "=? "+" AND "
+//                                +ContactsContract.CommonDataKinds.Phone.TYPE + "=?",
+//                        new String[]{contactID,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_HOME)}, null);
+//                if(homePhoneCur.moveToFirst()){
+//                    homeNumber=homePhoneCur.getString(homePhoneCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+//                }
+//                homePhoneCur.close();
 
                 HashMap map=new HashMap();
                 map.put("contactName",contactName);
                 map.put("contactPhone",phoneNumber);
                 map.put("contactPhoto",contactPhoto);
-                map.put("contactHome",homeNumber);
                 map.put("contactID",contactid);
-                map.put("contactWork", workPhone);
-                map.put("contactRemark", remark);
-                map.put("contactEmail", email);
-
                 map.put("contactGroup", contactGroup);
                 map.put("contactFamily", contactFamily);
                 map.put("contactFamilyname", contactFamilyname);
+
+
+
 
                 // map.put();
                 contacts.add(map);

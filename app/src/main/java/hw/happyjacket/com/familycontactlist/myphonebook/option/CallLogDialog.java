@@ -1,4 +1,4 @@
-package hw.happyjacket.com.familycontactlist.option;
+package hw.happyjacket.com.familycontactlist.myphonebook.option;
 
 import android.content.Context;
 import android.view.View;
@@ -14,37 +14,37 @@ import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 /**
  * Created by root on 16-4-12.
  */
-public class MainDialog extends PhoneDialog {
-
-    public MainDialog(Context context) {
+public class CallLogDialog extends PhoneDialog {
+    public CallLogDialog(Context context) {
         super(context);
     }
 
-    public MainDialog(Context context, int themeResId) {
+    public CallLogDialog(Context context, int themeResId) {
         super(context, themeResId);
     }
 
-    protected MainDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
+    protected CallLogDialog(Context context, boolean cancelable, OnCancelListener cancelListener) {
         super(context, cancelable, cancelListener);
     }
 
-    public MainDialog(Context context, int themeResId, int index) {
+    public CallLogDialog(Context context, int themeResId, int index) {
         super(context, themeResId, index);
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        HashMap<String,String> data = PhoneRegister.get(getIndex()).getPhoneListElementList().get(getPos());
+        HashMap<String,String> t = PhoneRegister.get(getIndex()).getPhoneListElementList().get(getPos());
         switch (position){
             case 0:
-                Operation.call(data.get(PhoneDictionary.NUMBER));
+                Operation.call(t.get((PhoneDictionary.NUMBER)));
                 break;
             case 1:
-                Operation.delete(data.get(PhoneDictionary.ID),data.get(PhoneDictionary.NUMBER));
+                Operation.delete(t.get(PhoneDictionary.ID),t.get(PhoneDictionary.NUMBER));
                 break;
             default:
                 break;
         }
         dismiss();
+
     }
 }

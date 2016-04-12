@@ -1,9 +1,12 @@
 package hw.happyjacket.com.familycontactlist;
 
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Message;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -51,6 +54,11 @@ public class PeopleDetail extends AppCompatActivity {
     Button btn_modify;
     boolean flag=false;//默认没修改
 
+    String contactHome;
+    String contactWork;
+    String contactRemark;
+    String contactEmail;
+
 
     @Override
     public void onBackPressed() {
@@ -68,14 +76,76 @@ public class PeopleDetail extends AppCompatActivity {
         newmap.put("contactPhone", mobilephone.getText());
         newmap.put("contactPhoto",imagePic);
         newmap.put("contactID",map.get("contactID"));
-        newmap.put("contactHome",homephone.getText());
-        newmap.put("contactWork",workPhone.getText());
-        newmap.put("contactEmail",email.getText());
-        newmap.put("contactRemark",remark.getText());
         newmap.put("contactGroup", group.getText());
         newmap.put("contactFamily", isfamily);
         newmap.put("contactFamilyname", familyname.getText());
         return newmap;
+    }
+
+    private void getOtherDetail(){//从id查其他数据
+        int contactid = (int)map.get("contactID");
+        ContentResolver resolver1 = this.getApplicationContext().getContentResolver();
+        //home
+        Cursor homePhoneCur = resolver1.query(ContactsContract.Data.CONTENT_URI,
+                new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
+                ContactsContract.Data.CONTACT_ID + "=?" + " AND "
+                        + ContactsContract.Data.MIMETYPE + "=? "+" AND "
+                        +ContactsContract.CommonDataKinds.Phone.TYPE + "=?",
+                new String[]{""+contactid,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_HOME)}, null);
+        if(homePhoneCur.moveToFirst()){
+            contactHome=homePhoneCur.getString(homePhoneCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+        }
+        homePhoneCur.close();
+        //work
+        Cursor workPhoneCur = resolver1.query(ContactsContract.Data.CONTENT_URI,
+                new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
+                ContactsContract.Data.CONTACT_ID + "=?" + " AND "
+                        + ContactsContract.Data.MIMETYPE + "=? "+" AND "
+                        +ContactsContract.CommonDataKinds.Phone.TYPE + "=?",
+                new String[]{""+contactid,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_WORK)}, null);
+        if(workPhoneCur.moveToFirst()){
+            contactWork=workPhoneCur.getString(workPhoneCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+        }
+        workPhoneCur.close();
+
+        //email
+
+        Cursor dataCursor = resolver1.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
+                ContactsContract.CommonDataKinds.Email.CONTACT_ID + "=" + contactid, null, null);
+        while (dataCursor.moveToNext()){
+            contactEmail = dataCursor.getString(dataCursor.getColumnIndex(
+                    ContactsContract.CommonDataKinds.Email.DATA));
+            break;
+        }
+        dataCursor.close();
+        //remark
+        String noteWhere =
+                ContactsContract.Data.CONTACT_ID + " = ? AND " +
+                        ContactsContract.Data.MIMETYPE + " = ?";
+
+        String[] noteWhereParams = new String[]{
+                ""+contactid,
+                ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE};
+
+        Cursor noteCursor = resolver1.query(ContactsContract.Data.CONTENT_URI,
+                null,
+                noteWhere,
+                noteWhereParams,
+                null);
+        if (noteCursor.moveToFirst()) {
+            contactRemark = noteCursor.getString(noteCursor.getColumnIndex(
+                    ContactsContract.CommonDataKinds.Note.NOTE));
+        }
+
+        noteCursor.close();
+
+
+
+        //补充进map
+        map.put("contactHome",contactHome);
+        map.put("contactWork", contactWork);
+        map.put("contactRemark", contactRemark);
+        map.put("contactEmail", contactEmail);
     }
 
 
@@ -87,6 +157,7 @@ public class PeopleDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         map = (HashMap)intent.getSerializableExtra("data");
+        getOtherDetail();
 
 
 

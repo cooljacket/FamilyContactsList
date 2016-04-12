@@ -106,30 +106,7 @@ public class TabRecordFragment extends Fragment {
 
     public void initOption()
     {
-       /* View viewForOption = LayoutInflater.from(mContext).inflate(R.layout.main_option,null);
-        OptionListView = (ListView)viewForOption.findViewById(R.id.main_list);
-        Vector<String> data = new Vector<>();
-        for(String i : PhoneDictionary.MainItems)
-            data.add(i);
-        ArrayAdapter<String> t = new ArrayAdapter<String>(mContext,android.R.layout.simple_expandable_list_item_1,data);
-        OptionListView.setAdapter(t);
-        OptionListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                HashMap<String,String> q = mainShow.getPhoneListElementList().get(option.getPos());
-                switch (position){
-                    case 0:
-                        Operation.delete(q.get(PhoneDictionary.ID),q.get(PhoneDictionary.NUMBER));
-                        break;
-                    case 1:
-                        break;
-                    default:
-                        break;
-                }
-                option.dismiss();
-            }
-        });*/
-        option = DialogFactory.getPhoneDialog(mContext,R.layout.main_option,R.style.Menu,mainShow.getIndex(),PhoneDictionary.MainItems,PhoneDictionary.MAIN_OPTIONS);
+        option = DialogFactory.getPhoneDialog(mContext,R.layout.main_option,R.id.main_list,R.style.Menu,mainShow.getIndex(),PhoneDictionary.MainItems,PhoneDictionary.MAIN_OPTIONS);
     }
 
     public void initListView()

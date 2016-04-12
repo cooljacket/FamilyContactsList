@@ -11,6 +11,7 @@ public abstract class PhoneDialog extends Dialog implements AdapterView.OnItemCl
 
     private int pos;
     private int index;
+    private int additon;
     public PhoneDialog(Context context) {
         super(context);
     }
@@ -44,5 +45,12 @@ public abstract class PhoneDialog extends Dialog implements AdapterView.OnItemCl
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    public int getAdditon() {
+        return additon;
+    }
+    public void setAdditon(int additon) {
+        this.additon = additon;
     }
 }
