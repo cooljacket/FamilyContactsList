@@ -38,12 +38,12 @@ public class TabContactsFragment extends Fragment {
     private ListView listview;
     private ArrayList AL;
     private int positionNew;
-//<<<<<<< HEAD
+    //<<<<<<< HEAD
     private DBHelper dbHelper = null;
     private SQLiteDatabase db = null;
-//=======
+    //=======
     private View ContactView;
-//>>>>>>> b4766d37133ab7041e3ad70db3221ae22eb840c4
+    //>>>>>>> b4766d37133ab7041e3ad70db3221ae22eb840c4
     public static final int PHONES_DISPLAY_NAME_INDEX = 0;
     public static final int PHONES_NUMBER_INDEX =1;
     public static final int PHONES_PHOTO_ID_INDEX=2;
@@ -217,7 +217,7 @@ public class TabContactsFragment extends Fragment {
 
 
 
-                String Group = new String();
+                //String Group = new String();
                 String email=new String();
                 String remark = new String();
 
@@ -303,8 +303,13 @@ public class TabContactsFragment extends Fragment {
 //                }
                 //photo
                 Cursor cursor;
+                int contactPhoto=image[0];//头像默认的图片
+                boolean contactFamily=false;
+                String contactFamilyname="NO";
+                String contactGroup="UNKNOWN";
                 cursor = db.query("user",null,"uid="+contactID,null,null,null,null);
-                if(cursor==null){
+
+                if(!cursor.moveToFirst()){
                     User user = new User();
                     user._id=contactid;
                     user.family=false;
@@ -312,26 +317,33 @@ public class TabContactsFragment extends Fragment {
                     user.photo=0;
                     user.familyName="NO";
                     dbHelper.init(user);
+//                    Toast.makeText(mContext, "塞进去", Toast.LENGTH_SHORT).show();
+                }else{
+//
+                        //photo
+                        contactPhoto = image[cursor.getInt(2)];
+                        //是否family
+                        contactFamily = cursor.getInt(1)>0;
+                        //familyname
+                        contactFamilyname = cursor.getString(4);
+                        //group
+                        contactGroup = cursor.getString(3);
+//                        Toast.makeText(mContext, "数据库没出问题" +
+//                                "contactPhoto"+contactPhoto
+//                                +"contactFamily"+contactFamily+
+//                                "contactFamilyname"+contactFamilyname, Toast.LENGTH_SHORT).show();
+
                 }
+
                 cursor.close();
 
 
-                //photo
-                int contactPhoto=image[0];//头像默认的图片
-                Cursor cursor2 = db.query("user",null,"uid="+contactID,null,null,null,null);
-                cursor2.moveToFirst();
-                contactPhoto = image[cursor2.getInt(2)];
-                //是否family
-                boolean contactFamily;
-                contactFamily = cursor2.getInt(1)>0;
-                //familyname
-                String contactFamilyname;
-                contactFamilyname = cursor2.getString(4);
-                //group
-                String contactGroup;
-                contactGroup = cursor2.getString(3);
-
-                cursor2.close();
+//
+//
+//                Cursor cursor2 = db.query("user",null,"uid="+contactID,null,null,null,null);
+//
+//
+//                cursor2.close();
 
                 // 根据contact_ID取得HomePhone号码
                 String homeNumber=new String();
