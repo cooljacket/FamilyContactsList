@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.CallLog;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -15,6 +16,8 @@ import android.widget.Toast;
 import hw.happyjacket.com.familycontactlist.extention.Accessory;
 import hw.happyjacket.com.familycontactlist.extention.Decorate;
 import hw.happyjacket.com.familycontactlist.extention.XiaoMiAccessory;
+import hw.happyjacket.com.familycontactlist.myphonebook.factory.DialogFactory;
+import hw.happyjacket.com.familycontactlist.myphonebook.factory.PhoneDialog;
 import hw.happyjacket.com.familycontactlist.myphonebook.show.CallLogShow;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 import hw.happyjacket.com.familycontactlist.phone.PhoneOperation;
@@ -29,11 +32,13 @@ import java.util.Vector;
  */
 public class CallLogActivity extends Activity {
 
+    private  final String TAG =CallLogActivity.class.toString() ;
     private String number;
     private String name;
     private ListView mListView;
     private Vector<HashMap<String,String>> data;
     private CallLogShow callLogShow;
+    private PhoneDialog callLogDialog;
     Decorate decorate;
     final String condition = PhoneDictionary.NUMBER + " = ? ";
     private AlertDialog.Builder mPhoneBuilder;
@@ -75,14 +80,13 @@ public class CallLogActivity extends Activity {
         try {
             Intent intent = getIntent();
             decorate = new Decorate(accessory);
-            mPhoneBuilder = new AlertDialog.Builder(this);
-            mPhoneBuilder.setIcon(R.mipmap.ic_launcher);
-            mPhoneBuilder.setNegativeButton("取消", null);
+
             number = intent.getStringExtra(PhoneDictionary.NUMBER);
             name = intent.getStringExtra(PhoneDictionary.NAME);
             mListView = (ListView) findViewById(R.id.call_log_content);
             callLogShow = new CallLogShow(CallLogActivity.this,R.layout.call_log_list);
             callLogShow.InitAdapter(new XiaoMiAccessory(),PhoneDictionary.PhoneCallLog,condition,new String[]{number},CallLog.Calls.DEFAULT_SORT_ORDER);
+            callLogDialog = DialogFactory.getPhoneDialog(this,R.layout.main_option,R.id.main_list,R.style.Menu,callLogShow.getIndex(),PhoneDictionary.CallLogItems,PhoneDictionary.CALLLOG_OPTIONS);
             mListView.setAdapter(callLogShow.getPhoneAdapter());
             mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -93,23 +97,8 @@ public class CallLogActivity extends Activity {
             mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                    final HashMap<String,String> t = callLogShow.getPhoneListElementList().get(position);
-                    mPhoneBuilder.setTitle(t.get(PhoneDictionary.NUMBER));
-                    mPhoneBuilder.setItems(PhoneDictionary.CallLogItems, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            switch (which)
-                            {
-                                case 0:
-                                    new PhoneOperation(CallLogActivity.this).delete(t.get(PhoneDictionary.ID));
-                                    PhoneRegister.delete(t.get(PhoneDictionary.ID), t.get(PhoneDictionary.NUMBER));
-                                    break;
-                                default:
-                                    break;
-                            }
-                        }
-                    });
-                    mPhoneBuilder.show();
+                    callLogDialog.setPos(position);
+                    callLogDialog.show();
                     return true;
                 }
             });
