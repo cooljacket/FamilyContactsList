@@ -15,6 +15,8 @@ import android.widget.TextView;
 import java.util.HashMap;
 
 import hw.happyjacket.com.familycontactlist.extention.XiaoMiAccessory;
+import hw.happyjacket.com.familycontactlist.myphonebook.factory.DialogFactory;
+import hw.happyjacket.com.familycontactlist.myphonebook.factory.PhoneDialog;
 import hw.happyjacket.com.familycontactlist.myphonebook.show.ContentShow;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 import hw.happyjacket.com.familycontactlist.phone.PhoneOperation;
@@ -35,6 +37,7 @@ public class ContentActivity extends Activity {
     private TextView returns;
     private ContentShow mContentShow;
     private AlertDialog.Builder mBuilder;
+    private PhoneDialog contentDialog1, contentDialog2;
     final static String key = PhoneDictionary.DATE;
     final String defaultName = "陌生联系人";
     final String condition = PhoneDictionary.NUMBER + " = ? ";
@@ -107,50 +110,31 @@ public class ContentActivity extends Activity {
             }
         });
 
+        contentDialog1 = DialogFactory.getPhoneDialog(ContentActivity.this,R.layout.main_option,R.id.main_list,R.style.Menu,mContentShow.getIndex(),PhoneDictionary.ContentItems1,PhoneDictionary.CONTENT_OPTIONS1);
+        contentDialog2 = DialogFactory.getPhoneDialog(ContentActivity.this,R.layout.main_option,R.id.main_list,R.style.Menu,mContentShow.getIndex(),PhoneDictionary.ContentItems2,PhoneDictionary.CONTENT_OPTIONS2);
+
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                final HashMap<String, String> t = mContentShow.getPhoneListElementList().get(position);
                 boolean pass = true;
-                mBuilder.setTitle(t.get(PhoneDictionary.NUMBER));
-                switch (position) {
+                switch (position){
                     case 0:
-                        mBuilder.setItems(PhoneDictionary.ContentItems1, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which) {
-                                    case 0:
-                                        new PhoneOperation(ContentActivity.this).call(t.get(PhoneDictionary.NUMBER));
-                                        break;
-                                    default:
-                                        break;
-                                }
-                            }
-                        });
+                        contentDialog1.setPos(position);
+                        contentDialog1.show();
                         break;
-
-                    default:
-                        if (mContentShow.getStatus() == PhoneDictionary.CONTENT1) {
-                            mBuilder.setItems(PhoneDictionary.ContentItems2, new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    switch (which) {
-                                        case 0:
-                                            new PhoneOperation(ContentActivity.this).delete(t.get(PhoneDictionary.ID));
-                                            PhoneRegister.delete(t.get(PhoneDictionary.ID), t.get(PhoneDictionary.NUMBER));
-                                            break;
-                                        default:
-                                            break;
-                                    }
-                                }
-                            });
-                        } else
+                    case 1:
+                        if(mContentShow.getStatus() == PhoneDictionary.CONTENT1) {
+                            contentDialog2.setPos(position);
+                            contentDialog2.show();
+                        }
+                        else
                             pass = false;
                         break;
-
+                    default:
+                        contentDialog2.setPos(position);
+                        contentDialog2.show();
+                        break;
                 }
-                if(pass)
-                    mBuilder.show();
                 return pass;
             }
 
