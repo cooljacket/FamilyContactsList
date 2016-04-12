@@ -93,7 +93,7 @@ public class NetUtils {
             return "2333" + content;
     }
 
-    public static String ParseLocationXML(InputStream xml) throws XmlPullParserException, IOException {
+    public static String ParseLocationXML(InputStream xml) {
         try {
             String location = new String(getDataFromInputStream(xml));
             location = location.replaceAll("<[^>]+>", "");

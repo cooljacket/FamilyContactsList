@@ -9,5 +9,4 @@ public class User {
     int photo ;
     String group ;
     String familyName;
-
 }

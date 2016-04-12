@@ -10,7 +10,6 @@ import android.util.Log;
  * Created by jacket on 2016/3/31.
  */
 public class SMSFireWall extends BroadcastReceiver {
-
     @Override
     public void onReceive(Context context, Intent intent) {
         BlackListMaster handler = new BlackListMaster(context);

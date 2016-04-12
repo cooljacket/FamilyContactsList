@@ -1,8 +1,6 @@
 package hw.happyjacket.com.familycontactlist.phone;
 import android.provider.CallLog;
-import android.telecom.Call;
 
-import hw.happyjacket.com.familycontactlist.phone.database.DataBase;
 import hw.happyjacket.com.familycontactlist.phone.database.DataBaseDictionary;
 
 /**
@@ -20,6 +18,7 @@ public class PhoneDictionary {
     public static final String ID = CallLog.Calls._ID;
     public static final String READ = CallLog.Calls.IS_READ;
     public static final String DATE_SAVE = "date_save";
+    public static final String LOCATION = "location";
     public static final String SHARE_PREFERANCE_NAME = "listen";
     public static final String SHARE_PREFERANCE_KEY = "catch";
     public static final String MAIN_OPTION = "main";

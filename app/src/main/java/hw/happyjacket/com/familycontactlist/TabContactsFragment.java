@@ -1,32 +1,22 @@
 package hw.happyjacket.com.familycontactlist;
 
 import android.content.ContentResolver;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-
-
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -38,12 +28,9 @@ public class TabContactsFragment extends Fragment {
     private ListView listview;
     private ArrayList AL;
     private int positionNew;
-    //<<<<<<< HEAD
     private DBHelper dbHelper = null;
     private SQLiteDatabase db = null;
-    //=======
     private View ContactView;
-    //>>>>>>> b4766d37133ab7041e3ad70db3221ae22eb840c4
     public static final int PHONES_DISPLAY_NAME_INDEX = 0;
     public static final int PHONES_NUMBER_INDEX =1;
     public static final int PHONES_PHOTO_ID_INDEX=2;
@@ -74,7 +61,7 @@ public class TabContactsFragment extends Fragment {
         switch (resultCode){
             case 1:
                 HashMap newmap = (HashMap)data.getSerializableExtra("newdata");
-                AL.set(positionNew,newmap);
+                AL.set(positionNew, newmap);
                 loadList();
 //                SimpleAdapter adapter = new SimpleAdapter(mContext, AL, R.layout.list_item
 //                        ,new String[]{"contactName", "contactPhone", "contactPhoto"}
@@ -91,20 +78,20 @@ public class TabContactsFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getContext();
-        dbHelper = new DBHelper(TabContactsFragment.super.getContext());
-        db = dbHelper.openDatabase();
-        AL = getPhoneContacts();
-        dbHelper.close();
-        // [通话记录]在这里写自己的逻辑，加载页面部分在onCreateView里面自动调用了，tab_contacts_layout
+//        dbHelper = new DBHelper(TabContactsFragment.super.getContext());
+//        db = dbHelper.openDatabase();
+//        AL = getPhoneContacts();
+//        dbHelper.close();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (listview == null) {
-            listview = (ListView) getView().findViewById(R.id.list_view);
-            loadList();
-        }
+//        if (listview == null) {
+//            listview = (ListView) getView().findViewById(R.id.list_view);
+//            loadList();
+//        }
+
 //        Button go = (Button) getView().findViewById(R.id.goToCL);
 //        go.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -337,7 +324,6 @@ public class TabContactsFragment extends Fragment {
 
                 cursor.close();
 
-
 //
 //
 //                Cursor cursor2 = db.query("user",null,"uid="+contactID,null,null,null,null);
@@ -358,8 +344,6 @@ public class TabContactsFragment extends Fragment {
                 }
                 homePhoneCur.close();
 
-
-
                 HashMap map=new HashMap();
                 map.put("contactName",contactName);
                 map.put("contactPhone",phoneNumber);
@@ -377,8 +361,6 @@ public class TabContactsFragment extends Fragment {
                 // map.put();
                 contacts.add(map);
                 //Log.d("debug",contactName);
-
-
             }
 
             phoneCursor.close();

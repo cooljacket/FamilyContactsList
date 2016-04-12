@@ -9,10 +9,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 /**
  * Created by jacket on 2016/4/11.
  */
-public class PhoneLocatinoMaster {
+public class PhoneLocationMaster {
     private SQLiteOpenHelper mOpenHelper;
 
-    public PhoneLocatinoMaster(Context context) {
+    public PhoneLocationMaster(Context context) {
         mOpenHelper = PhoneLocationDBHelper.getInstance(context);
     }
 
@@ -35,17 +35,18 @@ public class PhoneLocatinoMaster {
         return result != -1;
     }
 
-    public boolean isCached(String phoneNumber) {
-        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
-        if (!db.isOpen())
-            return false;
-
-        Cursor cursor = db.query(PhoneLocationDBHelper.TABLE_NAME, new String[]{"phoneNumber"}, "phoneNumber=?", new String[]{phoneNumber}, null, null, null);
-        boolean result = cursor.getCount() > 0;
-        cursor.close();
-        db.close();
-        return result;
-    }
+    // 这个函数与get函数重复了，只需要用get函数即可
+//    public boolean isCached(String phoneNumber) {
+//        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
+//        if (!db.isOpen())
+//            return false;
+//
+//        Cursor cursor = db.query(PhoneLocationDBHelper.TABLE_NAME, new String[]{"phoneNumber"}, "phoneNumber=?", new String[]{phoneNumber}, null, null, null);
+//        boolean result = cursor.getCount() > 0;
+//        cursor.close();
+//        db.close();
+//        return result;
+//    }
 
     public String[] get(String phoneNumber) {
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
@@ -55,6 +56,7 @@ public class PhoneLocatinoMaster {
         Cursor cursor = db.query(PhoneLocationDBHelper.TABLE_NAME, null, "phoneNumber=?", new String[]{phoneNumber}, null, null, null);
         if (!cursor.moveToFirst())
             return null;
+
         String province = cursor.getString(cursor.getColumnIndex("province"));
         String city = cursor.getString(cursor.getColumnIndex("city"));
         String card_type = cursor.getString(cursor.getColumnIndex("card_type"));

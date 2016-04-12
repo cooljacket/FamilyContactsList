@@ -1,33 +1,33 @@
 package hw.happyjacket.com.familycontactlist.myphonebook.show;
 
-import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.IBinder;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Message;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Vector;
+
+import hw.happyjacket.com.familycontactlist.HttpConnectionUtil;
+import hw.happyjacket.com.familycontactlist.PhoneLocationMaster;
 import hw.happyjacket.com.familycontactlist.extention.Accessory;
 import hw.happyjacket.com.familycontactlist.extention.Decorate;
-import hw.happyjacket.com.familycontactlist.myphonebook.OperationService;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.MainAdapter;
-import hw.happyjacket.com.familycontactlist.myphonebook.show.PhoneShow;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 import hw.happyjacket.com.familycontactlist.phone.database.DataBaseDictionary;
-
-import java.util.HashMap;
-import java.util.Vector;
 
 /**
  * Created by root on 16-4-1.
  */
 public class MainShow extends PhoneShow {
-
+    private PhoneLocationMaster PLMaster;
+    private boolean errorOfGetingLocation = false;
     HashMap<String,Integer> nmapp = new HashMap<>(); //the map between number and position
-
 
     public MainShow(Context context, int table) {
         super(context,table);
+        PLMaster = new PhoneLocationMaster(context);
     }
 
     public void ElementCopy() {
@@ -96,10 +96,14 @@ public class MainShow extends PhoneShow {
         sPhoneAdapter.notifyDataSetChanged();
     }
 
+    public void getLocation(String phoneNumber) {
+
+    }
+
     @Override
     public void InitAdapter(Accessory accessory, String[] projection, String selection, String[] argument, String orderBy)
     {
-        Vector<HashMap<String,String>> t = phoneList.init();
+        Vector<HashMap<String, String>> t = phoneList.init();
         int count = 0;
         if(t == null)
         {
@@ -120,5 +124,73 @@ public class MainShow extends PhoneShow {
             ElementCopy();
             sPhoneAdapter = new MainAdapter(context,table,mPhoneListElementList,index);
         }
+
+        ArrayList<String> phoneNumberList = new ArrayList<>();
+        for (HashMap<String,String> i : mPhoneListElementList)
+           phoneNumberList.add(i.get(PhoneDictionary.NUMBER));
+
+        Message msg = new Message();
+        msg.obj = phoneNumberList;
+        msg.what = 0;
+        handler.sendMessage(msg);
     }
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 0:
+                    final Message msg_for_location = new Message();
+                    msg_for_location.what = 1;
+
+                    ArrayList<String> phoneNumberList = (ArrayList<String>) msg.obj;
+                    final Vector<HashMap<String, String> > locations = new Vector<>();
+
+                    for (final String phoneNumber : phoneNumberList) {
+                        String[] places = PLMaster.get(phoneNumber);
+                        if (places != null) {
+                            HashMap<String,String> tmp = new HashMap<>();
+                            tmp.put(phoneNumber, places[1]);
+                            locations.add(tmp);
+                            continue ;
+                        }
+
+                        final String HostURL = "http://webservice.webxml.com.cn";
+                        String LocationURL = String.format("%s/WebServices/MobileCodeWS.asmx/getMobileCodeInfo?mobileCode=%s&userID=", HostURL, phoneNumber);
+                        HttpConnectionUtil.get(LocationURL, new HttpConnectionUtil.HttpCallbackListener() {
+                            @Override
+                            public void onFinish(String response) {
+                                PLMaster.add(response.replaceAll("<[^>]+>", ""));
+                                HashMap<String,String> tmp = new HashMap<>();
+                                tmp.put(phoneNumber, PLMaster.get(phoneNumber)[2]);
+                                locations.add(tmp);
+                            }
+
+                            @Override
+                            public void onError(Exception e) {
+                                errorOfGetingLocation = true;
+                            }
+                        });
+
+                        if (errorOfGetingLocation) {
+                            msg_for_location.obj = new Vector<HashMap<String, String> >();
+                            handler.sendMessage(msg_for_location);
+                            break;
+                        }
+                    }
+
+                    msg_for_location.obj = locations;
+                    handler.sendMessage(msg_for_location);
+                    break;
+
+                case 1:
+                    Vector<HashMap<String, String> > t = (Vector<HashMap<String, String> >) msg.obj;
+                    for(HashMap<String,String> i : t){
+                        for(Map.Entry<String,String> j : i.entrySet())
+                            mPhoneListElementList.get(nmapp.get(j.getKey())).put(PhoneDictionary.LOCATION,j.getValue());
+                    }
+                    break;
+            }
+        }
+    };
 }
