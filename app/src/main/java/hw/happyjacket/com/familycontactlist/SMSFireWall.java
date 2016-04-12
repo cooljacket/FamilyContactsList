@@ -13,7 +13,7 @@ public class SMSFireWall extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        BlackListHandler handler = new BlackListHandler(context);
+        BlackListMaster handler = new BlackListMaster(context);
         Object[] pdus = (Object[]) intent.getExtras().get("pdus");
         for (Object pdu:pdus){
             SmsMessage smsMessage = SmsMessage.createFromPdu((byte[])pdu);

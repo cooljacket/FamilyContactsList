@@ -1,11 +1,9 @@
 package hw.happyjacket.com.familycontactlist.extention;
 
-import android.util.Log;
-
-import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 
 /**
  * Created by root on 16-3-28.
@@ -16,7 +14,6 @@ public class XiaoMiAccessory implements Accessory{
         String result;
         switch (key)
         {
-
             case PhoneDictionary.DATE:
                 SimpleDateFormat years = new SimpleDateFormat("yyyy年MM月dd日");
                 SimpleDateFormat days = new SimpleDateFormat("MM月dd日");

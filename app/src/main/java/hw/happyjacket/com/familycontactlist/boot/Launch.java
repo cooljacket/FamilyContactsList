@@ -12,6 +12,5 @@ public class Launch extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Log.i("Launch", "This is the begining");
-
     }
 }

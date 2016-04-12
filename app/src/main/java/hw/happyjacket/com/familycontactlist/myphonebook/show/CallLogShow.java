@@ -54,12 +54,12 @@ public class CallLogShow extends PhoneShow {
         phoneList.setArgument(argument);
         phoneList.setOrderby(orderby);
         phoneList.connectContentResolver();
-        Decorate decorate = new Decorate(accessory);
+        mDecorate = new Decorate(accessory);
         mPhoneListElementList.removeAllElements();
         mPhoneListElementList_backup = phoneList.getPhoneList();
         for (HashMap<String,String> i : mPhoneListElementList_backup)
             mPhoneListElementList.add(new HashMap<String, String>(i));
-        mPhoneListElementList = decorate.decorate(mPhoneListElementList);
+        mPhoneListElementList = mDecorate.decorate(mPhoneListElementList);
         sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index);
 
     }

@@ -8,4 +8,9 @@
     <color name="white">#ffffff</color>
     <color name="tab_text_focus_color">#000000</color>
     <color name="tab_text_unfocus_color">#ffffff</color>
+    <color name="button_color_highlight">#ffffff</color>
+    <color name="button_color">#999999</color>
+    <color name="light_red">#ff3344</color>
+    <color name="dark_red">#dd0000</color>
+    <color name="medium_red">#ee0000</color>
 </resources>

@@ -48,7 +48,6 @@ public class TabSettingFragment extends Fragment {
         public void run() {
             String phoneNumber = "18819461579";
             LocationURL = String.format("%s/WebServices/MobileCodeWS.asmx/getMobileCodeInfo?mobileCode=%s&userID=", HostURL, phoneNumber);
-//            LocationURL = "https://www.baidu.com";
             String location = NetUtils.get(LocationURL, NetUtils.GET_LOCATION_INFO);
             Message msg = new Message();
             msg.obj = location;

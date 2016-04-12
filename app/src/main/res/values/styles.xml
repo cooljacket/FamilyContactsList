@@ -12,4 +12,14 @@
 
     <style name="PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="CallLog_Button_Focus" parent="Base.Animation.AppCompat.DropDownUp">
+        <item name="android:background">@drawable/buttononfocus</item>
+        <item name="android:textColor">@color/button_color_highlight</item>
+    </style>
+
+    <style name="CallLog_Button" parent="Base.Animation.AppCompat.DropDownUp">
+        <item name="android:background">@drawable/button</item>
+        <item name="android:textColor">@color/button_color</item>
+    </style>
+
 </resources>

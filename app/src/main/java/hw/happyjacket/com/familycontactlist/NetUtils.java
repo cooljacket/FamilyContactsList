@@ -42,10 +42,10 @@ public class NetUtils {
                 InputStream is = conn.getInputStream();
                 Log.d(TAG, "200 OK");
 
-                if (code == AsynNetUtils.GET_WEATHER_INFO) {
+                if (code == GET_WEATHER_INFO) {
                     return ParseWeatherXML(is);
                 }
-                else if (code == AsynNetUtils.GET_LOCATION_INFO) {
+                else if (code == GET_LOCATION_INFO) {
                     return ParseLocationXML(is);
                 }
             } else {
@@ -84,7 +84,6 @@ public class NetUtils {
 
     public static String ParseWeatherXML(InputStream xml) throws XmlPullParserException, IOException {
         ArrayList<String> weather = ParseXMLHelper(xml);
-//        return weather.get(4) + " " + weather.get(6) + " " + weather.get(7);
         String content = weather.get(6);
         Pattern p = Pattern.compile("紫外线指数：([^。]*)。");
         Matcher m = p.matcher(content);
@@ -98,7 +97,7 @@ public class NetUtils {
         try {
             String location = new String(getDataFromInputStream(xml));
             location = location.replaceAll("<[^>]+>", "");
-            return location.split(" ")[1];
+            return location;
         } catch (Exception e) {
             e.printStackTrace();
         }

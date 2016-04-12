@@ -21,8 +21,6 @@ import java.util.HashMap;
 public class PhoneStateReceiver extends BroadcastReceiver {
 
     private static boolean status = false;
-
-
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -42,7 +40,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
                     break;
                 case TelephonyManager.CALL_STATE_IDLE:
                     if(status) {
-                        HashMap<String,String> newGuy = new PhoneList(context).addTheNewOne(DataBaseDictionary.CallLog,DataBaseDictionary.CallLog_Projection, PhoneDictionary.PhoneAll,PhoneDictionary.NUMBER);
+                        HashMap<String,String> newGuy = new PhoneList(context).addTheNewOne(DataBaseDictionary.CallLog_Projection, PhoneDictionary.PhoneAll,PhoneDictionary.NUMBER);
                         PhoneRegister.add(new XiaoMiAccessory(), newGuy);
                         status = false;
                     }

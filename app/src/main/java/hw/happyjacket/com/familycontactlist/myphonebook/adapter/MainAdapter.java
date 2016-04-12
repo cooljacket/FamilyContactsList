@@ -48,7 +48,6 @@ public class MainAdapter extends PhoneAdapter {
             view = convertView;
             viewHolder = (ViewHolder) view.getTag();
         }
-
         if(phoneListElement.get(PhoneDictionary.NAME) != null)
         {
             viewHolder.phone_name.setText(phoneListElement.get(PhoneDictionary.NAME));
@@ -59,6 +58,7 @@ public class MainAdapter extends PhoneAdapter {
             viewHolder.phone_name.setText(phoneListElement.get(PhoneDictionary.NUMBER));
             viewHolder.phone_info.setText(phoneListElement.get(PhoneDictionary.DATE));
         }
+        viewHolder.phone_name.setTextSize(16);
         viewHolder.phone_content.setIndex(position);
         viewHolder.phone_content.setName(PhoneRegister.get(index).getPhoneListElementList().get(position).get(PhoneDictionary.NAME));
         viewHolder.phone_content.setNumber(PhoneRegister.get(index).getPhoneListElementList().get(position).get(PhoneDictionary.NUMBER));
