@@ -28,27 +28,51 @@
         android:layout_marginRight="11.0dip"
         android:layout_toRightOf="@id/imageView" />
 
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="wrap_content"
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignTop="@id/divider"
         android:layout_marginLeft="2.0dip"
         android:layout_marginRight="5.0dip"
+        android:id="@+id/aa"
         android:layout_marginTop="6.0dip"
         android:layout_toRightOf="@id/divider"
         android:singleLine="true"
-        android:textAppearance="?android:textAppearanceMedium" />
+        android:orientation="horizontal"
+        android:textAppearance="?android:textAppearanceMedium" >
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+
+            android:hint=""
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/familyname"
+            android:textSize="20dp"
+            android:layout_marginLeft="20dp"
+            android:hint=""/>
+
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/name"
+        android:layout_alignLeft="@id/aa"
         android:layout_alignWithParentIfMissing="true"
-        android:layout_below="@id/name"
+        android:layout_below="@id/aa"
+        android:layout_marginTop="6dp"
         android:ellipsize="marquee"
         android:singleLine="true"
+        android:textSize="18dp"
+        android:hint=""
         android:textAppearance="?android:textAppearanceSmall" />
 
 </RelativeLayout>

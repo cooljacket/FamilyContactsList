@@ -190,7 +190,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
                 }
                 //DBHelper.change(user);
                 //!!!!这里！！！！
-                DBHelper helper = new DBHelper(ChangePeopleDetail.super.getApplicationContext());
+                DBHelper helper = new DBHelper(ChangePeopleDetail.this);
 
                 helper.openDatabase();
                 helper.change(user);

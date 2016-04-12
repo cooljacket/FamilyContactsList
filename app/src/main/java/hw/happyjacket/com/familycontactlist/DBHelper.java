@@ -2,9 +2,12 @@ package hw.happyjacket.com.familycontactlist;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.CalendarView;
+import android.widget.Toast;
 
 /**
  * Created by leo on 2016/4/10.
@@ -12,11 +15,11 @@ import android.widget.CalendarView;
 public class DBHelper extends SQLiteOpenHelper {
 
     public static final   String DB_NAME="contact";
-    public final static int VERSION = 4;
+    public final static int VERSION = 1;
     public static final   String DB_TABLENAME="user";
     public SQLiteDatabase db;
     private Context context;
-//    private MyDBHelper
+    //    private MyDBHelper
     private static DBHelper instance = null;
 //    private  SQLiteDatabase db;
 
@@ -46,8 +49,14 @@ public class DBHelper extends SQLiteOpenHelper {
 //        openDatabase();
 
         ContentValues values = new ContentValues();
-        values.put("uid",user._id);
-        db.insert("user",null,values);
+        values.put("uid", user._id);
+        try{
+            db.insert("user", null, values);
+        }catch (SQLiteConstraintException e){
+//            e.getStackTrace();
+            e.getStackTrace();
+        }
+
 
 
     }
