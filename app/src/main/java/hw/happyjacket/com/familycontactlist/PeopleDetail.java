@@ -37,11 +37,10 @@ public class PeopleDetail extends AppCompatActivity {
     Button btn_modify;
     boolean flag=false;//默认没修改
 
-    String contactHome= new String();
-    String contactWork= new String();
-    String contactRemark= new String();
-    String contactEmail= new String();
-
+    String contactHome;
+    String contactWork;
+    String contactRemark;
+    String contactEmail;
 
 
     @Override
@@ -206,7 +205,7 @@ public class PeopleDetail extends AppCompatActivity {
         name.setText(map.get("contactName").toString());
         mobilephone.setText(map.get("contactPhone").toString());
         Log.d("hehe", "" + map.get("cantactHome"));
-      //  homephone.setText(map.get("contactHome").toString());
+        homephone.setText(map.get("contactHome").toString());
         workPhone.setText(map.get("contactWork").toString());
         email.setText(map.get("contactEmail").toString());
         remark.setText(map.get("contactRemark").toString());

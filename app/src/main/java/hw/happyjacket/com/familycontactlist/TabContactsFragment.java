@@ -105,15 +105,15 @@ public class TabContactsFragment extends Fragment {
     private  void loadList(){
         //Toast.makeText(getApplicationContext(), ""+num, Toast.LENGTH_SHORT).show();
         SimpleAdapter adapter = new SimpleAdapter(mContext, AL, R.layout.list_item
-                ,new String[]{"contactName", "contactPhoto"}
-                ,new int[]{R.id.name, R.id.imageView});
+                ,new String[]{"contactName", "contactPhone", "contactPhoto"}
+                ,new int[]{R.id.name, R.id.number, R.id.imageView});
         listview.setAdapter(adapter);
         Toast.makeText(mContext, "" + num, Toast.LENGTH_SHORT).show();
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(mContext, PeopleDetail.class);
-//                Toast.makeText(mContext, "aaaaaaaaaaaaaaaa", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "aaaaaaaaaaaaaaaa", Toast.LENGTH_SHORT).show();
                 positionNew=position;
                 HashMap map = (HashMap) parent.getItemAtPosition(position);
 //                SerializableMap tmpmap = new SerializableMap();
@@ -121,7 +121,7 @@ public class TabContactsFragment extends Fragment {
 //
 //                Bundle bundle = new Bundle();
 //                bundle.putSerializable("data", tmpmap);
-//                Toast.makeText(mContext, "bbbbbbbbbbbb", Toast.LENGTH_SHORT).show();
+                Toast.makeText(mContext, "bbbbbbbbbbbb", Toast.LENGTH_SHORT).show();
 //                intent.putExtras(bundle);
                 intent.putExtra("data", map);
 
