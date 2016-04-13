@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="80dp" >
+    android:layout_height="80dp"
+    android:layout_marginBottom="2dp"
+
+    android:background="#E0FBF6"
+    >
 
 
 
 
+
+<<<<<<< HEAD
 
     <TextView
         android:id="@+id/alpha"
@@ -91,14 +97,33 @@
         android:singleLine="true"
         android:orientation="horizontal"
         android:textAppearance="?android:textAppearanceMedium" >
+=======
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="60dp"
+        android:layout_marginLeft="10dp"
+        android:layout_height="60dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+
+
+         />
+
+
+
+
+
+>>>>>>> 607bfa132c77199f1a9bd493fadbab62bf9e68a3
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20dp"
-
-            android:hint=""
+            android:textSize="23dp"
+            android:layout_marginLeft="80dp"
+            android:layout_centerVertical="true"
+            android:hint="123321"
             />
+<<<<<<< HEAD
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -121,6 +146,10 @@
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
         />
+=======
+
+
+>>>>>>> 607bfa132c77199f1a9bd493fadbab62bf9e68a3
 
 
 

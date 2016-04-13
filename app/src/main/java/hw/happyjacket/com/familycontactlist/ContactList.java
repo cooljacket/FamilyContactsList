@@ -60,8 +60,8 @@ public class ContactList extends AppCompatActivity {
     private  void loadList(){
         //Toast.makeText(getApplicationContext(), ""+num, Toast.LENGTH_SHORT).show();
         SimpleAdapter adapter = new SimpleAdapter(this,getPhoneContacts(),R.layout.list_item
-                ,new String[]{"contactName", "contactPhoto"}
-                ,new int[]{R.id.name, R.id.imageView});
+                ,new String[]{"contactName", "contactPhone", "contactPhoto"}
+                ,new int[]{R.id.name, R.id.number, R.id.imageView});
         listview.setAdapter(adapter);
         Toast.makeText(getApplicationContext(), "" + num, Toast.LENGTH_SHORT).show();
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {

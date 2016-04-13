@@ -1,22 +1,21 @@
 package hw.happyjacket.com.familycontactlist;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 //import com.example.menu.MyLetterListView.OnTouchingLetterChangedListener;
 
 import android.app.AlertDialog;
-import android.content.ContentProviderOperation;
-import android.content.ContentProviderResult;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.OperationApplicationException;
 import android.graphics.Bitmap;
-import android.net.Uri;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.os.Bundle;
-import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -33,7 +32,6 @@ import android.widget.Gallery;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
@@ -60,11 +58,14 @@ public class ChangePeopleDetail extends AppCompatActivity {
     Button btn_save;
     Button btn_return;
     int imageP;//头像序号
-    int imagePic;//头像Rid
+    Bitmap imagePic;//头像Rid
+    int imagePP;
 
-    private int[] image = {R.drawable.contact_list_icon,R.drawable.man,R.drawable.woman,
+    private int[] image = {R.drawable.q,R.drawable.man,R.drawable.woman,
             R.drawable.p1,R.drawable.p2,R.drawable.p3
     };
+
+
 
 
     @Override
@@ -97,9 +98,11 @@ public class ChangePeopleDetail extends AppCompatActivity {
 //        Toast.makeText(getApplicationContext(), map.get("contactID").toString(), Toast.LENGTH_SHORT).show();
         //头像选择
         btn_img = (ImageButton) this.findViewById(R.id.btn_img);
-        imagePic=(int) map.get("contactPhoto");
+//        imagePic=(int) map.get("contactPhoto");
+        imagePic=(Bitmap) map.get("contactPhoto");
+        btn_img.setImageBitmap(imagePic);
 
-        btn_img.setImageResource(imagePic);
+//        btn_img.setImageResource(imagePic);
         btn_img.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -168,13 +171,15 @@ public class ChangePeopleDetail extends AppCompatActivity {
                 changePhoneContact();
 
                 for(int i=0;i<5;i++){
-                    if(image[i]==imagePic){
+                    if(image[i]==imagePP){
                         imageP=i;
                         break;
                     }
                 }
-                Toast.makeText(getApplicationContext(),"image1  "+imageP
-                        +"image2  "+imagePosition, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getApplicationContext(),"image1  "+imageP
+//                        +"image2  "+imagePosition, Toast.LENGTH_SHORT).show();
+//                imagePic= btn_img.();
+
 
                 User user=new User();
                 user._id=(int)map.get("contactID");
@@ -307,7 +312,29 @@ public class ChangePeopleDetail extends AppCompatActivity {
         newmap.put("contactFamilyname", et_familyName.getText().toString());
         return newmap;
     }
+    private Bitmap createCircleImage(Bitmap source,int min){
+        final Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        Bitmap target = Bitmap.createBitmap(min,min, Bitmap.Config.ARGB_8888);
+        /*
+        产生一个同样大小的画布
+         */
+        Canvas canvas = new Canvas(target);
+        /*
+        首先绘制圆形
+         */
+        canvas.drawCircle(min/2,min/2,min/2,paint);
+        /*
+        使用SRC_IN
+         */
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        /*
+        绘制图片
+         */
+        canvas.drawBitmap(source,0,0,paint);
 
+        return target;
+    }
 
     private void initImageChooseDialog(){
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
@@ -315,9 +342,13 @@ public class ChangePeopleDetail extends AppCompatActivity {
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                btn_img.setImageResource(image[imagePosition]);
+                Bitmap a= BitmapFactory.decodeResource(getResources(),image[imagePosition]);
+                Bitmap circleImage=createCircleImage(a,180);
+                btn_img.setImageBitmap(circleImage);
+                imagePic=circleImage;
+//                btn_img.setImageResource(image[imagePosition]);
                 imageP=imagePosition;
-                imagePic=image[imageP];
+                imagePP=image[imageP];
             }
         });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {

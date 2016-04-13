@@ -5,6 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
@@ -13,6 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
@@ -32,13 +39,13 @@ public class TabContactsFragment extends Fragment {
     private SQLiteDatabase db = null;
     private View ContactView;
     public static final int PHONES_DISPLAY_NAME_INDEX = 0;
-    public static final int PHONES_NUMBER_INDEX =1;
-    public static final int PHONES_PHOTO_ID_INDEX=2;
-    public static final int PHONES_CONTACT_ID_INDEX=3;
+//    public static final int PHONES_NUMBER_INDEX =1;
+//    public static final int PHONES_PHOTO_ID_INDEX=2;
+    public static final int PHONES_CONTACT_ID_INDEX=1;
     public static final String[] PHONES_PROJECTION = new String[]{
             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-            ContactsContract.CommonDataKinds.Phone.NUMBER,
-            ContactsContract.CommonDataKinds.Photo.PHOTO_ID,
+//            ContactsContract.CommonDataKinds.Phone.NUMBER,
+//            ContactsContract.CommonDataKinds.Photo.PHOTO_ID,
             ContactsContract.CommonDataKinds.Phone.CONTACT_ID
     };
     public ArrayList contacts = new ArrayList();
@@ -51,9 +58,11 @@ public class TabContactsFragment extends Fragment {
         return ContactView == null ? ContactView = inflater.inflate(R.layout.contact_list, container, false) : ContactView;
     }
 
-    private int[] image = {R.drawable.contact_list_icon,R.drawable.man,R.drawable.woman,
+    private int[] image = {R.drawable.q,R.drawable.man,R.drawable.woman,
             R.drawable.p1,R.drawable.p2,R.drawable.p3
     };
+
+    public Bitmap[] circleImage = new Bitmap[6];
 
 
     @Override
@@ -80,7 +89,14 @@ public class TabContactsFragment extends Fragment {
         mContext = getContext();
         dbHelper = new DBHelper(TabContactsFragment.super.getContext());
         db = dbHelper.openDatabase();
+        getCircles();
+
+//        for(int i=0;i<6;i++){
+//            circleImage[i] = createCircleImage(a);
+//        }
+
         AL = getPhoneContacts();
+
         dbHelper.close();
     }
 
@@ -102,12 +118,71 @@ public class TabContactsFragment extends Fragment {
 //        });
     }
 
+
+    private void getCircles(){
+
+        Bitmap a= BitmapFactory.decodeResource(getResources(),R.drawable.man);
+        circleImage[1]=createCircleImage(a,180);
+        a= BitmapFactory.decodeResource(getResources(),R.drawable.woman);
+        circleImage[2]=createCircleImage(a,180);
+        a= BitmapFactory.decodeResource(getResources(),R.drawable.p1);
+        circleImage[3]=createCircleImage(a,180);
+        a= BitmapFactory.decodeResource(getResources(),R.drawable.p2);
+        circleImage[4]=createCircleImage(a,180);
+        a= BitmapFactory.decodeResource(getResources(),R.drawable.p3);
+        circleImage[5]=createCircleImage(a,180);
+        a= BitmapFactory.decodeResource(getResources(),R.drawable.q);
+        circleImage[0]=createCircleImage(a,180);
+
+    }
+
+    private Bitmap createCircleImage(Bitmap source,int min){
+        final Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        Bitmap target = Bitmap.createBitmap(min,min, Bitmap.Config.ARGB_8888);
+        /*
+        产生一个同样大小的画布
+         */
+        Canvas canvas = new Canvas(target);
+        /*
+        首先绘制圆形
+         */
+        canvas.drawCircle(min/2,min/2,min/2,paint);
+        /*
+        使用SRC_IN
+         */
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        /*
+        绘制图片
+         */
+        canvas.drawBitmap(source,0,0,paint);
+
+        return target;
+    }
+
+
     private  void loadList(){
+
+
         //Toast.makeText(getApplicationContext(), ""+num, Toast.LENGTH_SHORT).show();
         SimpleAdapter adapter = new SimpleAdapter(mContext, AL, R.layout.list_item
-                ,new String[]{"contactName", "contactPhone", "contactPhoto"}
-                ,new int[]{R.id.name, R.id.number, R.id.imageView});
+                ,new String[]{"contactName","contactPhoto"}
+                ,new int[]{R.id.name, R.id.imageView});
+        adapter.setViewBinder(new SimpleAdapter.ViewBinder() {
+            @Override
+            public boolean setViewValue(View view, Object data, String textRepresentation) {
+                if(view instanceof ImageView  && data instanceof Bitmap ){
+                    ImageView iv = (ImageView)view;
+                    iv.setImageBitmap((Bitmap)data);
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        });
         listview.setAdapter(adapter);
+
+
         Toast.makeText(mContext, "" + num, Toast.LENGTH_SHORT).show();
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -171,19 +246,19 @@ public class TabContactsFragment extends Fragment {
 
                 String contactID = phoneCursor.getString(PHONES_CONTACT_ID_INDEX);
 
-                String phoneNumber = phoneCursor.getString(PHONES_NUMBER_INDEX);
+//                String phoneNumber = phoneCursor.getString(PHONES_NUMBER_INDEX);
 
                 // 根据contact_ID取得MobilePhone号码
-                Cursor mobilePhoneCur = resolver1.query(ContactsContract.Data.CONTENT_URI,
-                        new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
-                        ContactsContract.Data.CONTACT_ID + "=?" + " AND "
-                                + ContactsContract.Data.MIMETYPE + "=? "+" AND "
-                                +ContactsContract.CommonDataKinds.Phone.TYPE + "=?",
-                        new String[]{contactID,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)}, null);
-                if(mobilePhoneCur.moveToFirst()){
-                    phoneNumber=mobilePhoneCur.getString(mobilePhoneCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                }
-                mobilePhoneCur.close();
+//                Cursor mobilePhoneCur = resolver1.query(ContactsContract.Data.CONTENT_URI,
+//                        new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
+//                        ContactsContract.Data.CONTACT_ID + "=?" + " AND "
+//                                + ContactsContract.Data.MIMETYPE + "=? "+" AND "
+//                                +ContactsContract.CommonDataKinds.Phone.TYPE + "=?",
+//                        new String[]{contactID,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)}, null);
+//                if(mobilePhoneCur.moveToFirst()){
+//                    phoneNumber=mobilePhoneCur.getString(mobilePhoneCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+//                }
+//                mobilePhoneCur.close();
 
 
                 // 根据contact_ID取得WorkPhone号码
@@ -258,11 +333,11 @@ public class TabContactsFragment extends Fragment {
 //                    InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(resolver1, uri);
 //                    contactPhoto = BitmapFactory.decodeStream(input);
 //                }else {
-//                    contactPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.contact_list_icon);
+//                    contactPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.q);
 //                }
                 //photo
                 Cursor cursor;
-                int contactPhoto=image[0];//头像默认的图片
+                Bitmap contactPhoto=circleImage[0];//头像默认的图片
                 boolean contactFamily=false;
                 String contactFamilyname="NO";
                 String contactGroup="UNKNOWN";
@@ -280,7 +355,7 @@ public class TabContactsFragment extends Fragment {
                 }else{
 //
                         //photo
-                        contactPhoto = image[cursor.getInt(2)];
+                        contactPhoto = circleImage[cursor.getInt(2)];
                         //是否family
                         contactFamily = cursor.getInt(1)>0;
                         //familyname
@@ -318,7 +393,7 @@ public class TabContactsFragment extends Fragment {
 
                 HashMap map=new HashMap();
                 map.put("contactName",contactName);
-                map.put("contactPhone",phoneNumber);
+//                map.put("contactPhone",phoneNumber);
                 map.put("contactPhoto",contactPhoto);
                 map.put("contactID",contactid);
                 map.put("contactGroup", contactGroup);
