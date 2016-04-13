@@ -105,8 +105,8 @@ public class TabContactsFragment extends Fragment {
     private  void loadList(){
         //Toast.makeText(getApplicationContext(), ""+num, Toast.LENGTH_SHORT).show();
         SimpleAdapter adapter = new SimpleAdapter(mContext, AL, R.layout.list_item
-                ,new String[]{"contactName", "contactPhone", "contactPhoto"}
-                ,new int[]{R.id.name, R.id.number, R.id.imageView});
+                ,new String[]{"contactName", "contactPhoto"}
+                ,new int[]{R.id.name, R.id.imageView});
         listview.setAdapter(adapter);
         Toast.makeText(mContext, "" + num, Toast.LENGTH_SHORT).show();
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {

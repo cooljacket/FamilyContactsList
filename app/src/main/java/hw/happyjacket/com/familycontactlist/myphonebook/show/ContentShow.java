@@ -20,8 +20,8 @@ public class ContentShow extends PhoneShow {
     private int status;
     private String number;
     final int bound = 5;
-    final String defaultList = "通话记录";
-    final String defaultNumber = "电话";
+    private String defaultList = "通话记录";
+    private String defaultNumber = "电话";
     public ContentShow(Context context, int table) {
         super(context, table);
     }
@@ -33,6 +33,24 @@ public class ContentShow extends PhoneShow {
 
     public int getStatus() {
         return status;
+    }
+
+    public String getDefaultNumber() {
+        return defaultNumber;
+    }
+
+    public void setDefaultNumber(String defaultNumber) {
+        if(defaultNumber != null && !defaultNumber.equals(""))
+            this.defaultNumber = defaultNumber;
+    }
+
+    public String getDefaultList() {
+        return defaultList;
+    }
+
+    public void setDefaultList(String defaultList) {
+        if(defaultList != null && !defaultList.equals(""))
+            this.defaultList = defaultList;
     }
 
     @Override

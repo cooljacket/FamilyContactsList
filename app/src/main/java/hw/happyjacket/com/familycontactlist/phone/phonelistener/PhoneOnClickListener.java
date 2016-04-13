@@ -39,6 +39,7 @@ public class PhoneOnClickListener implements View.OnClickListener {
         int index = t.getIndex();
         String number = t.getNumber();
         String name = t.getName();
-        ContentActivity.actionStart(sContext,number,name);
+        String location = t.getLocation();
+        ContentActivity.actionStart(sContext,number,name,location);
     }
 }

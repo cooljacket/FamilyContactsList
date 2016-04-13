@@ -17,22 +17,36 @@ public class PhoneLocationMaster {
     }
 
     // a string like "18819461579：广东 广州 广东移动全球通卡"
-    public boolean add(String data) {
+    public boolean add(String phoneNumber, String data) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         if (!db.isOpen())
             return false;
 
-        String[] locations = data.split(" ");
-        int divider = locations[0].indexOf("：");
-        ContentValues values = new ContentValues();
-        values.put("phoneNumber", locations[0].substring(0, divider));
-        values.put("province", locations[0].substring(divider + 1));
-        values.put("city", locations[1]);
-        values.put("card_type", locations[2]);
+        ContentValues values = addHelper(phoneNumber, data);
 
         long result = db.insert(PhoneLocationDBHelper.TABLE_NAME, null, values);
         db.close();
         return result != -1;
+    }
+
+    public ContentValues addHelper(String phoneNumber, String data) {
+        String province = "", city = "", card_type = "";
+
+        if (data != null) {
+            String[] locations = data.split(" ");
+            int divider = locations[0].indexOf("：");
+            province = locations[0].substring(divider + 1);
+            city = locations[1];
+            card_type = locations[2];
+        }
+
+        ContentValues values = new ContentValues();
+        values.put("phoneNumber", phoneNumber);
+        values.put("province", province);
+        values.put("city", city);
+        values.put("card_type", card_type);
+
+        return values;
     }
 
     // 这个函数与get函数重复了，只需要用get函数即可

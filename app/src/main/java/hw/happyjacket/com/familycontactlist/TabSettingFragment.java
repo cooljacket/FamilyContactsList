@@ -106,7 +106,7 @@ public class TabSettingFragment extends Fragment {
                     HttpConnectionUtil.get(LocationURL, new HttpConnectionUtil.HttpCallbackListener() {
                         @Override
                         public void onFinish(String response) {
-                            PLMaster.add(response.replaceAll("<[^>]+>", ""));
+                            PLMaster.add(phoneNumber, response.replaceAll("<[^>]+>", ""));
                             msg.obj = PLMaster.get(phoneNumber);
                             handler.sendMessage(msg);
                         }

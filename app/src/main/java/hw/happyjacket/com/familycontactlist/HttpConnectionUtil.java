@@ -36,8 +36,9 @@ public class HttpConnectionUtil {
                         StringBuilder response = new StringBuilder();
                         while ((line = reader.readLine()) != null)
                             response.append(line);
-                        if (listener != null)
+                        if (listener != null) {
                             listener.onFinish(response.toString());
+                        }
                     } else {
                         throw new NetworkErrorException("response status is " + responseCode);
                     }

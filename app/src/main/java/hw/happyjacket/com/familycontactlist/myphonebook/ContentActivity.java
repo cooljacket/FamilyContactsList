@@ -32,11 +32,11 @@ public class ContentActivity extends Activity {
     private String number;
     private String backup;
     private String name;
+    private String location;
     private TextView head;
     private ListView mListView;
     private TextView returns;
     private ContentShow mContentShow;
-    private AlertDialog.Builder mBuilder;
     private PhoneDialog contentDialog1, contentDialog2;
     final static String key = PhoneDictionary.DATE;
     final String defaultName = "陌生联系人";
@@ -69,28 +69,28 @@ public class ContentActivity extends Activity {
         super.onStart();
     }
 
-    public static void actionStart(Context context, String number, String name)
+    public static void actionStart(Context context, String number, String name, String location)
     {
         Intent intent = new Intent(context,ContentActivity.class);
         intent.putExtra(PhoneDictionary.NUMBER, number);
         intent.putExtra(PhoneDictionary.NAME, name);
+        intent.putExtra(PhoneDictionary.LOCATION, location);
         context.startActivity(intent);
     }
 
 
     public void init()
     {
-        mBuilder = new AlertDialog.Builder(this);
-        mBuilder.setIcon(R.mipmap.ic_launcher);
-        mBuilder.setNegativeButton("取消", null);
         Intent intent = getIntent();
         number = intent.getStringExtra(PhoneDictionary.NUMBER);
         backup = intent.getStringExtra(PhoneDictionary.NAME);
+        location = intent.getStringExtra(PhoneDictionary.LOCATION);
         name = backup == null ? defaultName : new String(backup);
         head = (TextView) findViewById(R.id.content_name);
         head.setText(name);
         mListView = (ListView) findViewById(R.id.content_number_and_detail);
         mContentShow = new ContentShow(this,R.layout.call_log_list,number);
+        mContentShow.setDefaultNumber(location);
         mContentShow.InitAdapter(new XiaoMiAccessory(), PhoneDictionary.PhoneCallLog, condition, new String[]{number}, CallLog.Calls.DEFAULT_SORT_ORDER);
         mListView.setAdapter(mContentShow.getPhoneAdapter());
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

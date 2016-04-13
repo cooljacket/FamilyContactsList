@@ -18,6 +18,8 @@ public class PhoneButton extends Button{
 
     private String number;
 
+    private String location;
+
     public PhoneButton(Context context) {
         super(context);
     }
@@ -52,5 +54,13 @@ public class PhoneButton extends Button{
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 }

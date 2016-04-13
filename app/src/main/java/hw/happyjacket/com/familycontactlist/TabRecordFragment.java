@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -50,6 +51,7 @@ public class TabRecordFragment extends Fragment {
     private ListView OptionListView;
     private Context mContext;
     private PhoneDialog option;
+    private Button Dial;
 
 
     @Nullable
@@ -92,6 +94,14 @@ public class TabRecordFragment extends Fragment {
             Operation.setContext(mContext);
             mainShow = new MainShow(mContext,R.layout.phone_element);
             mainShow.InitAdapter(new XiaoMiAccessory(), DataBaseDictionary.CallLog_Projection, null, null, CallLog.Calls.DEFAULT_SORT_ORDER);
+            Dial = (Button) recordView.findViewById(R.id.phone_call);
+            Dial.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(Intent.ACTION_DIAL);
+                    mContext.startActivity(intent);
+                }
+            });
             initOption();
             initListView();
         }

@@ -3,6 +3,7 @@ package hw.happyjacket.com.familycontactlist.myphonebook.show;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -112,18 +113,17 @@ public class MainShow extends PhoneShow {
             phoneList.setArgument(argument);
             phoneList.setOrderby(orderBy);
             phoneList.connectDataBase();
-            mDecorate = new Decorate(accessory);
             mPhoneListElementList_backup = phoneList.getPhoneList();
-            ElementCopy();
-            sPhoneAdapter = new MainAdapter(context, table, mPhoneListElementList,index);
+
         }
         else
         {
             mPhoneListElementList_backup = t;
-            mDecorate = new Decorate(accessory);
-            ElementCopy();
-            sPhoneAdapter = new MainAdapter(context,table,mPhoneListElementList,index);
         }
+
+        mDecorate = new Decorate(accessory);
+        ElementCopy();
+        sPhoneAdapter = new MainAdapter(context, table, mPhoneListElementList,index);
 
         ArrayList<String> phoneNumberList = new ArrayList<>();
         for (HashMap<String,String> i : mPhoneListElementList)
@@ -132,7 +132,7 @@ public class MainShow extends PhoneShow {
         Message msg = new Message();
         msg.obj = phoneNumberList;
         msg.what = 0;
-//        handler.sendMessage(msg);
+        handler.sendMessage(msg);
     }
 
     private Handler handler = new Handler() {
@@ -150,7 +150,10 @@ public class MainShow extends PhoneShow {
                         String[] places = PLMaster.get(phoneNumber);
                         if (places != null) {
                             HashMap<String,String> tmp = new HashMap<>();
-                            tmp.put(phoneNumber, places[1]);
+                            if(places[1] != null && places[0].equals(places[1]))
+                                tmp.put(phoneNumber,places[0]);
+                            else
+                                tmp.put(phoneNumber, places[0] + places[1]);
                             locations.add(tmp);
                             continue ;
                         }
@@ -160,7 +163,19 @@ public class MainShow extends PhoneShow {
                         HttpConnectionUtil.get(LocationURL, new HttpConnectionUtil.HttpCallbackListener() {
                             @Override
                             public void onFinish(String response) {
-                                PLMaster.add(response.replaceAll("<[^>]+>", ""));
+                                response = response.replaceAll("<[^>]+>", "");
+                                Log.d("hehe-response", phoneNumber + " " + response);
+                                // if there is no location for the querying phonenumber
+                                if (response.contains("http") || response.contains("没有")) {
+//                                    HashMap<String,String> tmp = new HashMap<>();
+//                                    tmp.put(phoneNumber, "");
+//                                    locations.add(tmp);
+//                                    return ;
+                                    response = null;
+                                }
+
+                                PLMaster.add(phoneNumber, response);
+                                Log.d("hehe-number", PLMaster.get(phoneNumber)[2]);
                                 HashMap<String,String> tmp = new HashMap<>();
                                 tmp.put(phoneNumber, PLMaster.get(phoneNumber)[2]);
                                 locations.add(tmp);
@@ -186,9 +201,19 @@ public class MainShow extends PhoneShow {
                 case 1:
                     Vector<HashMap<String, String> > t = (Vector<HashMap<String, String> >) msg.obj;
                     for(HashMap<String,String> i : t){
-                        for(Map.Entry<String,String> j : i.entrySet())
-                            mPhoneListElementList.get(nmapp.get(j.getKey())).put(PhoneDictionary.LOCATION,j.getValue());
+                        for(Map.Entry<String,String> j : i.entrySet()) {
+                            int indexs = nmapp.get(j.getKey());
+                            if("".equals(j.getValue()) || j.getValue() == null ){
+                                mPhoneListElementList.get(indexs).put(PhoneDictionary.LOCATION,  "");
+                                mPhoneListElementList_backup.get(indexs).put(PhoneDictionary.LOCATION, "");
+                            }
+                            else {
+                                mPhoneListElementList.get(indexs).put(PhoneDictionary.LOCATION, j.getValue() + " ");
+                                mPhoneListElementList_backup.get(indexs).put(PhoneDictionary.LOCATION, j.getValue() + " ");
+                            };
+                        }
                     }
+                    sPhoneAdapter.notifyDataSetChanged();
                     break;
             }
         }

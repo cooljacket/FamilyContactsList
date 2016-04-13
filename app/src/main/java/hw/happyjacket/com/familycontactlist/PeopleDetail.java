@@ -205,7 +205,7 @@ public class PeopleDetail extends AppCompatActivity {
         name.setText(map.get("contactName").toString());
         mobilephone.setText(map.get("contactPhone").toString());
         Log.d("hehe", "" + map.get("cantactHome"));
-        homephone.setText(map.get("contactHome").toString());
+      //  homephone.setText(map.get("contactHome").toString());
         workPhone.setText(map.get("contactWork").toString());
         email.setText(map.get("contactEmail").toString());
         remark.setText(map.get("contactRemark").toString());
