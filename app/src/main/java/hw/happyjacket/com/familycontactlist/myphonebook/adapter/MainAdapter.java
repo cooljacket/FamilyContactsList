@@ -67,15 +67,17 @@ public class MainAdapter extends PhoneAdapter {
                 break;
         }
 
+        String location = phoneListElement.get(PhoneDictionary.LOCATION) == null ? "" : phoneListElement.get(PhoneDictionary.LOCATION) + " ";
+
         if(phoneListElement.get(PhoneDictionary.NAME) != null)
         {
             viewHolder.phone_name.setText(phoneListElement.get(PhoneDictionary.NAME));
-            viewHolder.phone_info.setText(phoneListElement.get(PhoneDictionary.LOCATION) + phoneListElement.get(PhoneDictionary.NUMBER)  + " " + phoneListElement.get(PhoneDictionary.DATE));
+            viewHolder.phone_info.setText(location + phoneListElement.get(PhoneDictionary.NUMBER)  + " " + phoneListElement.get(PhoneDictionary.DATE));
         }
         else
         {
             viewHolder.phone_name.setText(phoneListElement.get(PhoneDictionary.NUMBER));
-            viewHolder.phone_info.setText(phoneListElement.get(PhoneDictionary.LOCATION) + phoneListElement.get(PhoneDictionary.DATE));
+            viewHolder.phone_info.setText(location + phoneListElement.get(PhoneDictionary.DATE));
         }
         viewHolder.phone_name.setTextSize(16);
         viewHolder.phone_content.setIndex(position);

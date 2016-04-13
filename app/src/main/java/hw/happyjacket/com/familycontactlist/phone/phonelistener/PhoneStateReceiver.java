@@ -11,6 +11,7 @@ import hw.happyjacket.com.familycontactlist.extention.XiaoMiAccessory;
 import hw.happyjacket.com.familycontactlist.myphonebook.show.PhoneRegister;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 import hw.happyjacket.com.familycontactlist.phone.PhoneList;
+import hw.happyjacket.com.familycontactlist.phone.RecordList;
 import hw.happyjacket.com.familycontactlist.phone.database.DataBaseDictionary;
 
 import java.util.HashMap;
@@ -40,7 +41,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
                     break;
                 case TelephonyManager.CALL_STATE_IDLE:
                     if(status) {
-                        HashMap<String,String> newGuy = new PhoneList(context).addTheNewOne(DataBaseDictionary.CallLog_Projection, PhoneDictionary.PhoneAll,PhoneDictionary.NUMBER);
+                        HashMap<String,String> newGuy = new RecordList(context).addTheNewOne(DataBaseDictionary.CallLog_Projection, PhoneDictionary.PhoneAll,PhoneDictionary.NUMBER);
                         PhoneRegister.add(new XiaoMiAccessory(), newGuy);
                         status = false;
                     }

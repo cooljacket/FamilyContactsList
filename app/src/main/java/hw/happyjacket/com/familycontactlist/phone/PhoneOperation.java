@@ -45,6 +45,17 @@ public class PhoneOperation {
         }
     }
 
+    public void sms(String number){
+        try {
+            Uri uri = Uri.parse("smsto:" + number);
+            Intent intent = new Intent(android.content.Intent.ACTION_SENDTO,uri);
+            context.startActivity(intent);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
     public void deleteAll(String number)
     {
         try{
@@ -54,5 +65,6 @@ public class PhoneOperation {
             Log.i(TAG,"DeleteAll permission denied");
         }
     }
+
 
 }

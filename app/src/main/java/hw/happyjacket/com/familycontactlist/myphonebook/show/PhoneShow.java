@@ -9,6 +9,7 @@ import hw.happyjacket.com.familycontactlist.extention.Decorate;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.PhoneAdapter;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 import hw.happyjacket.com.familycontactlist.phone.PhoneList;
+import hw.happyjacket.com.familycontactlist.phone.RecordList;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +27,7 @@ public abstract class PhoneShow {
     final static int CACHE_SIZE = 200;
     final static String TAG = PhoneShow.class.toString();
     protected int table;
-    protected PhoneList phoneList;
+    protected RecordList phoneList;
     protected Vector<HashMap<String,String>> mPhoneListElementList = new Vector<>(CACHE_SIZE);
     protected Vector<HashMap<String,String>> mPhoneListElementList_backup = new Vector<>(CACHE_SIZE);
     protected PhoneAdapter sPhoneAdapter;
@@ -35,7 +36,7 @@ public abstract class PhoneShow {
     public PhoneShow(Context context,int table){
         this.context = context;
         this.table = table;
-        phoneList = new PhoneList(context);
+        phoneList = new RecordList(context);
         index = PhoneRegister.register(this);
         Log.i(TAG, index + "");
     }
@@ -65,7 +66,7 @@ public abstract class PhoneShow {
         return phoneList;
     }
 
-    public void setPhoneList(PhoneList phoneList) {
+    public void setPhoneList(RecordList phoneList) {
         this.phoneList = phoneList;
     }
 
