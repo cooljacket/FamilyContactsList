@@ -113,7 +113,7 @@ public class TabContactsFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(mContext, PeopleDetail.class);
-                Toast.makeText(mContext, "aaaaaaaaaaaaaaaa", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext, "aaaaaaaaaaaaaaaa", Toast.LENGTH_SHORT).show();
                 positionNew=position;
                 HashMap map = (HashMap) parent.getItemAtPosition(position);
 //                SerializableMap tmpmap = new SerializableMap();
@@ -121,7 +121,7 @@ public class TabContactsFragment extends Fragment {
 //
 //                Bundle bundle = new Bundle();
 //                bundle.putSerializable("data", tmpmap);
-                Toast.makeText(mContext, "bbbbbbbbbbbb", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(mContext, "bbbbbbbbbbbb", Toast.LENGTH_SHORT).show();
 //                intent.putExtras(bundle);
                 intent.putExtra("data", map);
 

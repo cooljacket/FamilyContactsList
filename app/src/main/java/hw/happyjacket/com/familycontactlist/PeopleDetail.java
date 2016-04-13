@@ -37,10 +37,11 @@ public class PeopleDetail extends AppCompatActivity {
     Button btn_modify;
     boolean flag=false;//默认没修改
 
-    String contactHome;
-    String contactWork;
-    String contactRemark;
-    String contactEmail;
+    String contactHome= new String();
+    String contactWork= new String();
+    String contactRemark= new String();
+    String contactEmail= new String();
+
 
 
     @Override
