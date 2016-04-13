@@ -34,7 +34,6 @@ public class PhoneThreadInsert implements Runnable {
 
     @Override
     public void run() {
-
         DataBase dataBase = new DataBase(context,db,null,version);
         SQLiteDatabase sqLiteDatabase = dataBase.getWritableDatabase();
         ContentValues contentValues = new ContentValues();

@@ -81,6 +81,10 @@
 
         </activity>
 
+        <activity android:name=".ContactActivity"
+                  android:theme="@style/AppTheme">
+        </activity>
+
         <!-- 监听短信的广播消息 -->
         <receiver android:name=".SMSFireWall">
             <intent-filter android:priority="2147483647">

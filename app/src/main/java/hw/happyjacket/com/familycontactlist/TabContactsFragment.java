@@ -187,7 +187,7 @@ public class TabContactsFragment extends Fragment {
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(mContext, PeopleDetail.class);
+                Intent intent = new Intent(mContext, ContactActivity.class);
 //                Toast.makeText(mContext, "aaaaaaaaaaaaaaaa", Toast.LENGTH_SHORT).show();
                 positionNew=position;
                 HashMap map = (HashMap) parent.getItemAtPosition(position);
@@ -198,10 +198,10 @@ public class TabContactsFragment extends Fragment {
 //                bundle.putSerializable("data", tmpmap);
 //                Toast.makeText(mContext, "bbbbbbbbbbbb", Toast.LENGTH_SHORT).show();
 //                intent.putExtras(bundle);
-                intent.putExtra("data", map);
+//                intent.putExtra("data", map);
 
                 // 当requestCode为3的时候表示请求转向CPD这个页面？？
-                startActivityForResult(intent, 3);
+                ContactActivity.actionStart(getContext(),map);
             }
         });
     }

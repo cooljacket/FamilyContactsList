@@ -402,7 +402,7 @@ public class PhoneList {
                 result.add(pair);
             } while (cursor.moveToNext());
         }
-       /* Log.i(TAG,result.toString());*/
+        Log.i(TAG,result.toString());
         return result;
     }
 

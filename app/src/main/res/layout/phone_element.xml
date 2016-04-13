@@ -45,8 +45,8 @@
         android:layout_alignParentRight="true"
         android:layout_centerInParent="true"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
-        android:layout_width="20dip"
-        android:layout_height="20dip">
+        android:layout_width="30dip"
+        android:layout_height="30dip">
 
     </hw.happyjacket.com.familycontactlist.myphonebook.button.PhoneButton>
 </RelativeLayout>

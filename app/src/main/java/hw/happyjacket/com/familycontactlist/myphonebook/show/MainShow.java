@@ -114,15 +114,21 @@ public class MainShow extends PhoneShow {
             phoneList.setOrderby(orderBy);
             phoneList.connectDataBase();
             mPhoneListElementList_backup = phoneList.getPhoneList();
-
         }
         else
         {
-            mPhoneListElementList_backup = t;
+            for(HashMap<String,String> i : t)
+                mPhoneListElementList_backup.add(new HashMap<String, String>(i));
         }
+
 
         mDecorate = new Decorate(accessory);
         ElementCopy();
+        for(int i = 0 ; i < mPhoneListElementList_backup.size() ; ++i){
+            mPhoneListElementList_backup.get(i).put(PhoneDictionary.LOCATION,"");
+            mPhoneListElementList.get(i).put(PhoneDictionary.LOCATION,"");
+        }
+
         sPhoneAdapter = new MainAdapter(context, table, mPhoneListElementList,index);
 
         ArrayList<String> phoneNumberList = new ArrayList<>();
@@ -132,7 +138,7 @@ public class MainShow extends PhoneShow {
         Message msg = new Message();
         msg.obj = phoneNumberList;
         msg.what = 0;
-        handler.sendMessage(msg);
+       // handler.sendMessage(msg);
     }
 
     private Handler handler = new Handler() {

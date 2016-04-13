@@ -38,7 +38,6 @@ public class ContentActivity extends Activity {
     private TextView returns;
     private ContentShow mContentShow;
     private PhoneDialog contentDialog1, contentDialog2;
-    final static String key = PhoneDictionary.DATE;
     final String defaultName = "陌生联系人";
     final String condition = PhoneDictionary.NUMBER + " = ? ";
     @Override

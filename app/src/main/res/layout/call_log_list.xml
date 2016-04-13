@@ -33,13 +33,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <ImageButton
+    <Button
         android:id="@+id/call_log_info4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:nextFocusDown="@style/CallLog_Button_Focus"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:focusable="false"
+        android:clickable="true"
         />
 
 </RelativeLayout>

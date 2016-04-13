@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,7 +42,7 @@ public class CallLogAdapter extends PhoneAdapter {
             viewHolder.info1 = (TextView) view.findViewById(R.id.call_log_info1);
             viewHolder.info2 = (TextView) view.findViewById(R.id.call_log_info2);
             viewHolder.info3 = (TextView) view.findViewById(R.id.call_log_info3);
-            viewHolder.info4 = (ImageView) view.findViewById(R.id.call_log_info4);
+            viewHolder.info4 = (Button) view.findViewById(R.id.call_log_info4);
             view.setTag(viewHolder);
         }
         else
@@ -51,7 +52,7 @@ public class CallLogAdapter extends PhoneAdapter {
         }
 
         if(position == 0)
-            viewHolder.info4.setImageResource(android.R.drawable.ic_btn_speak_now);
+            viewHolder.info4.setBackgroundResource(android.R.drawable.sym_action_chat);
         else
             viewHolder.info4.setVisibility(View.INVISIBLE);
         viewHolder.info1.setText(data.get(PhoneDictionary.DATE));
@@ -77,6 +78,6 @@ public class CallLogAdapter extends PhoneAdapter {
         TextView info1;
         TextView info2;
         TextView info3;
-        ImageView info4;
+        Button info4;
     }
 }

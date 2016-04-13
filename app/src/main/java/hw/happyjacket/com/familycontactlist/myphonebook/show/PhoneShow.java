@@ -61,6 +61,14 @@ public abstract class PhoneShow {
         return index;
     }
 
+    public PhoneList getPhoneList() {
+        return phoneList;
+    }
+
+    public void setPhoneList(PhoneList phoneList) {
+        this.phoneList = phoneList;
+    }
+
     public HashMap<String,String> filter(HashMap<String,String> input) {
         String content[] = phoneList.getProjection();
         HashMap<String,String> result = new HashMap<>();
