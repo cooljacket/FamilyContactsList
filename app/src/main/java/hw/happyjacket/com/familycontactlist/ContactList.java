@@ -60,8 +60,8 @@ public class ContactList extends AppCompatActivity {
     private  void loadList(){
         //Toast.makeText(getApplicationContext(), ""+num, Toast.LENGTH_SHORT).show();
         SimpleAdapter adapter = new SimpleAdapter(this,getPhoneContacts(),R.layout.list_item
-                ,new String[]{"contactName", "contactPhone", "contactPhoto"}
-                ,new int[]{R.id.name, R.id.number, R.id.imageView});
+                ,new String[]{"contactName",  "contactPhoto"}
+                ,new int[]{R.id.name,R.id.imageView});
         listview.setAdapter(adapter);
         Toast.makeText(getApplicationContext(), "" + num, Toast.LENGTH_SHORT).show();
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -526,7 +526,7 @@ public class ContactList extends AppCompatActivity {
 //                InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(resolver1, uri);
 //                contactPhoto = BitmapFactory.decodeStream(input);
 //            }else {
-//                contactPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.contact_list_icon);
+//                contactPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.q);
 //            }
 //            data.put(KEY_PHOTO, contactPhoto);
 //
@@ -664,7 +664,7 @@ public class ContactList extends AppCompatActivity {
                         InputStream input = ContactsContract.Contacts.openContactPhotoInputStream(resolver1, uri);
                         contactPhoto = BitmapFactory.decodeStream(input);
                     }else {
-                        contactPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.contact_list_icon);
+                        contactPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.q);
                     }
                     HashMap map=new HashMap();
                     map.put("contactName",contactName);

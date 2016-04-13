@@ -3,6 +3,7 @@ package hw.happyjacket.com.familycontactlist;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
@@ -33,7 +34,8 @@ public class PeopleDetail extends AppCompatActivity {
     TextView familyname;
     boolean isfamily;
     HashMap map;
-    int imagePic;//头像
+//    int imagePic;//头像
+    Bitmap imagePic;
     Button btn_modify;
     boolean flag=false;//默认没修改
 
@@ -41,7 +43,7 @@ public class PeopleDetail extends AppCompatActivity {
     String contactWork= new String();
     String contactRemark= new String();
     String contactEmail= new String();
-
+    String contactPhone = new String();
 
 
     @Override
@@ -57,7 +59,7 @@ public class PeopleDetail extends AppCompatActivity {
     private HashMap getChanged(){
         HashMap newmap=new HashMap();
         newmap.put("contactName", name.getText());
-        newmap.put("contactPhone", mobilephone.getText());
+//        newmap.put("contactPhone", mobilephone.getText());
         newmap.put("contactPhoto",imagePic);
         newmap.put("contactID", map.get("contactID"));
         newmap.put("contactGroup", group.getText());
@@ -69,6 +71,21 @@ public class PeopleDetail extends AppCompatActivity {
     private void getOtherDetail(){//从id查其他数据
         int contactid = (int)map.get("contactID");
         ContentResolver resolver1 = this.getApplicationContext().getContentResolver();
+
+        //mobile
+        // 根据contact_ID取得MobilePhone号码
+        Cursor mobilePhoneCur = resolver1.query(ContactsContract.Data.CONTENT_URI,
+                new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
+                ContactsContract.Data.CONTACT_ID + "=?" + " AND "
+                        + ContactsContract.Data.MIMETYPE + "=? "+" AND "
+                        +ContactsContract.CommonDataKinds.Phone.TYPE + "=?",
+                new String[]{""+contactid,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)}, null);
+        if(mobilePhoneCur.moveToFirst()){
+            contactPhone=mobilePhoneCur.getString(mobilePhoneCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+        }
+        mobilePhoneCur.close();
+
+
         //home
         Cursor homePhoneCur = resolver1.query(ContactsContract.Data.CONTENT_URI,
                 new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
@@ -127,6 +144,7 @@ public class PeopleDetail extends AppCompatActivity {
 
 
         //补充进map
+        map.put("contactPhone",contactPhone);
         map.put("contactHome",contactHome);
         map.put("contactWork", contactWork);
         map.put("contactRemark", contactRemark);
@@ -199,13 +217,13 @@ public class PeopleDetail extends AppCompatActivity {
         //debug
 
 
-        imagePic=(int) map.get("contactPhoto");
-        pic.setImageResource(imagePic);
-//        pic.setImageBitmap((Bitmap) map.get("contactPhoto"));
+        imagePic=(Bitmap) map.get("contactPhoto");
+//        pic.setImageResource(imagePic);
+        pic.setImageBitmap(imagePic);
 
         name.setText(map.get("contactName").toString());
         mobilephone.setText(map.get("contactPhone").toString());
-        Log.d("hehe", "" + map.get("cantactHome"));
+//        Log.d("hehe", "" + map.get("cantactHome"));
         homephone.setText(map.get("contactHome").toString());
         workPhone.setText(map.get("contactWork").toString());
         email.setText(map.get("contactEmail").toString());

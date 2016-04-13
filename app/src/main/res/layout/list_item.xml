@@ -1,81 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="80dp" >
+    android:layout_height="80dp"
+    android:layout_marginBottom="2dp"
 
-    <TextView
-        android:id="@+id/alpha"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="#333333"
-        android:paddingLeft="10dip"
-        android:textColor="#FFFFFF"
-        android:visibility="gone" />
+    android:background="#E0FBF6"
+    >
+
+
 
 
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="60dp"
+        android:layout_marginLeft="10dp"
         android:layout_height="60dp"
-
+        android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
-        android:background="@drawable/circlephoto"
-        android:layout_below="@id/alpha" />
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="1.0dip"
-        android:layout_height="fill_parent"
-        android:layout_below="@id/alpha"
-        android:layout_marginRight="11.0dip"
-        android:layout_toRightOf="@id/imageView" />
+
+         />
 
 
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@id/divider"
-        android:layout_marginLeft="2.0dip"
-        android:layout_marginRight="5.0dip"
-        android:id="@+id/aa"
-        android:layout_marginTop="6.0dip"
-        android:layout_toRightOf="@id/divider"
-        android:singleLine="true"
-        android:orientation="horizontal"
-        android:textAppearance="?android:textAppearanceMedium" >
+
+
         <TextView
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="20dp"
-
-            android:hint=""
+            android:textSize="23dp"
+            android:layout_marginLeft="80dp"
+            android:layout_centerVertical="true"
+            android:hint="123321"
             />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/familyname"
-            android:textSize="20dp"
-            android:layout_marginLeft="20dp"
-            android:hint=""/>
-
-    </LinearLayout>
 
 
-    <TextView
-        android:id="@+id/number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@id/aa"
-        android:layout_alignWithParentIfMissing="true"
-        android:layout_below="@id/aa"
-        android:layout_marginTop="6dp"
-        android:ellipsize="marquee"
-        android:singleLine="true"
-        android:textSize="18dp"
-        android:hint=""
-        android:textAppearance="?android:textAppearanceSmall" />
+
+
 
 </RelativeLayout>

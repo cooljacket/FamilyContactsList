@@ -30,7 +30,7 @@
                     android:id="@+id/btn_img"
                     android:layout_width="250px"
                     android:layout_height="250px"
-                    android:src="@drawable/contact_list_icon"
+                    android:background="@color/white"
                     android:scaleType="centerCrop"
                     ></ImageButton>
                 <LinearLayout
