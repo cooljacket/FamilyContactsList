@@ -22,7 +22,7 @@
             android:textSize="23dp"
             android:textColor="@color/tab_text_unfocus_color"
             android:textAlignment="center"
-            android:background="@color/tab_unfocused"
+            android:background="@color/tab_bk_color"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
 
@@ -35,22 +35,22 @@
             android:textSize="23dp"
             android:textColor="@color/tab_text_unfocus_color"
             android:textAlignment="center"
-            android:background="@color/tab_unfocused"
+            android:background="@color/tab_bk_color"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
 
-        <RadioButton
-            android:id="@+id/settings"
-            android:text="设置"
-            android:clickable="true"
-            android:layout_weight="1"
-            android:button="@null"
-            android:textSize="23dp"
-            android:textColor="@color/tab_text_unfocus_color"
-            android:textAlignment="center"
-            android:background="@color/tab_unfocused"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+        <!--<RadioButton-->
+            <!--android:id="@+id/settings"-->
+            <!--android:text="设置"-->
+            <!--android:clickable="true"-->
+            <!--android:layout_weight="1"-->
+            <!--android:button="@null"-->
+            <!--android:textSize="23dp"-->
+            <!--android:textColor="@color/tab_text_unfocus_color"-->
+            <!--android:textAlignment="center"-->
+            <!--android:background="@color/tab_bk_color"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent" />-->
     </RadioGroup>
 
     <android.support.v4.view.ViewPager

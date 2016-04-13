@@ -3,8 +3,8 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="tab_focused">#ffffff</color>
-    <color name="tab_unfocused">#2743f9</color>
+    <color name="tab_front_color">#ffffff</color>
+    <color name="tab_bk_color">#469448</color>
     <color name="white">#ffffff</color>
     <color name="tab_text_focus_color">#000000</color>
     <color name="tab_text_unfocus_color">#ffffff</color>
@@ -13,4 +13,6 @@
     <color name="light_red">#ff3344</color>
     <color name="dark_red">#dd0000</color>
     <color name="medium_red">#ee0000</color>
+    <color name="tab_bk_deep_green">#469448</color>
+    <color name="tab_bk_light_green">#98fb98</color>
 </resources>
