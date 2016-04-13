@@ -1,4 +1,4 @@
-package hw.happyjacket.com.familycontactlist.phone;
+package hw.happyjacket.com.familycontactlist.phone.list;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -34,7 +34,7 @@ public abstract class PhoneList {
     protected String projection[];
     protected String selection;
     protected String argument[];
-    protected String orderby = CallLog.Calls.DEFAULT_SORT_ORDER;
+    protected String orderby;
     protected String TAG = this.getClass().toString();
 
 

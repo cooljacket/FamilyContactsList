@@ -1,15 +1,13 @@
 package hw.happyjacket.com.familycontactlist.myphonebook.show;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.util.Log;
 
 import hw.happyjacket.com.familycontactlist.extention.Accessory;
 import hw.happyjacket.com.familycontactlist.extention.Decorate;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.PhoneAdapter;
-import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
-import hw.happyjacket.com.familycontactlist.phone.PhoneList;
-import hw.happyjacket.com.familycontactlist.phone.RecordList;
+import hw.happyjacket.com.familycontactlist.phone.list.PhoneList;
+import hw.happyjacket.com.familycontactlist.phone.list.RecordList;
 
 import java.util.HashMap;
 import java.util.List;

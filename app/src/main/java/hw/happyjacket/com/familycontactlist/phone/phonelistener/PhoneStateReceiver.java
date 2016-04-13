@@ -10,8 +10,7 @@ import android.util.Log;
 import hw.happyjacket.com.familycontactlist.extention.XiaoMiAccessory;
 import hw.happyjacket.com.familycontactlist.myphonebook.show.PhoneRegister;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
-import hw.happyjacket.com.familycontactlist.phone.PhoneList;
-import hw.happyjacket.com.familycontactlist.phone.RecordList;
+import hw.happyjacket.com.familycontactlist.phone.list.RecordList;
 import hw.happyjacket.com.familycontactlist.phone.database.DataBaseDictionary;
 
 import java.util.HashMap;

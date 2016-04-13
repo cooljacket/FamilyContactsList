@@ -1,6 +1,5 @@
-package hw.happyjacket.com.familycontactlist.phone;
+package hw.happyjacket.com.familycontactlist.phone.list;
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,6 +9,7 @@ import android.net.Uri;
 import android.provider.CallLog;
 import android.util.Log;
 
+import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 import hw.happyjacket.com.familycontactlist.phone.database.DataBase;
 import hw.happyjacket.com.familycontactlist.phone.database.DataBaseDictionary;
 import hw.happyjacket.com.familycontactlist.phone.phonelistener.PhoneThreadInsert;
@@ -22,7 +22,7 @@ import java.util.Vector;
  */
 
 /*The basic class used to generate the database and communicate with the local Call log*/
-public class RecordList extends PhoneList{
+public class RecordList extends PhoneList {
 
 
     private String orderby = CallLog.Calls.DEFAULT_SORT_ORDER;
