@@ -128,7 +128,7 @@ public class MainActivity extends FragmentActivity {
             return tab_record;
         if (id == tab_contacts.getId())
             return tab_contacts;
-//        return tab_settings;
+//        return_btn tab_settings;
         return tab_record;
     }
 

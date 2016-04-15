@@ -86,7 +86,7 @@
 //
 //    @Override
 //    public ScaleType getScaleType() {
-//        return SCALE_TYPE;
+//        return_btn SCALE_TYPE;
 //    }
 //
 //    @Override
@@ -99,7 +99,7 @@
 //    @Override
 //    protected void onDraw(Canvas canvas) {
 //        if (getDrawable() == null) {
-//            return;
+//            return_btn;
 //        }
 //
 //        canvas.drawCircle(getWidth() / 2, getHeight() / 2, mDrawableRadius, mBitmapPaint);
@@ -113,12 +113,12 @@
 //    }
 //
 //    public int getBorderColor() {
-//        return mBorderColor;
+//        return_btn mBorderColor;
 //    }
 //
 //    public void setBorderColor(int borderColor) {
 //        if (borderColor == mBorderColor) {
-//            return;
+//            return_btn;
 //        }
 //
 //        mBorderColor = borderColor;
@@ -127,12 +127,12 @@
 //    }
 //
 //    public int getBorderWidth() {
-//        return mBorderWidth;
+//        return_btn mBorderWidth;
 //    }
 //
 //    public void setBorderWidth(int borderWidth) {
 //        if (borderWidth == mBorderWidth) {
-//            return;
+//            return_btn;
 //        }
 //
 //        mBorderWidth = borderWidth;
@@ -162,11 +162,11 @@
 //
 //    private Bitmap getBitmapFromDrawable(Drawable drawable) {
 //        if (drawable == null) {
-//            return null;
+//            return_btn null;
 //        }
 //
 //        if (drawable instanceof BitmapDrawable) {
-//            return ((BitmapDrawable) drawable).getBitmap();
+//            return_btn ((BitmapDrawable) drawable).getBitmap();
 //        }
 //
 //        try {
@@ -181,20 +181,20 @@
 //            Canvas canvas = new Canvas(bitmap);
 //            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
 //            drawable.draw(canvas);
-//            return bitmap;
+//            return_btn bitmap;
 //        } catch (OutOfMemoryError e) {
-//            return null;
+//            return_btn null;
 //        }
 //    }
 //
 //    private void setup() {
 //        if (!mReady) {
 //            mSetupPending = true;
-//            return;
+//            return_btn;
 //        }
 //
 //        if (mBitmap == null) {
-//            return;
+//            return_btn;
 //        }
 //
 //        mBitmapShader = new BitmapShader(mBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);

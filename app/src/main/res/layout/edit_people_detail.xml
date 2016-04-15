@@ -1,11 +1,43 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="54dp"
+        android:background="#EFEFEF"
+        android:orientation="horizontal"
+        android:gravity="top"
+        >
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:background="@drawable/return_btn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
+            android:scaleType="centerCrop"
+            android:layout_marginRight="20dp"
+            android:layout_gravity="center_vertical"
+            ></ImageButton>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="23dp"
+            android:textColor="#000000"
+            android:text="编辑联系人"
+            android:gravity="center_vertical"
+
+            />
+
+
+
+    </LinearLayout>
 
     <ScrollView
-        android:layout_weight="5"
+        android:layout_weight="6"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:scrollbars="vertical">
@@ -28,10 +60,12 @@
                 >
                 <ImageButton
                     android:id="@+id/btn_img"
-                    android:layout_width="250px"
-                    android:layout_height="250px"
-                    android:background="@color/white"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="#00000000"
                     android:scaleType="centerCrop"
+                    android:layout_marginRight="20dp"
+                    android:layout_marginBottom="20dp"
                     ></ImageButton>
                 <LinearLayout
                     android:layout_width="fill_parent"
@@ -40,42 +74,43 @@
                     >
                     <EditText
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="60dp"
                         android:id="@+id/et_name"
-                        android:gravity="top"
-                        android:layout_marginTop="10dp"
+                        android:gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:background="#00000000"
                         android:layout_gravity="center_vertical"
+                        android:textColor="#000000"
+                        android:textCursorDrawable="@drawable/color_cursor"
                         android:hint="姓名"
+
                         />
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        >
-                        <CheckBox
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:layout_marginLeft="10dp"
-                            android:id="@+id/et_family"
-                            android:text="家人"
-                            android:textSize="20dp"
-                            >
+                    <EditText
+                        android:layout_width="220dp"
+                        android:layout_height="0.7dp"
+                        android:background="@drawable/vertical_divider"
+                        />
 
-                        </CheckBox>
+
                         <EditText
-                            android:layout_width="100dp"
-                            android:layout_height="wrap_content"
+                            android:layout_width="fill_parent"
+                            android:layout_height="60dp"
                             android:id="@+id/et_familyName"
-                            android:gravity="top"
-                            android:layout_marginTop="10dp"
+                            android:gravity="center_vertical"
                             android:layout_marginLeft="10dp"
-                            android:enabled="false"
+                            android:background="#00000000"
+                            android:layout_marginTop="5dp"
                             android:layout_gravity="center_vertical"
-                            android:hint="家人"
-                            />
+                            android:textColor="#000000"
+                            android:textCursorDrawable="@drawable/color_cursor"
+                            android:hint="昵称"
 
-                    </LinearLayout>
+                            />
+                    <EditText
+                        android:layout_width="220dp"
+                        android:layout_height="0.7dp"
+                        android:background="@drawable/vertical_divider"
+                        />
 
 
 
@@ -87,143 +122,276 @@
             </LinearLayout>
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="55dp"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginLeft="20dp"
                 >
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20px"
+                    android:gravity="center_vertical"
+                    android:text="手机"
 
-                    android:text="手机号码："
+                    android:textColor="#000000"
                     android:textSize="20dp"
                     ></TextView>
+                <TextView
+                    android:layout_width="0.8dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="15dp"
+                    android:background="@drawable/horizontal_divider"
+                    android:gravity="center_vertical"
+                    />
+
                 <EditText
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/et_mobilephone"
-
-                    android:gravity="top"
+                    android:singleLine="true"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center_vertical"
+                    android:textColor="#000000"
+                    android:textSize="20dp"
+                    android:background="#00000000"
+                    android:textCursorDrawable="@drawable/color_cursor"
                     android:hint="手机"
                     android:phoneNumber="true"
                     />
+
             </LinearLayout>
+            <EditText
+                android:layout_width="340dp"
+                android:layout_height="0.7dp"
+                android:background="@drawable/vertical_divider"
+                android:layout_gravity="center_horizontal"
+                />
+
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="55dp"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginLeft="20dp"
                 >
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="公司号码："
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20px"
+                    android:gravity="center_vertical"
+                    android:text="公司"
+                    android:textColor="#000000"
                     android:textSize="20dp"
                     ></TextView>
+
+                <TextView
+                    android:layout_width="0.8dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="15dp"
+                    android:background="@drawable/horizontal_divider"
+                    android:gravity="center_vertical"
+                    />
                 <EditText
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/et_workphone"
-                    android:gravity="top"
-                    android:hint="公司号码"
+                    android:singleLine="true"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center_vertical"
+                    android:textSize="20dp"
+                    android:textColor="#000000"
+                    android:background="#00000000"
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    android:hint="电话"
                     android:phoneNumber="true"
                     />
             </LinearLayout>
+            <EditText
+                android:layout_width="340dp"
+                android:layout_height="0.7dp"
+                android:background="@drawable/vertical_divider"
+                android:layout_gravity="center_horizontal"
+                />
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="55dp"
                 android:orientation="horizontal"
-                android:layout_marginTop="10dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginLeft="20dp"
                 >
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="家庭号码："
+                    android:layout_height="match_parent"
+                    android:layout_marginLeft="20px"
+                    android:gravity="center_vertical"
+                    android:text="家庭"
+                    android:textColor="#000000"
                     android:textSize="20dp"
                     ></TextView>
+
+                <TextView
+                    android:layout_width="0.8dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="15dp"
+                    android:background="@drawable/horizontal_divider"
+                    android:gravity="center_vertical"
+                    />
+
                 <EditText
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/et_homephone"
-                    android:gravity="top"
-                    android:hint="家庭号码"
+                    android:singleLine="true"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center_vertical"
+                    android:textSize="20dp"
+                    android:textColor="#000000"
+                    android:background="#00000000"
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    android:hint="电话"
                     android:phoneNumber="true"
                     />
             </LinearLayout>
+            <EditText
+                android:layout_width="340dp"
+                android:layout_height="0.7dp"
+                android:background="@drawable/vertical_divider"
+                android:layout_gravity="center_horizontal"
+                />
+
 
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="55dp"
                 android:orientation="horizontal"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginLeft="20dp"
                 >
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Email："
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:text="Email"
+                    android:textColor="#000000"
                     android:textSize="20dp"
                     ></TextView>
+                <TextView
+                    android:layout_width="0.8dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="15dp"
+                    android:background="@drawable/horizontal_divider"
+                    android:gravity="center_vertical"
+                    />
+
                 <EditText
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:id="@+id/et_email"
-                    android:gravity="top"
-                    android:hint="Email"
+                    android:singleLine="true"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center_vertical"
+                    android:textSize="20dp"
+                    android:textColor="#000000"
+                    android:background="#00000000"
+                    android:textCursorDrawable="@drawable/color_cursor"
+                    android:hint="邮件"
                     />
             </LinearLayout>
 
+            <EditText
+                android:layout_width="340dp"
+                android:layout_height="0.7dp"
+                android:background="@drawable/vertical_divider"
+                android:layout_gravity="center_horizontal"
+                />
+
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="55dp"
                 android:orientation="horizontal"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginLeft="20dp"
                 >
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="备注："
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="20px"
+                    android:text="备注"
+                    android:textColor="#000000"
                     android:textSize="20dp"
                     ></TextView>
+
+                <TextView
+                    android:layout_width="0.8dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="15dp"
+                    android:background="@drawable/horizontal_divider"
+                    android:gravity="center_vertical"
+                    />
                 <EditText
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:singleLine="true"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center_vertical"
+                    android:textSize="20dp"
+                    android:textColor="#000000"
+                    android:background="#00000000"
                     android:id="@+id/et_remark"
-                    android:gravity="top"
+                    android:textCursorDrawable="@drawable/color_cursor"
                     android:hint="备注"
                     />
             </LinearLayout>
+            <EditText
+                android:layout_width="340dp"
+                android:layout_height="0.7dp"
+                android:background="@drawable/vertical_divider"
+                android:layout_gravity="center_horizontal"
+                />
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="55dp"
                 android:orientation="horizontal"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginLeft="20dp"
+                android:divider="@drawable/vertical_divider"
+                android:showDividers="end"
                 >
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="群组："
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="20px"
+                    android:text="群组"
+                    android:textColor="#000000"
                     android:textSize="20dp"
                     ></TextView>
+
+                <TextView
+                    android:layout_width="0.8dp"
+                    android:layout_height="25dp"
+                    android:layout_marginLeft="15dp"
+                    android:background="@drawable/horizontal_divider"
+                    android:gravity="center_vertical"
+                    />
                 <EditText
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
+                    android:singleLine="true"
+                    android:layout_marginLeft="20dp"
+                    android:gravity="center_vertical"
+                    android:textSize="20dp"
+                    android:textColor="#000000"
+                    android:background="#00000000"
                     android:id="@+id/et_group"
-                    android:gravity="top"
                     android:hint="群组"
                     />
+
+
             </LinearLayout>
+            <EditText
+                android:layout_width="340dp"
+                android:layout_height="0.7dp"
+                android:background="@drawable/vertical_divider"
+                android:layout_gravity="center_horizontal"
+                />
+
 
 
         </LinearLayout>
@@ -237,25 +405,34 @@
     <LinearLayout
         android:layout_weight="1"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
+        android:gravity="bottom"
         android:orientation="horizontal"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+        android:background="#F0F0F0"
         >
-        <Button
-            android:id="@+id/btn_save"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="保存"
-            ></Button>
 
         <Button
             android:layout_weight="1"
             android:id="@+id/btn_return"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="返回"
+            android:layout_height="fill_parent"
+            android:textColor="#84CA8B"
+            android:background="#F0F0F0"
+            android:text="取消"
+            android:textSize="20dp"
+            ></Button>
+
+
+        <Button
+            android:id="@+id/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:textColor="#84CA8B"
+            android:background="#F0F0F0"
+            android:text="确定"
+            android:textSize="20dp"
+
             ></Button>
 
     </LinearLayout>

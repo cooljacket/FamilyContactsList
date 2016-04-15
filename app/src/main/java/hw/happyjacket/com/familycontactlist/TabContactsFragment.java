@@ -39,18 +39,12 @@ public class TabContactsFragment extends Fragment {
     private SQLiteDatabase db = null;
     private View ContactView;
     public static final int PHONES_DISPLAY_NAME_INDEX = 0;
-//    public static final int PHONES_NUMBER_INDEX =1;
-//    public static final int PHONES_PHOTO_ID_INDEX=2;
     public static final int PHONES_CONTACT_ID_INDEX=1;
     public static final String[] PHONES_PROJECTION = new String[]{
             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-//            ContactsContract.CommonDataKinds.Phone.NUMBER,
-//            ContactsContract.CommonDataKinds.Photo.PHOTO_ID,
             ContactsContract.CommonDataKinds.Phone.CONTACT_ID
     };
     public ArrayList contacts = new ArrayList();
-
-//    JSONObject data=new JSONObject();
 
     @Nullable
     @Override
@@ -58,11 +52,20 @@ public class TabContactsFragment extends Fragment {
         return ContactView == null ? ContactView = inflater.inflate(R.layout.contact_list, container, false) : ContactView;
     }
 
-    private int[] image = {R.drawable.q,R.drawable.man,R.drawable.woman,
-            R.drawable.p1,R.drawable.p2,R.drawable.p3
+    private int[] image = {R.drawable.p4,R.drawable.p5,R.drawable.p6,
+            R.drawable.p1,R.drawable.p2,R.drawable.p3,
+            R.drawable.p7,R.drawable.p8,R.drawable.p9,
+            R.drawable.p10,R.drawable.p11,R.drawable.p12,
+            R.drawable.p13,R.drawable.p14,R.drawable.p15,
+            R.drawable.p16,R.drawable.p17,R.drawable.p18,
+            R.drawable.p19,R.drawable.p20,R.drawable.p21,
+            R.drawable.p22,R.drawable.p23,R.drawable.p24,
+            R.drawable.p25,R.drawable.p26,R.drawable.p27,
+            R.drawable.p28,R.drawable.p29,R.drawable.p30,
+            R.drawable.p31
     };
 
-    public Bitmap[] circleImage = new Bitmap[6];
+    public Bitmap[] circleImage = new Bitmap[31];
 
 
     @Override
@@ -72,10 +75,6 @@ public class TabContactsFragment extends Fragment {
                 HashMap newmap = (HashMap)data.getSerializableExtra("newdata");
                 AL.set(positionNew, newmap);
                 loadList();
-//                SimpleAdapter adapter = new SimpleAdapter(mContext, AL, R.layout.list_item
-//                        ,new String[]{"contactName", "contactPhone", "contactPhoto"}
-//                        ,new int[]{R.id.name, R.id.number, R.id.imageView});
-//                listview.setAdapter(adapter);
                 break;
             default:
                 break;
@@ -120,25 +119,19 @@ public class TabContactsFragment extends Fragment {
 
 
     private void getCircles(){
-
-        Bitmap a= BitmapFactory.decodeResource(getResources(),R.drawable.man);
-        circleImage[1]=createCircleImage(a,180);
-        a= BitmapFactory.decodeResource(getResources(),R.drawable.woman);
-        circleImage[2]=createCircleImage(a,180);
-        a= BitmapFactory.decodeResource(getResources(),R.drawable.p1);
-        circleImage[3]=createCircleImage(a,180);
-        a= BitmapFactory.decodeResource(getResources(),R.drawable.p2);
-        circleImage[4]=createCircleImage(a,180);
-        a= BitmapFactory.decodeResource(getResources(),R.drawable.p3);
-        circleImage[5]=createCircleImage(a,180);
-        a= BitmapFactory.decodeResource(getResources(),R.drawable.q);
-        circleImage[0]=createCircleImage(a,180);
-
+        Bitmap a;
+        for(int i=0;i<31;i++){
+//            a= BitmapFactory.decodeResource(getResources(),image[i]);
+            a = ratio(image[i],50,50);
+            circleImage[i]=createCircleImage(a,180);//ratio(image[i],100,100)
+        }
     }
 
     private Bitmap createCircleImage(Bitmap source,int min){
         final Paint paint = new Paint();
         paint.setAntiAlias(true);
+//        min = source.getHeight();
+
         Bitmap target = Bitmap.createBitmap(min,min, Bitmap.Config.ARGB_8888);
         /*
         产生一个同样大小的画布
@@ -158,6 +151,33 @@ public class TabContactsFragment extends Fragment {
         canvas.drawBitmap(source,0,0,paint);
 
         return target;
+    }
+
+
+    /**
+     * Compress image by pixel, this will modify image width/height.
+     * Used to get thumbnail
+     *
+     * @param imgPath image path
+     * @param pixelW target pixel of width
+     * @param pixelH target pixel of height
+     * @return
+     */
+    public Bitmap ratio(int imgPath, float pixelW, float pixelH) {
+        BitmapFactory.Options newOpts = new BitmapFactory.Options();
+        // 开始读入图片，此时把options.inJustDecodeBounds 设回true，即只读边不读内容
+
+        newOpts.inPreferredConfig = Bitmap.Config.RGB_565;
+
+
+        newOpts.inJustDecodeBounds = false;
+
+        newOpts.inSampleSize = 4;//设置缩放比例
+        // 开始压缩图片，注意此时已经把options.inJustDecodeBounds 设回false了
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),imgPath, newOpts);
+        // 压缩好比例大小后再进行质量压缩
+//        return compress(bitmap, maxSize); // 这里再进行质量压缩的意义不大，反而耗资源，删除
+        return bitmap;
     }
 
 
@@ -188,17 +208,8 @@ public class TabContactsFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(mContext, ContactActivity.class);
-//                Toast.makeText(mContext, "aaaaaaaaaaaaaaaa", Toast.LENGTH_SHORT).show();
                 positionNew=position;
                 HashMap map = (HashMap) parent.getItemAtPosition(position);
-//                SerializableMap tmpmap = new SerializableMap();
-//                tmpmap.setMap(map);
-//
-//                Bundle bundle = new Bundle();
-//                bundle.putSerializable("data", tmpmap);
-//                Toast.makeText(mContext, "bbbbbbbbbbbb", Toast.LENGTH_SHORT).show();
-//                intent.putExtras(bundle);
-//                intent.putExtra("data", map);
 
                 // 当requestCode为3的时候表示请求转向CPD这个页面？？
                 ContactActivity.actionStart(getContext(),map);
@@ -337,6 +348,7 @@ public class TabContactsFragment extends Fragment {
 //                }
                 //photo
                 Cursor cursor;
+                int contactPhotonum =0;
                 Bitmap contactPhoto=circleImage[0];//头像默认的图片
                 boolean contactFamily=false;
                 String contactFamilyname="NO";
@@ -346,7 +358,7 @@ public class TabContactsFragment extends Fragment {
                 if(!cursor.moveToFirst()){
                     User user = new User();
                     user._id=contactid;
-                    user.family=false;
+//                    user.family=false;
                     user.group="UNKNOWN";
                     user.photo=0;
                     user.familyName="NO";
@@ -355,9 +367,10 @@ public class TabContactsFragment extends Fragment {
                 }else{
 //
                         //photo
-                        contactPhoto = circleImage[cursor.getInt(2)];
+                        contactPhoto =  circleImage[cursor.getInt(2)];
+                    contactPhotonum = cursor.getInt(2);
                         //是否family
-                        contactFamily = cursor.getInt(1)>0;
+//                        contactFamily = cursor.getInt(1)>0;
                         //familyname
                         contactFamilyname = cursor.getString(4);
                         //group
@@ -395,9 +408,10 @@ public class TabContactsFragment extends Fragment {
                 map.put("contactName",contactName);
 //                map.put("contactPhone",phoneNumber);
                 map.put("contactPhoto",contactPhoto);
+
                 map.put("contactID",contactid);
                 map.put("contactGroup", contactGroup);
-                map.put("contactFamily", contactFamily);
+//                map.put("contactFamily", contactFamily);
                 map.put("contactFamilyname", contactFamilyname);
 
 

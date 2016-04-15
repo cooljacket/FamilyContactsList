@@ -53,13 +53,13 @@ public class PhoneLocationMaster {
 //    public boolean isCached(String phoneNumber) {
 //        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
 //        if (!db.isOpen())
-//            return false;
+//            return_btn false;
 //
 //        Cursor cursor = db.query(PhoneLocationDBHelper.TABLE_NAME, new String[]{"phoneNumber"}, "phoneNumber=?", new String[]{phoneNumber}, null, null, null);
 //        boolean result = cursor.getCount() > 0;
 //        cursor.close();
 //        db.close();
-//        return result;
+//        return_btn result;
 //    }
 
     public String[] get(String phoneNumber) {
