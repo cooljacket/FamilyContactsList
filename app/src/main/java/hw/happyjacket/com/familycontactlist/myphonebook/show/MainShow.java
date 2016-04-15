@@ -111,7 +111,7 @@ public class MainShow extends PhoneShow {
             phoneList.setProjection(projection);
             phoneList.setSelection(selection);
             phoneList.setArgument(argument);
-            phoneList.setOrderby(orderBy);
+            phoneList.setOrderby(orderBy);;
             phoneList.connectDataBase();
             mPhoneListElementList_backup = phoneList.getPhoneList();
         }
