@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import hw.happyjacket.com.familycontactlist.R;
+import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.PhoneAdapter;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 
@@ -32,7 +33,7 @@ public class CallLogAdapter extends PhoneAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-        HashMap<String,String> data = getItem(position);
+        final HashMap<String,String> data = getItem(position);
         View view;
         ViewHolder viewHolder;
         if(convertView == null)
@@ -51,8 +52,15 @@ public class CallLogAdapter extends PhoneAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        if(position == 0)
+        if(position == 0) {
             viewHolder.info4.setBackgroundResource(android.R.drawable.sym_action_chat);
+            viewHolder.info4.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Operation.sms(data.get(PhoneDictionary.DATE));
+                }
+            });
+        }
         else
             viewHolder.info4.setVisibility(View.INVISIBLE);
         viewHolder.info1.setText(data.get(PhoneDictionary.DATE));

@@ -29,5 +29,7 @@ public class Operation {
         new PhoneOperation(sContext).call(number);
     }
 
+    public static void sms(String number) {new PhoneOperation(sContext).sms(number);}
+
 }
 

@@ -77,7 +77,7 @@ public class MainShow extends PhoneShow {
 
 
     public void DeleteTheNewestOne(String id, String number) {
-        phoneList.delete(id);
+        phoneList.delete(PhoneDictionary.ID + " = ? ",new String[]{id});
         phoneList.findTheNewestOne(DataBaseDictionary.CallLog_Projection, PhoneDictionary.PhoneAll, PhoneDictionary.NUMBER, number);
         phoneList.connectDataBase();
         mPhoneListElementList_backup = phoneList.getPhoneList();
@@ -92,7 +92,7 @@ public class MainShow extends PhoneShow {
     }
 
     public void DeletePhoneElementAll(String number) {
-        phoneList.deleteAll(number);
+        phoneList.deleteAll(PhoneDictionary.NUMBER + " = ? " ,new String[]{number});
         mPhoneListElementList.remove(nmapp.get(number));
         sPhoneAdapter.notifyDataSetChanged();
     }

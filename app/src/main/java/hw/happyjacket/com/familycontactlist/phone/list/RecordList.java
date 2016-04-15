@@ -1,6 +1,5 @@
-package hw.happyjacket.com.familycontactlist.phone;
+package hw.happyjacket.com.familycontactlist.phone.list;
 
-import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -10,6 +9,7 @@ import android.net.Uri;
 import android.provider.CallLog;
 import android.util.Log;
 
+import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 import hw.happyjacket.com.familycontactlist.phone.database.DataBase;
 import hw.happyjacket.com.familycontactlist.phone.database.DataBaseDictionary;
 import hw.happyjacket.com.familycontactlist.phone.phonelistener.PhoneThreadInsert;
@@ -22,133 +22,58 @@ import java.util.Vector;
  */
 
 /*The basic class used to generate the database and communicate with the local Call log*/
-public class PhoneList {
+public class RecordList extends PhoneList {
 
-    final Context context;
-    private Uri uri;
-    private ContentResolver contentResolver;
-    private Cursor cursor;
-    private String db;
-    private String table;
-    private String projection[];
-    private String selection;
-    private String argument[];
+
     private String orderby = CallLog.Calls.DEFAULT_SORT_ORDER;
     private String TAG = this.getClass().toString();
 
 
-    public PhoneList(Context context) {
-        this.context = context;
-        this.contentResolver = this.context.getContentResolver();
+    public RecordList(Context context) {
+        super(context);
         this.projection = new String[]{PhoneDictionary.ID,PhoneDictionary.NUMBER,PhoneDictionary.NAME,PhoneDictionary.DATE};
         this.selection = null;
         this.argument = null;
         this.db = PhoneDictionary.DEFAULT_DB;
         this.table = PhoneDictionary.DEFAULT_TABLE;
         this.uri = CallLog.Calls.CONTENT_URI;
+        this.version = DataBaseDictionary.databaseVersion;
     }
 
-    public PhoneList(Context context, String projection[])
+    public RecordList(Context context, String projection[])
     {
-        this.context = context;
-        this.contentResolver = this.context.getContentResolver();
+        super(context);
         this.projection = projection;
         this.selection = null;
         this.argument = null;
         this.db = PhoneDictionary.DEFAULT_DB;
         this.table = PhoneDictionary.DEFAULT_TABLE;
         this.uri = CallLog.Calls.CONTENT_URI;
+        this.version = DataBaseDictionary.databaseVersion;
     }
 
-    public PhoneList(Context context, String[] projection, String selection, String[] argument) {
-        this.context = context;
-        this.contentResolver = this.context.getContentResolver();
+    public RecordList(Context context, String[] projection, String selection, String[] argument) {
+        super(context);
         this.projection = projection;
         this.selection = selection;
         this.argument = argument;
         this.db = PhoneDictionary.DEFAULT_DB;
         this.table = PhoneDictionary.DEFAULT_TABLE;
         this.uri = CallLog.Calls.CONTENT_URI;
+        this.version = DataBaseDictionary.databaseVersion;
     }
 
-    public PhoneList(Context context, String db, String table, String[] projection, String[] argument, String selection, String orderby) {
-        this.context = context;
-        this.db = db;
-        this.table = table;
-        this.projection = projection;
-        this.argument = argument;
-        this.selection = selection;
-        this.orderby = orderby;
+    public RecordList(Context context, String db, String table, String[] projection, String[] argument, String selection, String orderby) {
+        super(context,db,DataBaseDictionary.databaseVersion,table,projection,selection,argument,orderby);
         this.uri = CallLog.Calls.CONTENT_URI;
     }
 
-    public PhoneList(Context context, Uri uri, String db, String table, String[] projection, String selection, String[] argument, String orderby) {
-        this.context = context;
-        this.uri = uri;
-        this.db = db;
-        this.table = table;
-        this.projection = projection;
-        this.selection = selection;
-        this.argument = argument;
-        this.orderby = orderby;
+
+
+    public RecordList(Context context, Uri uri, String db, String table, String[] projection, String selection, String[] argument, String orderby) {
+        super(context,uri.toString(),db,DataBaseDictionary.databaseVersion,table,projection,selection,argument,orderby);
     }
 
-    public Uri getUri() {
-        return uri;
-    }
-
-    public void setUri(Uri uri) {
-        this.uri = uri;
-    }
-
-    public String getDb() {
-        return db;
-    }
-
-    public void setDb(String db) {
-        this.db = db;
-    }
-
-    public String getTable() {
-        return table;
-    }
-
-    public void setTable(String table) {
-        this.table = table;
-    }
-
-    public String[] getProjection() {
-        return this.projection;
-    }
-
-    public String getSelection() {
-        return selection;
-    }
-
-    public void setSelection(String selection) {
-        this.selection = selection;
-    }
-
-    public String[] getArgument() {
-        return argument;
-    }
-
-    public void setArgument(String[] argument) {
-        this.argument = argument;
-    }
-
-    public void setProjection(String[] projection) {
-        this.projection = projection;
-
-    }
-
-    public String getOrderby() {
-        return orderby;
-    }
-
-    public void setOrderby(String orderby) {
-        this.orderby = orderby;
-    }
 
     private boolean CallLogChanged()
     {
@@ -190,8 +115,7 @@ public class PhoneList {
 
     }
 
-
-
+    @Override
     public Vector<HashMap<String,String>> Refresh()
     {
 
@@ -225,6 +149,7 @@ public class PhoneList {
         return result;
     }
 
+    @Override
     public Vector<HashMap<String,String>> init()
     {
         Vector<HashMap<String, String>> t = null;
@@ -245,6 +170,7 @@ public class PhoneList {
 
 
 
+
     public HashMap<String,String> addTheNewOne(String pro[], String all[],String number)
     {
         int version = DataBaseDictionary.databaseVersion;
@@ -257,7 +183,7 @@ public class PhoneList {
         try {
             dataBase =  new DataBase(context,db,null,version);
             sqLiteDatabase  = dataBase.getWritableDatabase();
-            t = contentResolver.query(uri,all,null,null,CallLog.Calls.DEFAULT_SORT_ORDER + " limit 1");
+            t = contentResolver.query(uri, all, null, null, CallLog.Calls.DEFAULT_SORT_ORDER + " limit 1");
             if(t.moveToFirst())
             {
                 contentValues = new ContentValues();
@@ -294,7 +220,7 @@ public class PhoneList {
         try {
             dataBase =  new DataBase(context,db,null,version);
             sqLiteDatabase  = dataBase.getWritableDatabase();
-            t = contentResolver.query(uri,all,number + " = ? ",new String[]{num},CallLog.Calls.DEFAULT_SORT_ORDER + " limit 1 ");
+            t = contentResolver.query(uri, all, number + " = ? ", new String[]{num}, CallLog.Calls.DEFAULT_SORT_ORDER + " limit 1 ");
             if(t.moveToFirst()) {
                 contentValues = new ContentValues();
                 for (int i = 0 ; i < pro.length ; i++) {
@@ -319,100 +245,7 @@ public class PhoneList {
     }
 
 
-    public void delete(String id){
-        DataBase dataBase = null;
-        SQLiteDatabase sqLiteDatabase = null;
-        int version = DataBaseDictionary.databaseVersion;
-        try{
-            dataBase = new DataBase(context,db,null,version);
-            sqLiteDatabase  = dataBase.getWritableDatabase();
-            sqLiteDatabase.delete(table,PhoneDictionary.ID + " = ? ", new String[]{id});
-            sqLiteDatabase.close();
-            dataBase.close();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
 
-    public void deleteAll(String number){
-        DataBase dataBase = null;
-        SQLiteDatabase sqLiteDatabase = null;
-        int version = DataBaseDictionary.databaseVersion;
-        try{
-            dataBase = new DataBase(context,db,null,version);
-            sqLiteDatabase  = dataBase.getWritableDatabase();
-            sqLiteDatabase.delete(table,PhoneDictionary.NUMBER + " = ? ", new String[]{number});
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        finally {
-            sqLiteDatabase.close();
-            dataBase.close();
-        }
-    }
-
-
-    public void connectContentResolver()
-    {
-        try {
-            if(this.cursor != null)
-                this.cursor.close();
-            this.cursor = contentResolver.query(uri,projection,selection,argument,orderby);
-        }
-        catch (SecurityException e)
-        {
-            Log.i(TAG,"Read permission denied");
-        }
-    }
-
-
-    public void connectDataBase()
-    {
-        DataBase dataBase = new DataBase(context,db,null,DataBaseDictionary.databaseVersion);
-        SQLiteDatabase sqLiteDatabase = dataBase.getReadableDatabase();
-        try{
-            if(this.cursor != null)
-                this.cursor.close();
-            this.cursor = sqLiteDatabase.query(table,projection,selection,argument,null,null,orderby,null);
-        }
-        catch (SecurityException e) {
-            Log.i(TAG,"DataBase permission denied");
-        }
-    }
-
-
-    public Vector<HashMap<String,String>> getPhoneList() {
-        int id[] = new int[projection.length];
-        String value;
-        Vector<HashMap<String,String>> result = new Vector<HashMap<String, String>>();
-        if (cursor.moveToFirst()) {
-            for(int i = 0 ; i < projection.length ; i++)
-                id[i] = cursor.getColumnIndex(projection[i]);
-            do {
-                HashMap<String,String> pair = new HashMap<String,String>();
-                for (int i = 0 ; i < projection.length ;i++)
-                {
-                    value = cursor.getString(id[i]);
-                    pair.put(projection[i], value);
-                }
-                result.add(pair);
-            } while (cursor.moveToNext());
-        }
-        Log.i(TAG,result.toString());
-        return result;
-    }
-
-
-
-    public void destroyPhoneList()
-    {
-        if(cursor != null)
-            cursor.close();
-    }
 
 }
 
