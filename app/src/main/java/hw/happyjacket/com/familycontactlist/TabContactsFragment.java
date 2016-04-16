@@ -24,8 +24,11 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
 
 /**
  * Created by jacket on 2016/3/30.
@@ -90,13 +93,10 @@ public class TabContactsFragment extends Fragment {
         dbHelper = new DBHelper(TabContactsFragment.super.getContext());
         db = dbHelper.openDatabase();
         getCircles();
-
 //        for(int i=0;i<6;i++){
 //            circleImage[i] = createCircleImage(a);
 //        }
-
         AL = getPhoneContacts();
-
         dbHelper.close();
     }
 
@@ -122,42 +122,27 @@ public class TabContactsFragment extends Fragment {
     private void getCircles(){
 
         Bitmap a= BitmapFactory.decodeResource(getResources(),R.drawable.man);
-        circleImage[1]=createCircleImage(a,180);
-        a= BitmapFactory.decodeResource(getResources(),R.drawable.woman);
-        circleImage[2]=createCircleImage(a,180);
-        a= BitmapFactory.decodeResource(getResources(),R.drawable.p1);
-        circleImage[3]=createCircleImage(a,180);
-        a= BitmapFactory.decodeResource(getResources(),R.drawable.p2);
-        circleImage[4]=createCircleImage(a,180);
-        a= BitmapFactory.decodeResource(getResources(),R.drawable.p3);
-        circleImage[5]=createCircleImage(a,180);
-        a= BitmapFactory.decodeResource(getResources(),R.drawable.q);
-        circleImage[0]=createCircleImage(a,180);
+        circleImage[1]= PhotoZoom.createCircleImage(a, 180);
+        a= BitmapFactory.decodeResource(getResources(), R.drawable.woman);
+        circleImage[2]=PhotoZoom.createCircleImage(a, 180);
+        a= BitmapFactory.decodeResource(getResources(), R.drawable.p1);
+        circleImage[3]=PhotoZoom.createCircleImage(a, 180);
+        a= BitmapFactory.decodeResource(getResources(), R.drawable.p2);
+        circleImage[4]=PhotoZoom.createCircleImage(a, 180);
+        a= BitmapFactory.decodeResource(getResources(), R.drawable.p3);
+        circleImage[5]=PhotoZoom.createCircleImage(a, 180);
+        a= BitmapFactory.decodeResource(getResources(), R.drawable.q);
+        circleImage[0]=PhotoZoom.createCircleImage(a, 180);
+        try {
+            Method method = PhotoZoom.class.getMethod("createCircleImage", Bitmap.class, int.class);
+            for(int i = 0 ; i < 6 ; ++i){
+                circleImage[i] = method.invoke(this,t)
+            }
+        } catch (NoSuchMethodException e) {
 
-    }
 
-    private Bitmap createCircleImage(Bitmap source,int min){
-        final Paint paint = new Paint();
-        paint.setAntiAlias(true);
-        Bitmap target = Bitmap.createBitmap(min,min, Bitmap.Config.ARGB_8888);
-        /*
-        产生一个同样大小的画布
-         */
-        Canvas canvas = new Canvas(target);
-        /*
-        首先绘制圆形
-         */
-        canvas.drawCircle(min/2,min/2,min/2,paint);
-        /*
-        使用SRC_IN
-         */
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        /*
-        绘制图片
-         */
-        canvas.drawBitmap(source,0,0,paint);
+        }
 
-        return target;
     }
 
 

@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import java.util.HashMap;
 
+import hw.happyjacket.com.familycontactlist.myphonebook.factory.DialogFactory;
+
 /**
  * Created by leo on 2016/4/3.
  */
@@ -220,6 +222,8 @@ public class PeopleDetail extends AppCompatActivity {
         imagePic=(Bitmap) map.get("contactPhoto");
 //        pic.setImageResource(imagePic);
         pic.setImageBitmap(imagePic);
+
+
 
         name.setText(map.get("contactName").toString());
         mobilephone.setText(map.get("contactPhone").toString());

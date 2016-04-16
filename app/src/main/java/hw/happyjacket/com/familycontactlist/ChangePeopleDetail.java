@@ -35,6 +35,10 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
+import hw.happyjacket.com.familycontactlist.myphonebook.factory.DialogFactory;
+import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
+
 /**
  * Created by leo on 2016/3/30.
  */
@@ -71,6 +75,16 @@ public class ChangePeopleDetail extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode){//处理请求
+            case PhoneDictionary.IMAGE_REQUEST_CODE:
+                PhotoZoom.startPhotoZoom(ChangePeopleDetail.this,data.getData());
+                break;
+
+            case PhoneDictionary.RESULT_REQUEST_CODE: //图片缩放完成后
+                if (data != null) {
+                    PhotoZoom.getImageToView(ChangePeopleDetail.this,data,btn_img);
+                }
+                break;
+
             default:
                 Toast.makeText(getApplicationContext(), requestCode, Toast.LENGTH_SHORT).show();
                 map = new HashMap();
@@ -106,8 +120,12 @@ public class ChangePeopleDetail extends AppCompatActivity {
         btn_img.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                initImageChooseDialog();
-                imageChooseDialog.show();
+
+
+                DialogFactory.getPhotoDialog(ChangePeopleDetail.this, "设置头像", new String[]{"从本地读取"}).show();
+
+              /* initImageChooseDialog();
+                imageChooseDialog.show();*/
             }
         });
 
@@ -380,11 +398,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
         });
 
         IS.setFactory(new MyViewFactory(this));
-
-
-
         builder.setView(view);
-
         imageChooseDialog=builder.create();
     }
 

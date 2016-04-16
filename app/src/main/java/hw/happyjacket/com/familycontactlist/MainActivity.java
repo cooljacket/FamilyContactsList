@@ -1,5 +1,6 @@
 package hw.happyjacket.com.familycontactlist;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -37,6 +38,7 @@ public class MainActivity extends FragmentActivity {
         setContentView(R.layout.activity_main);
 //        InitTabSizes();
         InitFragments();
+
 
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mPagerAdapter);

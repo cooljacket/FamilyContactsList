@@ -39,6 +39,10 @@ public class PhoneDictionary {
     public static final int CONTENT_OPTIONS1 = 1;
     public static final int CONTENT_OPTIONS2 = 2;
     public static final int CALLLOG_OPTIONS = 3;
+    public static final int RADIO_OPTION = 0;
+    public static final int CHECKBOX_OPTION = 1;
+    public static final int IMAGE_REQUEST_CODE = 1;
+    public static final int RESULT_REQUEST_CODE = 2;
     public static final String TYPE_LIST[] = {"nothing","来电","拨出","响铃"};
     public static final String PhoneAll[] = {ID,NUMBER,NAME,DATE,TYPE,DURATION};
     public static final String PhoneDetail[] = {ID,DATE,TYPE,DURATION};
