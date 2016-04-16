@@ -35,10 +35,6 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
-import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
-import hw.happyjacket.com.familycontactlist.myphonebook.factory.DialogFactory;
-import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
-
 /**
  * Created by leo on 2016/3/30.
  */
@@ -50,7 +46,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
     HashMap map;
     boolean family = false;
     int imagePosition;
-    CheckBox et_family;
+//    CheckBox et_family;
     EditText et_familyName;
     EditText et_name;
     EditText et_phone;
@@ -65,8 +61,17 @@ public class ChangePeopleDetail extends AppCompatActivity {
     Bitmap imagePic;//头像Rid
     int imagePP;
 
-    private int[] image = {R.drawable.q,R.drawable.man,R.drawable.woman,
-            R.drawable.p1,R.drawable.p2,R.drawable.p3
+    private int[] image = {R.drawable.p4,R.drawable.p5,R.drawable.p6,
+            R.drawable.p1,R.drawable.p2,R.drawable.p3,
+            R.drawable.p7,R.drawable.p8,R.drawable.p9,
+            R.drawable.p10,R.drawable.p11,R.drawable.p12,
+            R.drawable.p13,R.drawable.p14,R.drawable.p15,
+            R.drawable.p16,R.drawable.p17,R.drawable.p18,
+            R.drawable.p19,R.drawable.p20,R.drawable.p21,
+            R.drawable.p22,R.drawable.p23,R.drawable.p24,
+            R.drawable.p25,R.drawable.p26,R.drawable.p27,
+            R.drawable.p28,R.drawable.p29,R.drawable.p30,
+            R.drawable.p31
     };
 
 
@@ -75,16 +80,6 @@ public class ChangePeopleDetail extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode){//处理请求
-            case PhoneDictionary.IMAGE_REQUEST_CODE:
-                PhotoZoom.startPhotoZoom(ChangePeopleDetail.this,data.getData());
-                break;
-
-            case PhoneDictionary.RESULT_REQUEST_CODE: //图片缩放完成后
-                if (data != null) {
-                    PhotoZoom.getImageToView(ChangePeopleDetail.this,data,btn_img);
-                }
-                break;
-
             default:
                 Toast.makeText(getApplicationContext(), requestCode, Toast.LENGTH_SHORT).show();
                 map = new HashMap();
@@ -120,12 +115,8 @@ public class ChangePeopleDetail extends AppCompatActivity {
         btn_img.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
-
-                DialogFactory.getPhotoDialog(ChangePeopleDetail.this, "设置头像", new String[]{"从本地读取"}).show();
-
-              /* initImageChooseDialog();
-                imageChooseDialog.show();*/
+                initImageChooseDialog();
+                imageChooseDialog.show();
             }
         });
 
@@ -148,40 +139,40 @@ public class ChangePeopleDetail extends AppCompatActivity {
         et_group.setText(map.get("contactGroup").toString());
 
 
-        et_family=(CheckBox)findViewById(R.id.et_family);
+//        et_family=(CheckBox)findViewById(R.id.et_family);
         et_familyName=(EditText)findViewById(R.id.et_familyName);
 
-        family = (boolean)map.get("contactFamily");
-        if(family){
-            et_family.setChecked(true);
-            et_familyName.setEnabled(true);
-            et_familyName.setText(map.get("contactFamilyname").toString());
-            et_group.setEnabled(false);
-        }
-        else {
-            et_family.setChecked(false);
-            et_familyName.setEnabled(false);
-            et_familyName.setText("NO");
-            et_group.setEnabled(true);
-        }
+//        family = (boolean)map.get("contactFamily");
+//        if(family){
+//            et_family.setChecked(true);
+//            et_familyName.setEnabled(true);
+//            et_familyName.setText(map.get("contactFamilyname").toString());
+//            et_group.setEnabled(false);
+//        }
+//        else {
+//            et_family.setChecked(false);
+//            et_familyName.setEnabled(false);
+//            et_familyName.setText("NO");
+//            et_group.setEnabled(true);
+//        }
 
-        et_family.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    family=true;
-                    et_familyName.setEnabled(true);
-                    et_group.setText("FAMILY");
-                    et_group.setEnabled(false);
-                }
-                else {
-                    family=false;
-                    et_familyName.setEnabled(false);
-                    et_group.setEnabled(true);
-                    et_group.setText("UNKNOWN");
-                }
-            }
-        });
+//        et_family.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if(isChecked){
+//                    family=true;
+//                    et_familyName.setEnabled(true);
+//                    et_group.setText("FAMILY");
+//                    et_group.setEnabled(false);
+//                }
+//                else {
+//                    family=false;
+//                    et_familyName.setEnabled(false);
+//                    et_group.setEnabled(true);
+//                    et_group.setText("UNKNOWN");
+//                }
+//            }
+//        });
 
         btn_save.setOnClickListener(new OnClickListener() {
             @Override
@@ -326,13 +317,32 @@ public class ChangePeopleDetail extends AppCompatActivity {
         newmap.put("contactRemark",et_remark.getText().toString());
         newmap.put("contactPhoto", imagePic);
         newmap.put("contactGroup", et_group.getText().toString());
-        newmap.put("contactFamily", family);
+//        newmap.put("contactFamily", family);
         newmap.put("contactFamilyname", et_familyName.getText().toString());
         return newmap;
     }
+
+    public Bitmap ratio(int imgPath, float pixelW, float pixelH) {
+        BitmapFactory.Options newOpts = new BitmapFactory.Options();
+        // 开始读入图片，此时把options.inJustDecodeBounds 设回true，即只读边不读内容
+
+        newOpts.inPreferredConfig = Bitmap.Config.RGB_565;
+
+
+        newOpts.inJustDecodeBounds = false;
+
+        newOpts.inSampleSize = 4;//设置缩放比例
+        // 开始压缩图片，注意此时已经把options.inJustDecodeBounds 设回false了
+        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),imgPath, newOpts);
+        // 压缩好比例大小后再进行质量压缩
+//        return compress(bitmap, maxSize); // 这里再进行质量压缩的意义不大，反而耗资源，删除
+        return bitmap;
+    }
+
     private Bitmap createCircleImage(Bitmap source,int min){
         final Paint paint = new Paint();
         paint.setAntiAlias(true);
+        min = source.getHeight()+20;
         Bitmap target = Bitmap.createBitmap(min,min, Bitmap.Config.ARGB_8888);
         /*
         产生一个同样大小的画布
@@ -360,7 +370,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Bitmap a= BitmapFactory.decodeResource(getResources(),image[imagePosition]);
+                Bitmap a= ratio(image[imagePosition],50,50);
                 Bitmap circleImage=createCircleImage(a,180);
                 btn_img.setImageBitmap(circleImage);
                 imagePic=circleImage;
@@ -398,7 +408,11 @@ public class ChangePeopleDetail extends AppCompatActivity {
         });
 
         IS.setFactory(new MyViewFactory(this));
+
+
+
         builder.setView(view);
+
         imageChooseDialog=builder.create();
     }
 
