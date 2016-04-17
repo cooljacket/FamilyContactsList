@@ -19,7 +19,7 @@ public class ContactShow extends PhoneShow {
 
 
     private String number;
-    private String defaultList = "详细信息";
+    private String [] defaultList = new String[]{"","编辑联系人","加入黑名单","删除联系人"};
     private String defaultNumber = "电话";
     public ContactShow(Context context, int table) {
         super(context, table);
@@ -37,12 +37,12 @@ public class ContactShow extends PhoneShow {
             this.defaultNumber = defaultNumber;
     }
 
-    public String getDefaultList() {
+    public String [] getDefaultList() {
         return defaultList;
     }
 
-    public void setDefaultList(String defaultList) {
-        if(defaultList != null && !defaultList.equals(""))
+    public void setDefaultList(String [] defaultList) {
+        if(defaultList != null)
             this.defaultList = defaultList;
     }
 
@@ -52,6 +52,10 @@ public class ContactShow extends PhoneShow {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public void notifyDataSetChanged(){
+        sPhoneAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -68,14 +72,16 @@ public class ContactShow extends PhoneShow {
 
     public Vector<HashMap<String,String>> getDefaultData()
     {
-        Vector<HashMap<String,String>> data = new Vector<>(2);
+        Vector<HashMap<String,String>> data = new Vector<>(1 + defaultList.length);
         HashMap<String,String> numbers = new HashMap<>();
         numbers.put(PhoneDictionary.DATE, number);
         numbers.put(PhoneDictionary.NUMBER,defaultNumber);
         data.add(numbers);
-        HashMap<String,String> point = new HashMap<>();
-        point.put(PhoneDictionary.DATE, defaultList);
-        data.add(point);
+        for(int i = 0 ; i < defaultList.length ; i++){
+            HashMap<String,String> point = new HashMap<>();
+            point.put(PhoneDictionary.DATE, defaultList[i]);
+            data.add(point);
+        }
         return data;
     }
 
@@ -88,7 +94,7 @@ public class ContactShow extends PhoneShow {
         phoneList.setArgument(argument);
         phoneList.setOrderby(orderby);
         phoneList.connectContentResolver();
-        number = phoneList.getPhoneList().get(1).get(ContactsContract.CommonDataKinds.Phone.NUMBER);
+        number = phoneList.getPhoneList().get(0).get(ContactsContract.CommonDataKinds.Phone.NUMBER);
         mPhoneListElementList = getDefaultData();
         sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index);
     }

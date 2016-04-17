@@ -27,6 +27,7 @@ public class PhoneDictionary {
     public static final String CALLLOG_OPTION = "calllog";
     public static final String DEFAULT_DB = DataBaseDictionary.CALLLOG;
     public static final String DEFAULT_TABLE = DataBaseDictionary.CallLog;
+
     public static final int BLUETOOTH_FOUND = 1;
     public static final int BLUETOOTH_FINISHED = 2;
     public static final int INCOMMING = 1;
@@ -44,6 +45,7 @@ public class PhoneDictionary {
     public static final int CHECKBOX_OPTION = 1;
     public static final int IMAGE_REQUEST_CODE = 1;
     public static final int RESULT_REQUEST_CODE = 2;
+    public static final int CONTACT_REQUEST_CODE  = 1;
 
 
 

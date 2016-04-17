@@ -62,7 +62,7 @@ public class CallLogAdapter extends PhoneAdapter {
             });
         }
         else
-            viewHolder.info4.setVisibility(View.INVISIBLE);
+            viewHolder.info4.setHeight(0);
         viewHolder.info1.setText(data.get(PhoneDictionary.DATE));
         if(data.get(PhoneDictionary.NUMBER) != null)
             viewHolder.info2.setText(data.get(PhoneDictionary.NUMBER));

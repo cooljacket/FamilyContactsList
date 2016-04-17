@@ -92,7 +92,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
                 break;
             case PhoneDictionary.RESULT_REQUEST_CODE:
                 if(data != null){
-                    PhotoZoom.getImageToView(ChangePeopleDetail.this,data,btn_img);
+                    btn_img.setImageDrawable(PhotoZoom.getImageToView(ChangePeopleDetail.this, data));
                 }
                 break;
             default:
@@ -133,7 +133,6 @@ public class ChangePeopleDetail extends AppCompatActivity {
         mListView = (ScrollListView) findViewById(R.id.people_info);
         mPeopleInfoAdapter = new PeopleInfoAdapter(this,R.layout.change_people_detail,info);
         mListView.setAdapter(mPeopleInfoAdapter);
-
 //        imagePic=(int) map.get("contactPhoto");
         DialogFactory.setImagePicture(imagePic = (Bitmap) map.get("contactPhoto"));
         btn_img.setImageBitmap(imagePic);
@@ -163,7 +162,9 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
 
 //        et_family=(CheckBox)findViewById(R.id.et_family);
+        et_name = (EditText) findViewById(R.id.et_name);
         et_familyName=(EditText)findViewById(R.id.et_familyName);
+        et_name.setText(map.get("contactName").toString());
 
 //        family = (boolean)map.get("contactFamily");
 //        if(family){
@@ -233,9 +234,10 @@ public class ChangePeopleDetail extends AppCompatActivity {
                 helper.close();
 
                /* map = getChanged();*/
-                Intent data = new Intent();
-                data.putExtra("newdata", map);
-                setResult(1, data);
+                Intent intent = new Intent();
+                intent.putExtra(PhoneDictionary.NAME, et_name.getText().toString());
+                intent.putExtra(PhoneDictionary.NUMBER, mPeopleInfoAdapter.getItem(0).toString());
+                setResult(PhoneDictionary.CONTACT_REQUEST_CODE, intent);
                 finish();
 
             }
@@ -343,14 +345,6 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
 
 
-
-
-    private void initImageChooseDialog(){
-
-    }
-
-
-
     public class MyViewFactory implements ViewSwitcher.ViewFactory {
         private Context context;
 
@@ -365,6 +359,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
             return iv;
         }
     }
+
 
 
 

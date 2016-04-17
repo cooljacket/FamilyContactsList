@@ -210,9 +210,8 @@ public class TabContactsFragment extends Fragment {
                 Intent intent = new Intent(mContext, ContactActivity.class);
                 positionNew=position;
                 HashMap map = (HashMap) parent.getItemAtPosition(position);
-
                 // 当requestCode为3的时候表示请求转向CPD这个页面？？
-                ContactActivity.actionStart(getContext(),map);
+                ContactActivity.actionStart(getActivity(),map);
             }
         });
     }

@@ -8,15 +8,18 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import java.util.HashMap;
 
 import hw.happyjacket.com.familycontactlist.extention.XiaoMiAccessory;
+import hw.happyjacket.com.familycontactlist.myphonebook.ContentActivity;
 import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
 import hw.happyjacket.com.familycontactlist.myphonebook.listview.ScrollListView;
 import hw.happyjacket.com.familycontactlist.myphonebook.show.ContactShow;
@@ -56,15 +59,9 @@ public class ContactActivity extends Activity{
 
         ContactListView = (ScrollListView) findViewById(R.id.contact_number_and_detail);
         head = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-
         final Intent intent = getIntent();
         data = (HashMap)intent.getSerializableExtra("data");
-
         showDetail();
-
-
-
-
 
     }
 
@@ -86,9 +83,15 @@ public class ContactActivity extends Activity{
                         Operation.call(mContactShow.getNumber());
                         break;
                     case 1:
-                        Intent intent1 = new Intent(ContactActivity.this,ChangePeopleDetail.class);
-                        intent1.putExtra("data",data);
-                        startActivity(intent1);
+                        break;
+                    case 2:
+                        Intent intent1 = new Intent(ContactActivity.this, ChangePeopleDetail.class);
+                        intent1.putExtra("data", data);
+                        startActivityForResult(intent1, PhoneDictionary.CONTACT_REQUEST_CODE);
+                        break;
+                    case 3:
+                        break;
+                    case 4:
                         break;
                     default:
                         break;
@@ -210,14 +213,22 @@ public class ContactActivity extends Activity{
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         switch (resultCode){//处理结果码
-            case 1://有修改
+            case PhoneDictionary.CONTACT_REQUEST_CODE://有修改
+                name = data.getStringExtra(PhoneDictionary.NAME);
+                Toast.makeText(ContactActivity.this,name,Toast.LENGTH_SHORT).show();
+                head.setTitle(name);
+                mContactShow.setNumber(data.getStringExtra(PhoneDictionary.NUMBER));
+                HashMap<String,String> theFirstLine = mContactShow.getPhoneListElementList().get(0);
+                theFirstLine.put(PhoneDictionary.NUMBER,data.getStringExtra(PhoneDictionary.NUMBER));
+                mContactShow.getPhoneListElementList().set(0,theFirstLine);
+                mContactShow.notifyDataSetChanged();
 
-                this.data =(HashMap)data.getSerializableExtra("newdata");
+
 //                imagePic = (int) map.get("contactPhoto");
 //                isfamily=(boolean)map.get("contactFamily");
 
 //                flag=true;
-                showDetail();
+/*                showDetail();*/
 
                 break;
 
@@ -227,7 +238,7 @@ public class ContactActivity extends Activity{
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public static void actionStart(Context context,HashMap map){
+    public static void actionStart(Activity context,HashMap map){
         Intent intent = new Intent(context,ContactActivity.class);
         intent.putExtra("data",map);
         context.startActivity(intent);
