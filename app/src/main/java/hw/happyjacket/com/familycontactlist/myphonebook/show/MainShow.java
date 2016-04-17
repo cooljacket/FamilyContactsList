@@ -111,7 +111,7 @@ public class MainShow extends PhoneShow {
             phoneList.setProjection(projection);
             phoneList.setSelection(selection);
             phoneList.setArgument(argument);
-            phoneList.setOrderby(orderBy);
+            phoneList.setOrderby(orderBy);;
             phoneList.connectDataBase();
             mPhoneListElementList_backup = phoneList.getPhoneList();
         }
@@ -176,7 +176,7 @@ public class MainShow extends PhoneShow {
 //                                    HashMap<String,String> tmp = new HashMap<>();
 //                                    tmp.put(phoneNumber, "");
 //                                    locations.add(tmp);
-//                                    return ;
+//                                    return_btn ;
                                     response = null;
                                 }
 

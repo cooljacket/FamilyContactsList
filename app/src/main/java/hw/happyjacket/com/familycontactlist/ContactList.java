@@ -494,7 +494,7 @@
 ////         * @param cr
 ////         * @param id
 ////         * @param photo_id
-////         * @return
+////         * @return_btn
 ////         */
 //        private void getPhoto (String contactId, long photoId, JSONObject data) throws JSONException {
 //
@@ -682,6 +682,6 @@
 //
 //                phoneCursor.close();
 //            }
-//            return contacts;
+//            return_btn contacts;
 //        }
 //}

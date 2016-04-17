@@ -191,7 +191,7 @@ public class ContactActivity extends Activity{
         newdata.put("contactName",this.data.get("contactName"));
         newdata.put("contactPhoto",this.data.get("contactPhoto"));
         newdata.put("contactID",this.data.get("contactID"));
-        newdata.put("contactGroup",this.data.get("contactGroup"));
+        newdata.put("contactGroup", this.data.get("contactGroup"));
         newdata.put("contactFamilyname",this.data.get("contactFamilyname"));
         data.putExtra("newdata", newdata);
         setResult(1, data);//不管有没修改都要更新数据

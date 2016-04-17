@@ -3,6 +3,7 @@ package hw.happyjacket.com.familycontactlist.myphonebook;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
@@ -72,6 +73,24 @@ public class PhotoZoom {
         canvas.drawBitmap(source,0,0,paint);
 
         return target;
+    }
+
+
+    public static Bitmap ratio(Activity context,int imgPath, float pixelW, float pixelH) {
+        BitmapFactory.Options newOpts = new BitmapFactory.Options();
+        // 开始读入图片，此时把options.inJustDecodeBounds 设回true，即只读边不读内容
+
+        newOpts.inPreferredConfig = Bitmap.Config.RGB_565;
+
+
+        newOpts.inJustDecodeBounds = false;
+
+        newOpts.inSampleSize = 4;//设置缩放比例
+        // 开始压缩图片，注意此时已经把options.inJustDecodeBounds 设回false了
+        Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),imgPath, newOpts);
+        // 压缩好比例大小后再进行质量压缩
+//        return compress(bitmap, maxSize); // 这里再进行质量压缩的意义不大，反而耗资源，删除
+        return bitmap;
     }
 
 

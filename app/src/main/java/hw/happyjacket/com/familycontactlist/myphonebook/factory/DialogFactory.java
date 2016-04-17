@@ -5,8 +5,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -15,12 +17,19 @@ import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Gallery;
+import android.widget.ImageButton;
+import android.widget.ImageSwitcher;
 import android.widget.ListView;
+import android.widget.ViewSwitcher;
 
 import java.util.Vector;
 
+import hw.happyjacket.com.familycontactlist.ChangePeopleDetail;
 import hw.happyjacket.com.familycontactlist.R;
+import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.CheckBoxAdapter;
+import hw.happyjacket.com.familycontactlist.myphonebook.adapter.ImageAdapter;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.RadioAdapter;
 import hw.happyjacket.com.familycontactlist.myphonebook.option.CallLogDialog;
 import hw.happyjacket.com.familycontactlist.myphonebook.option.ContentDialog;
@@ -33,6 +42,47 @@ import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
  * Created by root on 16-4-11.
  */
 public class DialogFactory {
+
+    private static int imagePosition = -1;
+
+    private static Bitmap ImagePicture;
+
+    private static int ImageP;
+
+    private static int ImagePP;
+
+
+    public static int getImagePosition() {
+        return imagePosition;
+    }
+
+    public static void setImagePosition(int imagePosition) {
+        DialogFactory.imagePosition = imagePosition;
+    }
+
+    public static Bitmap getImagePicture() {
+        return ImagePicture;
+    }
+
+    public static void setImagePicture(Bitmap imagePicture) {
+        ImagePicture = imagePicture;
+    }
+
+    public static int getImageP() {
+        return ImageP;
+    }
+
+    public static void setImageP(int imageP) {
+        ImageP = imageP;
+    }
+
+    public static int getImagePP() {
+        return ImagePP;
+    }
+
+    public static void setImagePP(int imagePP) {
+        ImagePP = imagePP;
+    }
 
     public static PhoneDialog getPhoneDialog(Context context, int layout, int id,int style, final int index, String content[], int status){
         View viewForOption = LayoutInflater.from(context).inflate(layout,null);
@@ -142,7 +192,7 @@ public class DialogFactory {
     }
 
 
-    public static AlertDialog getPhotoDialog(final Activity context, String title, final String [] content){
+    public static AlertDialog getPhotoDialog(final Activity context, String title, final String [] content, final ViewSwitcher.ViewFactory factory, final ImageButton btn_img){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(title);
         builder.setItems(content, new DialogInterface.OnClickListener() {
@@ -154,6 +204,9 @@ public class DialogFactory {
                         intent.setType("image/*");
                         intent.setAction(Intent.ACTION_GET_CONTENT);
                         context.startActivityForResult(intent, PhoneDictionary.IMAGE_REQUEST_CODE);
+                        break;
+                    case 1:
+                        DialogFactory.getImageDialog(context,"请选择图片",factory,PhoneDictionary.ImageID,btn_img).show();
                         break;
                     default:
                         break;
@@ -170,7 +223,54 @@ public class DialogFactory {
         });
 
      return builder.create();
+    }
+
+    public static AlertDialog getImageDialog(final Activity context, String title, ViewSwitcher.ViewFactory factory, final int [] image, final ImageButton btn_img){
+
+        final Gallery gallery;
+        final ImageSwitcher IS;
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.head, null);
+        gallery = (Gallery) view.findViewById(R.id.img_gallery);
+        IS = (ImageSwitcher) view.findViewById(R.id.image_switcher);
 
 
+        AlertDialog.Builder builder=new AlertDialog.Builder(context);
+        builder.setTitle("请选择头像");
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Bitmap a= PhotoZoom.ratio(context,image[imagePosition], 50, 50);
+                Bitmap circleImage=PhotoZoom.createCircleImage(a, 180);
+                btn_img.setImageBitmap(circleImage);
+                ImagePicture=circleImage;
+                ImageP = imagePosition;
+                ImagePP =image[imagePosition];
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
+        gallery.setAdapter(new ImageAdapter(context, image));
+        gallery.setSelection(image.length / 2);
+        gallery.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                IS.setImageResource(image[position]);
+                imagePosition = position;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        IS.setFactory(factory);
+        builder.setView(view);
+        return builder.create();
     }
 }
