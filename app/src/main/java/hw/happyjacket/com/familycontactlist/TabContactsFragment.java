@@ -231,10 +231,7 @@ public class TabContactsFragment extends Fragment {
 
         if (phoneCursor != null) {
             while (phoneCursor.moveToNext()) {
-//                if(++num >= 15) {
-////                    num = 0;
-//                    break;
-//                }
+
                 num++;
 //                    String phoneNumber = new String();
 //                    String homeNumber = new String();
@@ -358,11 +355,12 @@ public class TabContactsFragment extends Fragment {
                 if(!cursor.moveToFirst()){
                     User user = new User();
                     user._id=contactid;
+                    user.name=contactName;
 //                    user.family=false;
-                    user.group="UNKNOWN";
-                    user.photo=0;
-                    user.familyName="NO";
-                    dbHelper.init(user);
+//                    user.mobilephone
+//                    user.group="UNKNOWN";
+                    user.photo=""+0;
+                    dbHelper.initUser(user);
 //                    Toast.makeText(mContext, "塞进去", Toast.LENGTH_SHORT).show();
                 }else{
 //

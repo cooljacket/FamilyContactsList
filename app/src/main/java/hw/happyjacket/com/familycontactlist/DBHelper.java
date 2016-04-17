@@ -45,11 +45,14 @@ public class DBHelper extends SQLiteOpenHelper {
         return db;
     }
 
-    public void init(User user){
+    public void initUser(User user){//初始化数据库，新建联系人
 //        openDatabase();
 
         ContentValues values = new ContentValues();
         values.put("uid", user._id);
+        values.put("name",user.name);
+        values.put("mobilephone",user.mobilephone);
+        values.put("photo",user.photo);
         try{
             db.insert("user", null, values);
         }catch (SQLiteConstraintException e){
@@ -57,20 +60,51 @@ public class DBHelper extends SQLiteOpenHelper {
             e.getStackTrace();
         }
 
-
-
     }
 
-    public void change(User user){
+    public void changeUser(User user){
+        ContentValues values = new ContentValues();
+        int cid = user._id;
+        values.put("name",user.name);
+        values.put("mobilephone",user.mobilephone);
+        values.put("photo",user.photo);
+        values.put("group",user.group);
+        values.put("info",user.info);
+        db.update("user",values,"uid = "+cid,null);
+    }
+
+    public void deleteUser(User user){
 //        openDatabase();
         ContentValues values = new ContentValues();
         int cid = user._id;
-        values.put("photo",user.photo);
-        values.put("family",user.family);
-        values.put("groupname",user.group);
-        values.put("familyName", user.familyName);
-        db.update("user",values,"uid = "+cid,null);
+        db.delete("user","uid = "+cid,null);
+    }
 
+    public void initGroup(Group group){//初始化数据库，或者新建组群
+//        openDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("groupname",group.groupname);
+        values.put("groupnum",group.groupnum);
+        try{
+            db.insert("grouptable", null, values);
+        }catch (SQLiteConstraintException e){
+            e.getStackTrace();
+        }
+
+    }
+
+    public void changeGroup(Group group){
+        ContentValues values = new ContentValues();
+        String groupname = group.groupname;
+        values.put("groupnum",group.groupnum);
+        db.update("grouptable",values,"groupname = "+groupname,null);
+    }
+
+    public void deleteGroup(Group group){
+        ContentValues values = new ContentValues();
+        String groupname = group.groupname;
+        db.delete("grouptable","groupname = "+groupname,null);
     }
 
 
@@ -79,18 +113,27 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         StringBuffer tableCreate = new StringBuffer();
         tableCreate.append("create table user ( uid integer primary key,")//contactid
-//                .append("uid integer not null,")
-                .append("family boolean default false,")//是不是家人，默认不是
+                .append("name text not null,")
+                .append("mobilephone text not null,")
                 .append("photo integer default 0,")//头像编号
-                .append("groupname text default 'UNKNOWN',")//群组，默认UNKNOWN
-                .append("familyName text default 'NO')");//家人称呼
+                .append("group text default 'NO',")//是不是家人，默认不是
+                .append("info text");
         db.execSQL(tableCreate.toString());
+
+        StringBuffer tableCreate2 = new StringBuffer();
+        tableCreate2.append("create table grouptable ( gid integer primary key autoincrement,")//contactid
+                .append("groupname text not null,")
+                .append("groupnum int not null");
+        db.execSQL(tableCreate2.toString());
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {//版本号不一样就重新创建
         String sql = "drop table if exists user";
         db.execSQL(sql);
+
+        String sql1 = "drop table if exists grouptable";
+        db.execSQL(sql1);
         onCreate(db);
     }
 

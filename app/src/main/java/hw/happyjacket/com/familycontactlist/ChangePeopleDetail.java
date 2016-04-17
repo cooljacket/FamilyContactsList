@@ -192,7 +192,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
                 User user=new User();
                 user._id=(int)map.get("contactID");
-                user.photo=imageP;
+                user.photo=""+imageP;
                 user.family=family;
                 if(family){
                     user.familyName=et_familyName.getText().toString();
@@ -371,7 +371,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Bitmap a= ratio(image[imagePosition],50,50);
-                Bitmap circleImage=createCircleImage(a,180);
+                Bitmap circleImage=createCircleImage(a,160);
                 btn_img.setImageBitmap(circleImage);
                 imagePic=circleImage;
 //                btn_img.setImageResource(image[imagePosition]);
