@@ -51,7 +51,7 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put("uid", user._id);
         values.put("name",user.name);
-        values.put("mobilephone",user.mobilephone);
+        values.put("sortname",user.sortname);
         values.put("photo",user.photo);
         try{
             db.insert("user", null, values);
@@ -66,9 +66,10 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         int cid = user._id;
         values.put("name",user.name);
+        values.put("sortname",user.sortname);
         values.put("mobilephone",user.mobilephone);
         values.put("photo",user.photo);
-        values.put("group",user.group);
+        values.put("groupname",user.groupname);
         values.put("info",user.info);
         db.update("user",values,"uid = "+cid,null);
     }
@@ -112,18 +113,19 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         StringBuffer tableCreate = new StringBuffer();
-        tableCreate.append("create table user ( uid integer primary key,")//contactid
-                .append("name text not null,")
-                .append("mobilephone text not null,")
-                .append("photo integer default 0,")//头像编号
-                .append("group text default 'NO',")//是不是家人，默认不是
-                .append("info text");
+        tableCreate.append("create table user ( uid integer primary key,")//contactid0
+                .append("name text,")//1
+                .append("sortname text ,")//2
+                .append("mobilephone text default '0',")//3
+                .append("photo integer,")//头像编号4
+                .append("groupname text default 'NO',")//群组，默认no5
+                .append("info text);");//6
         db.execSQL(tableCreate.toString());
 
         StringBuffer tableCreate2 = new StringBuffer();
         tableCreate2.append("create table grouptable ( gid integer primary key autoincrement,")//contactid
                 .append("groupname text not null,")
-                .append("groupnum int not null");
+                .append("groupnum int not null);");
         db.execSQL(tableCreate2.toString());
     }
 

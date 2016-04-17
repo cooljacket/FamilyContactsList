@@ -26,6 +26,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
+import java.util.Vector;
 
 /**
  * Created by jacket on 2016/3/30.
@@ -33,18 +35,20 @@ import java.util.HashMap;
 public class TabContactsFragment extends Fragment {
     private Context mContext;
     private ListView listview;
-    private ArrayList AL;
+    private Vector AL;
     private int positionNew;
     private DBHelper dbHelper = null;
     private SQLiteDatabase db = null;
     private View ContactView;
     public static final int PHONES_DISPLAY_NAME_INDEX = 0;
     public static final int PHONES_CONTACT_ID_INDEX=1;
+    public static final int PHONES_NUMBER_INDEX=2;
     public static final String[] PHONES_PROJECTION = new String[]{
             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
-            ContactsContract.CommonDataKinds.Phone.CONTACT_ID
+            ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
+            ContactsContract.CommonDataKinds.Phone.NUMBER
     };
-    public ArrayList contacts = new ArrayList();
+    public Vector contacts = new Vector();
 
     @Nullable
     @Override
@@ -95,6 +99,7 @@ public class TabContactsFragment extends Fragment {
 //        }
 
         AL = getPhoneContacts();
+        sortList();
 
         dbHelper.close();
     }
@@ -181,6 +186,23 @@ public class TabContactsFragment extends Fragment {
     }
 
 
+    private void sortList(){
+        for(int i=0;i<AL.size();i++){
+            for(int j=i+1;j<AL.size();j++){
+                HashMap h1 = (HashMap)AL.get(i);
+                HashMap h2 = (HashMap)AL.get(j);
+                String v1 =(String) h1.get("contactSortname");
+                String v2 =(String) h2.get("contactSortname");
+                if(v1.compareTo(v2)>0){
+                    AL.setElementAt(h2,i);
+                    AL.setElementAt(h1,j);
+                }
+            }
+        }
+    }
+
+
+
     private  void loadList(){
 
 
@@ -188,6 +210,7 @@ public class TabContactsFragment extends Fragment {
         SimpleAdapter adapter = new SimpleAdapter(mContext, AL, R.layout.list_item
                 ,new String[]{"contactName","contactPhoto"}
                 ,new int[]{R.id.name, R.id.imageView});
+//        adapter.
         adapter.setViewBinder(new SimpleAdapter.ViewBinder() {
             @Override
             public boolean setViewValue(View view, Object data, String textRepresentation) {
@@ -222,7 +245,7 @@ public class TabContactsFragment extends Fragment {
 
     private int num = 0;
     //        /**得到手机通讯录联系人信息**/
-    public ArrayList getPhoneContacts() {
+    public Vector getPhoneContacts() {
 
         ContentResolver resolver1 = mContext.getContentResolver();
 //        ArrayList contacts = new ArrayList();
@@ -254,9 +277,9 @@ public class TabContactsFragment extends Fragment {
 
                 String contactID = phoneCursor.getString(PHONES_CONTACT_ID_INDEX);
 
-//                String phoneNumber = phoneCursor.getString(PHONES_NUMBER_INDEX);
+                String contactPhone = phoneCursor.getString(PHONES_NUMBER_INDEX);
 
-                // 根据contact_ID取得MobilePhone号码
+////                 根据contact_ID取得MobilePhone号码
 //                Cursor mobilePhoneCur = resolver1.query(ContactsContract.Data.CONTENT_URI,
 //                        new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
 //                        ContactsContract.Data.CONTACT_ID + "=?" + " AND "
@@ -347,36 +370,37 @@ public class TabContactsFragment extends Fragment {
                 Cursor cursor;
                 int contactPhotonum =0;
                 Bitmap contactPhoto=circleImage[0];//头像默认的图片
-                boolean contactFamily=false;
-                String contactFamilyname="NO";
-                String contactGroup="UNKNOWN";
+                String contactSortname=contactName;
                 cursor = db.query("user",null,"uid="+contactID,null,null,null,null);
 
                 if(!cursor.moveToFirst()){
                     User user = new User();
                     user._id=contactid;
                     user.name=contactName;
+                    user.sortname=contactName;
+                    user.mobilephone=contactPhone;
+//                    user.mobilephone=
 //                    user.family=false;
 //                    user.mobilephone
 //                    user.group="UNKNOWN";
-                    user.photo=""+0;
+                    Random random = new Random();
+                    user.photo= random.nextInt(31);
                     dbHelper.initUser(user);
 //                    Toast.makeText(mContext, "塞进去", Toast.LENGTH_SHORT).show();
                 }else{
 //
                         //photo
-                        contactPhoto =  circleImage[cursor.getInt(2)];
-                    contactPhotonum = cursor.getInt(2);
+                        contactPhoto =  circleImage[cursor.getInt(4)];
+//                    contactPhotonum = cursor.getInt(2);
                         //是否family
 //                        contactFamily = cursor.getInt(1)>0;
+//                    contactPhone=cursor.getString(3);
                         //familyname
-                        contactFamilyname = cursor.getString(4);
+                        contactName = cursor.getString(1);
                         //group
-                        contactGroup = cursor.getString(3);
-//                        Toast.makeText(mContext, "数据库没出问题" +
-//                                "contactPhoto"+contactPhoto
-//                                +"contactFamily"+contactFamily+
-//                                "contactFamilyname"+contactFamilyname, Toast.LENGTH_SHORT).show();
+                        contactSortname = cursor.getString(2);
+
+
 
                 }
 
@@ -406,11 +430,11 @@ public class TabContactsFragment extends Fragment {
                 map.put("contactName",contactName);
 //                map.put("contactPhone",phoneNumber);
                 map.put("contactPhoto",contactPhoto);
-
+                map.put("contactSortname",contactSortname);
                 map.put("contactID",contactid);
-                map.put("contactGroup", contactGroup);
+//                map.put("contactGroup", contactGroup);
 //                map.put("contactFamily", contactFamily);
-                map.put("contactFamilyname", contactFamilyname);
+//                map.put("contactFamilyname", contactFamilyname);
 
 
 

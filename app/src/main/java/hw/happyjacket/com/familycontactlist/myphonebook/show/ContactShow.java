@@ -28,6 +28,9 @@ public class ContactShow extends PhoneShow {
 
 
 
+
+
+
     public String getDefaultNumber() {
         return defaultNumber;
     }
@@ -87,8 +90,9 @@ public class ContactShow extends PhoneShow {
         phoneList.setSelection(selection);
         phoneList.setArgument(argument);
         phoneList.setOrderby(orderby);
-        phoneList.connectContentResolver();
-        number = phoneList.getPhoneList().get(1).get(ContactsContract.CommonDataKinds.Phone.NUMBER);
+//        phoneList.
+        phoneList.connectDataBase();
+        number = phoneList.getPhoneList().get(0).get("mobilephone");
         mPhoneListElementList = getDefaultData();
         sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index);
     }

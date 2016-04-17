@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+
+    android:id="@+id/people_info_detail">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginLeft="20dp"
+        android:layout_height="52dp">
+
+        <Button
+            android:layout_width="60dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="10dp"
+            android:gravity="center_vertical"
+            android:textColor="#000000"
+            android:background="#00000000"
+            android:textSize="17dp"
+            android:textAlignment="center"
+            android:id="@+id/people_info_name"
+            android:drawableRight="@drawable/button_down"
+            android:hint="21"
+
+            ></Button>
+        <TextView
+            android:layout_width="0.8dp"
+            android:layout_height="25dp"
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/horizontal_divider"
+            android:gravity="center_vertical"
+            />
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/people_info_content"
+            android:singleLine="true"
+            android:layout_marginLeft="20dp"
+            android:gravity="center_vertical"
+            android:textColor="#000000"
+            android:textSize="16dp"
+            android:background="#00000000"
+            android:textCursorDrawable="@drawable/color_cursor"
+            android:hint="121"
+            android:phoneNumber="true"
+            />
+
+    </LinearLayout>
+    <TextView
+        android:layout_width="320dp"
+        android:layout_height="0.8dp"
+        android:background="@drawable/vertical_divider"
+        android:layout_gravity="center_horizontal"
+        />
+
+
+
+</LinearLayout>

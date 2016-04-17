@@ -6,8 +6,9 @@ package hw.happyjacket.com.familycontactlist;
 public class User {
     public int _id;
     public String name;
+    public String sortname;
     public String mobilephone;
-    public String photo ;
-    public String group ;
+    public int photo ;
+    public String groupname ;
     public String info;
 }

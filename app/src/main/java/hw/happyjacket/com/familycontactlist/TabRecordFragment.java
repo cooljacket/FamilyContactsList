@@ -52,6 +52,7 @@ public class TabRecordFragment extends Fragment {
     private Context mContext;
     private PhoneDialog option;
     private Button Dial;
+    private Handler mHandler;
 
 
     @Nullable
@@ -91,7 +92,25 @@ public class TabRecordFragment extends Fragment {
     public void init()
     {
         try {
+
             Operation.setContext(mContext);
+            mHandler = new Handler(){
+                @Override
+                public void handleMessage(Message msg) {
+                    switch (msg.what){
+                        case PhoneDictionary.RADIO_OPTION:
+                            Toast.makeText(mContext,msg.arg1 + "",Toast.LENGTH_SHORT).show();
+                            break;
+                        case PhoneDictionary.CHECKBOX_OPTION:
+                            Vector<Boolean> t = (Vector<Boolean>)msg.obj;
+                            Toast.makeText(mContext,t.toString(),Toast.LENGTH_SHORT).show();
+                            break;
+                        default:
+                            break;
+                    }
+
+                }
+            };
             mainShow = new MainShow(mContext,R.layout.phone_element);
             mainShow.InitAdapter(new XiaoMiAccessory(), DataBaseDictionary.CallLog_Projection, null, null, CallLog.Calls.DEFAULT_SORT_ORDER);
             Dial = (Button) recordView.findViewById(R.id.phone_call);
@@ -127,6 +146,8 @@ public class TabRecordFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 new PhoneOperation(mContext).call(mainShow.getPhoneListElementList().get(position).get(PhoneDictionary.NUMBER));
+               // DialogFactory.getCheckBoxDialog(getContext(), R.style.Menu, PhoneDictionary.MainItems, mHandler).show();
+
             }
         });
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
