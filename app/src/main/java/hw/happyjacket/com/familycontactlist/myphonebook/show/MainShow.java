@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import hw.happyjacket.com.familycontactlist.HttpConnectionUtil;
+import hw.happyjacket.com.familycontactlist.PhoneLocationDBHelper;
 import hw.happyjacket.com.familycontactlist.PhoneLocationMaster;
 import hw.happyjacket.com.familycontactlist.extention.Accessory;
 import hw.happyjacket.com.familycontactlist.extention.Decorate;
@@ -138,7 +139,7 @@ public class MainShow extends PhoneShow {
         Message msg = new Message();
         msg.obj = phoneNumberList;
         msg.what = 0;
-       // handler.sendMessage(msg);
+        handler.sendMessage(msg);
     }
 
     private Handler handler = new Handler() {
@@ -151,6 +152,8 @@ public class MainShow extends PhoneShow {
 
                     ArrayList<String> phoneNumberList = (ArrayList<String>) msg.obj;
                     final Vector<HashMap<String, String> > locations = new Vector<>();
+
+                    int ACCESS_NETWORK_COUNT = 0;
 
                     for (final String phoneNumber : phoneNumberList) {
                         String[] places = PLMaster.get(phoneNumber);
@@ -171,17 +174,18 @@ public class MainShow extends PhoneShow {
                             public void onFinish(String response) {
                                 response = response.replaceAll("<[^>]+>", "");
                                 Log.d("hehe-response", phoneNumber + " " + response);
+                                int state = PhoneLocationDBHelper.CACHED;
+
                                 // if there is no location for the querying phonenumber
-                                if (response.contains("http") || response.contains("没有")) {
-//                                    HashMap<String,String> tmp = new HashMap<>();
-//                                    tmp.put(phoneNumber, "");
-//                                    locations.add(tmp);
-//                                    return_btn ;
+                                if (response.contains("手机号码错误") || response.contains("没有此号码记录")) {
                                     response = null;
+                                    state = PhoneLocationDBHelper.NOSUCH;
+                                } else if (response.contains("http")){
+                                    state = PhoneLocationDBHelper.ERROR;
                                 }
 
-                                PLMaster.add(phoneNumber, response);
-                                Log.d("hehe-number", PLMaster.get(phoneNumber)[2]);
+                                PLMaster.add(phoneNumber, response, state);
+                                Log.d("hehe-number", PLMaster.get(phoneNumber)[2] + ", " + state);
                                 HashMap<String,String> tmp = new HashMap<>();
                                 tmp.put(phoneNumber, PLMaster.get(phoneNumber)[2]);
                                 locations.add(tmp);
@@ -198,6 +202,10 @@ public class MainShow extends PhoneShow {
                             handler.sendMessage(msg_for_location);
                             break;
                         }
+
+                        // 每次限定最多从网络拿15个归属地，因为免费的api服务有限制，也没必要一下子拿太多
+                        if (++ACCESS_NETWORK_COUNT > 15)
+                            break;
                     }
 
                     msg_for_location.obj = locations;
