@@ -25,7 +25,6 @@ import hw.happyjacket.com.familycontactlist.phone.database.DataBaseDictionary;
 public class MainShow extends PhoneShow {
     private PhoneLocationMaster PLMaster;
     private boolean errorOfGetingLocation = false;
-    HashMap<String,Integer> nmapp = new HashMap<>(); //the map between number and position
 
     public MainShow(Context context, int table) {
         super(context,table);
@@ -205,8 +204,11 @@ public class MainShow extends PhoneShow {
 
                         // 每次限定最多从网络拿15个归属地，因为免费的api服务有限制，也没必要一下子拿太多
                         if (++ACCESS_NETWORK_COUNT > 15)
-                            break;
+                        {
+                           break;
+                        }
                     }
+
 
                     msg_for_location.obj = locations;
                     handler.sendMessage(msg_for_location);

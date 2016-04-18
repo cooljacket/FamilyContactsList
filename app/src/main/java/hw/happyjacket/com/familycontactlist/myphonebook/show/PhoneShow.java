@@ -30,6 +30,7 @@ public abstract class PhoneShow {
     protected Vector<HashMap<String,String>> mPhoneListElementList_backup = new Vector<>(CACHE_SIZE);
     protected PhoneAdapter sPhoneAdapter;
     protected Decorate mDecorate;
+    protected HashMap<String,Integer> nmapp = new HashMap<>(); //the map between number and position
 
     public PhoneShow(Context context,int table){
         this.context = context;
@@ -66,6 +67,14 @@ public abstract class PhoneShow {
 
     public void setPhoneList(RecordList phoneList) {
         this.phoneList = phoneList;
+    }
+
+    public HashMap<String, Integer> getNmapp() {
+        return nmapp;
+    }
+
+    public void setNmapp(HashMap<String, Integer> nmapp) {
+        this.nmapp = nmapp;
     }
 
     public HashMap<String,String> filter(HashMap<String,String> input) {

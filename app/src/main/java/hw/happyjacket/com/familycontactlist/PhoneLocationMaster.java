@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Created by jacket on 2016/4/11.
@@ -25,7 +26,6 @@ public class PhoneLocationMaster {
         ContentValues values = addHelper(phoneNumber, data, state);
 
         long result = db.insert(PhoneLocationDBHelper.TABLE_NAME, null, values);
-        db.close();
         return result != -1;
     }
 
@@ -79,6 +79,7 @@ public class PhoneLocationMaster {
         String province = cursor.getString(cursor.getColumnIndex("province"));
         String city = cursor.getString(cursor.getColumnIndex("city"));
         String card_type = cursor.getString(cursor.getColumnIndex("card_type"));
+        cursor.close();
         return new String[]{province, city, card_type};
     }
 }

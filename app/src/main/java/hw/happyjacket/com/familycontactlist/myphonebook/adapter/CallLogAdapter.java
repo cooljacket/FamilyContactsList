@@ -1,6 +1,7 @@
 package hw.happyjacket.com.familycontactlist.myphonebook.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ import java.util.List;
  */
 public class CallLogAdapter extends PhoneAdapter {
 
+    private boolean sms  = false;
+
     public CallLogAdapter(Context context, int textViewResourceId, List<HashMap<String,String>> objects) {
         super(context,textViewResourceId, objects);
     }
@@ -29,6 +32,18 @@ public class CallLogAdapter extends PhoneAdapter {
         super(context, textViewResourceId, objects,index);
     }
 
+    public CallLogAdapter(Context context, int textViewResourceId, List<HashMap<String, String>> objects, int index, boolean sms) {
+        super(context, textViewResourceId, objects, index);
+        this.sms = sms;
+    }
+
+    public boolean isSms() {
+        return sms;
+    }
+
+    public void setSms(boolean sms) {
+        this.sms = sms;
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
@@ -44,6 +59,7 @@ public class CallLogAdapter extends PhoneAdapter {
             viewHolder.info2 = (TextView) view.findViewById(R.id.call_log_info2);
             viewHolder.info3 = (TextView) view.findViewById(R.id.call_log_info3);
             viewHolder.info4 = (Button) view.findViewById(R.id.call_log_info4);
+            viewHolder.height = viewHolder.info2.getLineHeight();
             view.setTag(viewHolder);
         }
         else
@@ -52,7 +68,10 @@ public class CallLogAdapter extends PhoneAdapter {
             viewHolder = (ViewHolder) view.getTag();
         }
 
-        if(position == 0) {
+        viewHolder.info1.setText(data.get(PhoneDictionary.DATE));
+
+        if(position == 0 && sms) {
+            viewHolder.info4.setVisibility(View.VISIBLE);
             viewHolder.info4.setBackgroundResource(android.R.drawable.sym_action_chat);
             viewHolder.info4.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -61,22 +80,28 @@ public class CallLogAdapter extends PhoneAdapter {
                 }
             });
         }
+
         else
-            viewHolder.info4.setHeight(0);
-        viewHolder.info1.setText(data.get(PhoneDictionary.DATE));
-        if(data.get(PhoneDictionary.NUMBER) != null)
+            viewHolder.info4.setVisibility(View.INVISIBLE);
+
+
+        if(data.get(PhoneDictionary.NUMBER) != null) {
+            viewHolder.info2.setHeight(viewHolder.height);
             viewHolder.info2.setText(data.get(PhoneDictionary.NUMBER));
+        }
         else
             viewHolder.info2.setHeight(0);
         String a = data.get(PhoneDictionary.TYPE) , b = data.get(PhoneDictionary.DURATION);
         if(a != null && b !=null) {
+            viewHolder.info3.setHeight(viewHolder.height);
             if (!b.equals("-1"))
                 viewHolder.info3.setText(a + " " + b + "秒");
             else
                 viewHolder.info3.setText("新建联系人");
         }
         else
-            viewHolder.info3.setText("");
+            viewHolder.info3.setHeight(0);
+
 
         return view;
     }
@@ -87,5 +112,6 @@ public class CallLogAdapter extends PhoneAdapter {
         TextView info2;
         TextView info3;
         Button info4;
+        int height;
     }
 }

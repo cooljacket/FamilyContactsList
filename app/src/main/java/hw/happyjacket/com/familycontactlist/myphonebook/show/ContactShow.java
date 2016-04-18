@@ -94,7 +94,7 @@ public class ContactShow extends PhoneShow {
         phoneList.setArgument(argument);
         phoneList.setOrderby(orderby);
         phoneList.connectContentResolver();
-        number = phoneList.getPhoneList().get(0).get(ContactsContract.CommonDataKinds.Phone.NUMBER);
+        number = phoneList.getPhoneList().get(1).get(ContactsContract.CommonDataKinds.Phone.NUMBER);
         mPhoneListElementList = getDefaultData();
         sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index);
     }

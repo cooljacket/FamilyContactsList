@@ -7,18 +7,22 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Vector;
 
 /**
  * Created by jacket on 2016/4/11.
  */
 public class HttpConnectionUtil {
+
+    public static Vector<Thread> threadPool = new Vector<>(50);
+
     public interface HttpCallbackListener {
         void onFinish(String response);
         void onError(Exception e);
     }
 
     public static void get(final String address, final HttpCallbackListener listener) {
-        new Thread(new Runnable() {
+        Thread t = new Thread(new Runnable() {
             @Override
             public void run() {
                 HttpURLConnection conn = null;
@@ -51,6 +55,9 @@ public class HttpConnectionUtil {
                         conn.disconnect();
                 }
             }
-        }).start();
+
+        });
+        threadPool.add(t);
+        t.start();
     }
 }

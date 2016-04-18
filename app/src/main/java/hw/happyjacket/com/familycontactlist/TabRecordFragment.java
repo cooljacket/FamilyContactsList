@@ -2,11 +2,14 @@ package hw.happyjacket.com.familycontactlist;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.provider.CallLog;
 import android.support.annotation.Nullable;
@@ -24,11 +27,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 import java.util.zip.Inflater;
 
 import hw.happyjacket.com.familycontactlist.extention.XiaoMiAccessory;
+import hw.happyjacket.com.familycontactlist.myphonebook.InitService;
 import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
 import hw.happyjacket.com.familycontactlist.myphonebook.factory.DialogFactory;
 import hw.happyjacket.com.familycontactlist.myphonebook.factory.PhoneDialog;
@@ -123,6 +128,7 @@ public class TabRecordFragment extends Fragment {
             });
             initOption();
             initListView();
+           // initService();
         }
         catch (Exception e)
         {
@@ -158,6 +164,25 @@ public class TabRecordFragment extends Fragment {
                 return true;
             }
         });
+    }
+
+    public void initService(){
+        ServiceConnection connection = new ServiceConnection() {
+            @Override
+            public void onServiceConnected(ComponentName name, IBinder service) {
+                InitService.MyBinder myBinder = (InitService.MyBinder) service;
+                ArrayList<String> phoneNumberList = new ArrayList<>();
+                for (HashMap<String,String> i : mainShow.getPhoneListElementList())
+                    phoneNumberList.add(i.get(PhoneDictionary.NUMBER));
+                myBinder.start(mainShow.getIndex(),phoneNumberList);
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName name) {
+            }
+        };
+        Intent intent = new Intent(getActivity(), InitService.class);
+        getActivity().bindService(intent, connection, Context.BIND_AUTO_CREATE);
     }
 
 

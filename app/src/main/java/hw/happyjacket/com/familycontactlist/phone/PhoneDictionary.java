@@ -17,6 +17,7 @@ public class PhoneDictionary {
     public static final String DURATION = CallLog.Calls.DURATION;
     public static final String DATE = CallLog.Calls.DATE;
     public static final String ID = CallLog.Calls._ID;
+    public static final String OTHER = "something special";
     public static final String READ = CallLog.Calls.IS_READ;
     public static final String DATE_SAVE = "date_save";
     public static final String LOCATION = "location";

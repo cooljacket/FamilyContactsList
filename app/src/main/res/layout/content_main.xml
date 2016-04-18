@@ -1,19 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_height="match_parent"
-              android:layout_width="match_parent"
-              android:orientation="vertical">
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                 android:layout_height="match_parent"
+                                                 android:layout_width="match_parent"
+                                                 android:fitsSystemWindows="true">
 
-    <include android:id="@+id/content_layout" layout="@layout/content_head"></include>
 
 
-    <ListView
+
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/contact_head"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:fitsSystemWindows="true"
+        >
+
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/collapsing_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fitsSystemWindows="true"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+
+            <ImageView
+                android:id="@+id/backdrop"
+                android:layout_width="match_parent"
+                android:layout_height="360dp"
+                android:minHeight="240dp"
+                android:fitsSystemWindows="true"
+                android:scaleType="centerCrop"
+                android:background="@drawable/content_head_background"
+                app:layout_collapseMode="parallax" />
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:background="#00000000"
+                app:layout_collapseMode="pin"
+                app:popupTheme="@style/Theme.AppCompat.NoActionBar" />
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
+
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/button_return"
+            android:textSize="@dimen/content_head_text"
+            android:text="@string/return_button"
+            android:textColor="@color/white"/>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:id="@+id/content_name"
+            android:layout_gravity="top"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin_large"
+            android:textSize="@dimen/content_head_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"/>
+
+    </android.support.v4.widget.NestedScrollView>
+
+
+
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <hw.happyjacket.com.familycontactlist.myphonebook.listview.ScrollListView
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:id="@+id/content_number_and_detail"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="1.5"
         android:scrollbars="none">
-    </ListView>
+    </hw.happyjacket.com.familycontactlist.myphonebook.listview.ScrollListView>
 
-</LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

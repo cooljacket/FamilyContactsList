@@ -117,7 +117,7 @@ public class ContentShow extends PhoneShow {
         phoneList.setArgument(argument);
         phoneList.setOrderby(orderby);
         refresh();
-        sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index);
+        sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index,true);
     }
 
 }
