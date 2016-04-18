@@ -17,19 +17,19 @@ public class PhoneLocationMaster {
     }
 
     // a string like "18819461579：广东 广州 广东移动全球通卡"
-    public boolean add(String phoneNumber, String data) {
+    public boolean add(String phoneNumber, String data, int state) {
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         if (!db.isOpen())
             return false;
 
-        ContentValues values = addHelper(phoneNumber, data);
+        ContentValues values = addHelper(phoneNumber, data, state);
 
         long result = db.insert(PhoneLocationDBHelper.TABLE_NAME, null, values);
         db.close();
         return result != -1;
     }
 
-    public ContentValues addHelper(String phoneNumber, String data) {
+    public ContentValues addHelper(String phoneNumber, String data, int state) {
         String province = "", city = "", card_type = "";
 
         if (data != null) {
@@ -45,6 +45,7 @@ public class PhoneLocationMaster {
         values.put("province", province);
         values.put("city", city);
         values.put("card_type", card_type);
+        values.put("state", state);
 
         return values;
     }
@@ -69,6 +70,10 @@ public class PhoneLocationMaster {
 
         Cursor cursor = db.query(PhoneLocationDBHelper.TABLE_NAME, null, "phoneNumber=?", new String[]{phoneNumber}, null, null, null);
         if (!cursor.moveToFirst())
+            return null;
+
+        // 如果上次出错了，那么就重新获取一遍
+        if (cursor.getInt(cursor.getColumnIndex("state")) == PhoneLocationDBHelper.ERROR)
             return null;
 
         String province = cursor.getString(cursor.getColumnIndex("province"));
