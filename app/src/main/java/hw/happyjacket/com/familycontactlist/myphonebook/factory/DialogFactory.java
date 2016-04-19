@@ -5,28 +5,38 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract;
+import android.text.InputType;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Gallery;
+import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ListView;
+import android.widget.SimpleAdapter;
 import android.widget.ViewSwitcher;
 
+import java.util.HashMap;
 import java.util.Vector;
 
 import hw.happyjacket.com.familycontactlist.ChangePeopleDetail;
 import hw.happyjacket.com.familycontactlist.R;
+import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
+import hw.happyjacket.com.familycontactlist.myphonebook.PhoneDial;
 import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.CheckBoxAdapter;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.ImageAdapter;
@@ -272,5 +282,69 @@ public class DialogFactory {
         IS.setFactory(factory);
         builder.setView(view);
         return builder.create();
+    }
+
+    public static PhoneDialog DiaWheel(Activity context,int style){
+
+        Vector<HashMap<String,Object>> imageItem = new Vector<>();
+        final PhoneDialog phoneDialog = new DefaultDialog(context,style);
+        for(int i = 0 ; i < PhoneDictionary.PhoneCallNumber.length ; ++i){
+            HashMap<String,Object> t = new HashMap<>();
+            t.put(PhoneDictionary.DiaWheelNumber,PhoneDictionary.PhoneCallNumber[i]);
+            t.put(PhoneDictionary.DialogAlphabet,PhoneDictionary.PhoneCallAlphabet[i]);
+            imageItem.add(t);
+        }
+        View view = LayoutInflater.from(context).inflate(R.layout.dia_wheel,null);
+        final EditText editText = (EditText) view.findViewById(R.id.dia_wheel_screen);
+        Button retrive = (Button) view.findViewById(R.id.dia_wheel_retrieve);
+        Button call = (Button) view.findViewById(R.id.dia_wheel_call);
+        Button delete = (Button) view.findViewById(R.id.dia_wheel_delete);
+        editText.clearFocus();
+        editText.setInputType(InputType.TYPE_NULL);
+        GridView gridView = (GridView)view.findViewById(R.id.dia_wheel_table);
+        SimpleAdapter simpleAdapter = new SimpleAdapter(context,imageItem,R.layout.dia_wheel_detail,new String[] {PhoneDictionary.DiaWheelNumber,PhoneDictionary.DialogAlphabet}, new int[]{R.id.dia_wheel_number,R.id.dia_wheel_alphabet});
+        gridView.setAdapter(simpleAdapter);
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                editText.setText(editText.getText() + PhoneDictionary.PhoneCallNumber[position]);
+            }
+        });
+        retrive.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                phoneDialog.dismiss();
+            }
+        });
+
+        call.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Operation.call(editText.getText().toString());
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String t;
+                t = editText.getText().toString();
+                if(t.isEmpty())
+                    return;
+                editText.setText(t.substring(0,t.length() - 1));
+            }
+        });
+        phoneDialog.setContentView(view);
+        Window window = phoneDialog.getWindow();
+        window.setGravity(Gravity.BOTTOM);
+        WindowManager.LayoutParams p = window.getAttributes();
+        WindowManager windowManager = context.getWindowManager();
+        Display d = windowManager.getDefaultDisplay();
+        p.height = (int)(d.getHeight() * 0.5);
+        p.width = (int)(d.getWidth() * 1.0);
+        p.alpha = 1.0f; // 设置本身透明度
+        p.dimAmount = 0.0f; // 设置黑暗度
+        window.setAttributes(p);
+        return phoneDialog;
     }
 }

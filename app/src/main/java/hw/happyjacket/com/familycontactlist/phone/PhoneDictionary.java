@@ -28,6 +28,8 @@ public class PhoneDictionary {
     public static final String CALLLOG_OPTION = "calllog";
     public static final String DEFAULT_DB = DataBaseDictionary.CALLLOG;
     public static final String DEFAULT_TABLE = DataBaseDictionary.CallLog;
+    public static final String DiaWheelNumber = "DialogNumber";
+    public static final String DialogAlphabet = "DialogAlphabet";
 
     public static final int BLUETOOTH_FOUND = 1;
     public static final int BLUETOOTH_FINISHED = 2;
