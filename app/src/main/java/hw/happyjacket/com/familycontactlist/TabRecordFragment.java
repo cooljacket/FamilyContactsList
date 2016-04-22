@@ -80,6 +80,7 @@ public class TabRecordFragment extends Fragment {
         }
         else{
             mainShow.refresh(new XiaoMiAccessory(),new String[]{PhoneDictionary.DATE});
+            Log.i(TAG,mainShow.getPhoneListElementList().toString());
         }
         super.onStart();
 
@@ -118,6 +119,7 @@ public class TabRecordFragment extends Fragment {
             };
             mainShow = new MainShow(mContext,R.layout.phone_element);
             mainShow.InitAdapter(new XiaoMiAccessory(), DataBaseDictionary.CallLog_Projection, null, null, CallLog.Calls.DEFAULT_SORT_ORDER);
+            String content [] = mainShow.getPhoneList().getProjection();
             Dial = (Button) recordView.findViewById(R.id.phone_call);
             Dial.setOnClickListener(new View.OnClickListener() {
                 @Override

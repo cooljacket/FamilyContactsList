@@ -55,13 +55,13 @@ public class MainAdapter extends PhoneAdapter {
         }
         switch (phoneListElement.get(PhoneDictionary.TYPE)){
             case "来电":
-                viewHolder.phone_type.setImageResource(android.R.drawable.sym_call_incoming);
+                viewHolder.phone_type.setImageResource(R.drawable.call_received);
                 break;
             case "拨出":
-                viewHolder.phone_type.setImageResource(android.R.drawable.sym_call_outgoing);
+                viewHolder.phone_type.setImageResource(R.drawable.call_made);
                 break;
             case "响铃":
-                viewHolder.phone_type.setImageResource(android.R.drawable.sym_call_missed);
+                viewHolder.phone_type.setImageResource(R.drawable.call_missed);
                 break;
             default:
                 break;
@@ -72,7 +72,7 @@ public class MainAdapter extends PhoneAdapter {
         if(phoneListElement.get(PhoneDictionary.NAME) != null)
         {
             viewHolder.phone_name.setText(phoneListElement.get(PhoneDictionary.NAME));
-            viewHolder.phone_info.setText(location + phoneListElement.get(PhoneDictionary.NUMBER)  + " " + phoneListElement.get(PhoneDictionary.DATE));
+            viewHolder.phone_info.setText(location + phoneListElement.get(PhoneDictionary.NUMBER) + " " + phoneListElement.get(PhoneDictionary.DATE));
         }
         else
         {

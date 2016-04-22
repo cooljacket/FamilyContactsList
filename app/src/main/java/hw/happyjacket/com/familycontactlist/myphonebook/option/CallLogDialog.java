@@ -39,7 +39,7 @@ public class CallLogDialog extends PhoneDialog {
                 Operation.call(t.get((PhoneDictionary.NUMBER)));
                 break;
             case 1:
-                Operation.delete(t.get(PhoneDictionary.ID),t.get(PhoneDictionary.NUMBER));
+                Operation.delete(getPos() == 0,t.get(PhoneDictionary.ID),t.get(PhoneDictionary.NUMBER));
                 break;
             default:
                 break;

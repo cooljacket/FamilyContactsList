@@ -1,8 +1,11 @@
 package hw.happyjacket.com.familycontactlist.myphonebook.show;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.CallLog;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -15,9 +18,12 @@ import hw.happyjacket.com.familycontactlist.PhoneLocationDBHelper;
 import hw.happyjacket.com.familycontactlist.PhoneLocationMaster;
 import hw.happyjacket.com.familycontactlist.extention.Accessory;
 import hw.happyjacket.com.familycontactlist.extention.Decorate;
+import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.MainAdapter;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 import hw.happyjacket.com.familycontactlist.phone.database.DataBaseDictionary;
+import hw.happyjacket.com.familycontactlist.phone.list.PhoneList;
+import hw.happyjacket.com.familycontactlist.phone.list.RecordList;
 
 /**
  * Created by root on 16-4-1.
@@ -27,7 +33,7 @@ public class MainShow extends PhoneShow {
     private boolean errorOfGetingLocation = false;
 
     public MainShow(Context context, int table) {
-        super(context,table);
+        super(context, table);
         PLMaster = new PhoneLocationMaster(context);
     }
 
@@ -50,8 +56,15 @@ public class MainShow extends PhoneShow {
         boolean hasErase = false;
         String date = PhoneDictionary.DATE;
         String number = PhoneDictionary.NUMBER;
+        String num = input.get(number);
+        String dates = input.get(date);
+        int count = nmapp.containsKey(num)? nmapp.size() : nmapp.size() + 1;
+        String location [] = new String[3];
+        phoneList.CallLogUpdate(dates, count);
         try {
             t = filter(input);
+            location = new PhoneLocationMaster(context).get(num);
+            t.put(PhoneDictionary.LOCATION, Operation.getLocation(num));
             while (i < mPhoneListElementList.size()) {
                 l = mPhoneListElementList.get(i);
                 v = mPhoneListElementList_backup.get(i);
@@ -65,6 +78,9 @@ public class MainShow extends PhoneShow {
                 ++i;
             }
             mPhoneListElementList_backup.insertElementAt(new HashMap<String, String>(t), 0);
+            for (int j = 0; j < mPhoneListElementList_backup.size(); j++) {
+                nmapp.put(mPhoneListElementList_backup.get(j).get(number),j);
+            }
             t.put(date, accessory.decorate(date, t.get(date)));
             mPhoneListElementList.insertElementAt(t, 0);
             sPhoneAdapter.notifyDataSetChanged();
@@ -77,17 +93,19 @@ public class MainShow extends PhoneShow {
 
 
     public void DeleteTheNewestOne(String id, String number) {
-        phoneList.delete(PhoneDictionary.ID + " = ? ",new String[]{id});
-        phoneList.findTheNewestOne(DataBaseDictionary.CallLog_Projection, PhoneDictionary.PhoneAll, PhoneDictionary.NUMBER, number);
+        phoneList.delete(PhoneDictionary.ID + " = ? ", new String[]{id});
+        phoneList.InsertTheNewestOne(DataBaseDictionary.CallLog_Projection, PhoneDictionary.PhoneAll, PhoneDictionary.NUMBER, number);
         phoneList.connectDataBase();
         mPhoneListElementList_backup = phoneList.getPhoneList();
+        for(HashMap<String,String> i : mPhoneListElementList_backup)
+            i.put(PhoneDictionary.LOCATION,Operation.getLocation(i.get(PhoneDictionary.NUMBER)));
         ElementCopy();
         sPhoneAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void DeletePhoneElement(String id, String number) {
-       if(nmapp.containsKey(number))
+    public void DeletePhoneElement(Boolean first,String id, String number) {
+        if(first)
            DeleteTheNewestOne(id,number);
     }
 
@@ -97,21 +115,18 @@ public class MainShow extends PhoneShow {
         sPhoneAdapter.notifyDataSetChanged();
     }
 
-    public void getLocation(String phoneNumber) {
-
-    }
 
     @Override
     public void InitAdapter(Accessory accessory, String[] projection, String selection, String[] argument, String orderBy)
     {
         Vector<HashMap<String, String>> t = phoneList.init();
         int count = 0;
+        phoneList.setProjection(projection);
+        phoneList.setSelection(selection);
+        phoneList.setArgument(argument);
+        phoneList.setOrderby(orderBy);
         if(t == null)
         {
-            phoneList.setProjection(projection);
-            phoneList.setSelection(selection);
-            phoneList.setArgument(argument);
-            phoneList.setOrderby(orderBy);;
             phoneList.connectDataBase();
             mPhoneListElementList_backup = phoneList.getPhoneList();
         }
@@ -135,7 +150,7 @@ public class MainShow extends PhoneShow {
         for (HashMap<String,String> i : mPhoneListElementList)
            phoneNumberList.add(i.get(PhoneDictionary.NUMBER));
 
-        Message msg = new Message();
+        Message msg = handler.obtainMessage();
         msg.obj = phoneNumberList;
         msg.what = 0;
         handler.sendMessage(msg);

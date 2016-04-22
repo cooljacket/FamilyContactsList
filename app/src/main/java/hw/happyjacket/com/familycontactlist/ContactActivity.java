@@ -5,17 +5,23 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
+import android.support.v7.widget.Toolbar;
 
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 
 import hw.happyjacket.com.familycontactlist.extention.XiaoMiAccessory;
@@ -29,15 +35,15 @@ import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 /**
  * Created by root on 16-4-13.
  */
-public class ContactActivity extends Activity{
+public class ContactActivity extends AppCompatActivity{
 
     private String name;
     private int contactID;
     private ScrollListView ContactListView;
     private ContactShow mContactShow;
-    private TextView returns;
     private CollapsingToolbarLayout head;
     private HashMap data;
+    private Toolbar mToolbar;
     String contactHome= new String();
     String contactWork= new String();
     String contactRemark= new String();
@@ -58,7 +64,7 @@ public class ContactActivity extends Activity{
 
 
         ContactListView = (ScrollListView) findViewById(R.id.contact_number_and_detail);
-        head = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        head = (CollapsingToolbarLayout) findViewById(R.id.contact_toolbar_layout);
         final Intent intent = getIntent();
         data = (HashMap)intent.getSerializableExtra("data");
         showDetail();
@@ -69,7 +75,15 @@ public class ContactActivity extends Activity{
         getOtherDetail();
         name = (String)data.get("contactName");
         contactID = (int)data.get("contactID");
-
+        mToolbar = (Toolbar) findViewById(R.id.contact_toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
         head.setTitle(name);
         mContactShow = new ContactShow(this,R.layout.call_log_list);
         mContactShow.getPhoneList().setUri(ContactsContract.Data.CONTENT_URI);
@@ -90,8 +104,12 @@ public class ContactActivity extends Activity{
                         startActivityForResult(intent1, PhoneDictionary.CONTACT_REQUEST_CODE);
                         break;
                     case 3:
+                        new BlackListMaster(ContactActivity.this).add(mContactShow.getNumber());
                         break;
                     case 4:
+                        new BlackListMaster(ContactActivity.this).delete(mContactShow.getNumber());
+                        break;
+                    case 5:
                         break;
                     default:
                         break;
@@ -243,4 +261,5 @@ public class ContactActivity extends Activity{
         intent.putExtra("data",map);
         context.startActivity(intent);
     }
+
 }

@@ -69,7 +69,7 @@
 
         <activity android:name=".myphonebook.ContentActivity"
                   android:label="Phone Content"
-                  android:theme="@style/AppTheme">
+                  android:theme="@style/AppTop">
         </activity>
 
         <activity android:name=".myphonebook.CallLogActivity"
@@ -79,7 +79,7 @@
         </activity>
 
         <activity android:name=".ContactActivity"
-                  android:theme="@style/AppTheme">
+                  android:theme="@style/AppTop">
         </activity>
 
         <service android:name=".myphonebook.InitService"/>

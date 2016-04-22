@@ -43,7 +43,7 @@ public class CallLogShow extends PhoneShow {
 
 
     @Override
-    public void DeletePhoneElement(String id, String number) {
+    public void DeletePhoneElement(Boolean first,String id, String number) {
         try {
             int count = 0;
             for (HashMap<String, String> i : mPhoneListElementList) {

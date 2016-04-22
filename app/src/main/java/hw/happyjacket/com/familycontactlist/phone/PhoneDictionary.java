@@ -57,7 +57,7 @@ public class PhoneDictionary {
     public static final String PhoneDetail[] = {ID,DATE,TYPE,DURATION};
     public static final String PhoneCallLog[] = {ID,NUMBER,DATE,TYPE,DURATION};
     public static final String TEST[] = {NUMBER,NAME,DATE,ID};
-    public static final String MainItems[] = {"呼叫","删除","添加黑名单"};
+    public static final String MainItems[] = {"呼叫","删除","添加黑名单","撤销黑名单"};
     public static final String CallLogItems[] = {"呼叫","删除"};
     public static final String ContentItems1[] = {"呼叫"};
     public static final String ContentItems2[] = {"呼叫","删除"};

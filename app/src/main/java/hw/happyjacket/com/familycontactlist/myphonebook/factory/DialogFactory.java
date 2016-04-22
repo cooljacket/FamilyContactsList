@@ -331,7 +331,14 @@ public class DialogFactory {
                 t = editText.getText().toString();
                 if(t.isEmpty())
                     return;
-                editText.setText(t.substring(0,t.length() - 1));
+                editText.setText(t.substring(0, t.length() - 1));
+            }
+        });
+        delete.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                editText.setText("");
+                return true;
             }
         });
         phoneDialog.setContentView(view);
@@ -340,7 +347,7 @@ public class DialogFactory {
         WindowManager.LayoutParams p = window.getAttributes();
         WindowManager windowManager = context.getWindowManager();
         Display d = windowManager.getDefaultDisplay();
-        p.height = (int)(d.getHeight() * 0.5);
+        p.height = (int)(d.getHeight() * 0.54);
         p.width = (int)(d.getWidth() * 1.0);
         p.alpha = 1.0f; // 设置本身透明度
         p.dimAmount = 0.0f; // 设置黑暗度

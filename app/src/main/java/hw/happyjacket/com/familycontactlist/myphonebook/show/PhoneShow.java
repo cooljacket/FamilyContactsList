@@ -37,7 +37,6 @@ public abstract class PhoneShow {
         this.table = table;
         phoneList = new RecordList(context);
         index = PhoneRegister.register(this);
-        Log.i(TAG, index + "");
     }
 
 
@@ -79,6 +78,8 @@ public abstract class PhoneShow {
 
     public HashMap<String,String> filter(HashMap<String,String> input) {
         String content[] = phoneList.getProjection();
+        if(content == null || content.length == 0)
+            return null;
         HashMap<String,String> result = new HashMap<>();
         for (int i = 0; i < content.length; i++) {
             result.put(content[i],input.get(content[i]));
@@ -96,9 +97,7 @@ public abstract class PhoneShow {
         sPhoneAdapter.notifyDataSetChanged();
     }
 
-    public void copy() {
-
-    }
+    public void copy() {}
 
     public void destroy()
     {
@@ -107,7 +106,7 @@ public abstract class PhoneShow {
 
     public abstract void AddPhoneElement(Accessory accessory, HashMap<String,String> input);
 
-    public abstract void DeletePhoneElement(String id, String number);
+    public abstract void DeletePhoneElement(Boolean first,String id, String number);
 
     public abstract void InitAdapter(Accessory accessory,String projection[],String selection,String argument[],String orderby);
 

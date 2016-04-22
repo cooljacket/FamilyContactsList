@@ -7,57 +7,55 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Vector;
 
 /**
  * Created by jacket on 2016/4/11.
  */
 public class HttpConnectionUtil {
-
-    public static Vector<Thread> threadPool = new Vector<>(50);
-
     public interface HttpCallbackListener {
         void onFinish(String response);
         void onError(Exception e);
     }
 
     public static void get(final String address, final HttpCallbackListener listener) {
-        Thread t = new Thread(new Runnable() {
+        new Thread(new Runnable() {
             @Override
             public void run() {
-                HttpURLConnection conn = null;
-                try {
-                    URL url = new URL(address);
-                    conn = (HttpURLConnection) url.openConnection();
-                    conn.setRequestMethod("GET");
-                    conn.setConnectTimeout(8000);
-                    conn.setReadTimeout(8000);
-                    int responseCode = conn.getResponseCode();
-                    if (responseCode == 200) {
-                        InputStream in = conn.getInputStream();
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                        String line;
-                        StringBuilder response = new StringBuilder();
-                        while ((line = reader.readLine()) != null)
-                            response.append(line);
-                        if (listener != null) {
-                            listener.onFinish(response.toString());
-                        }
-                    } else {
-                        throw new NetworkErrorException("response status is " + responseCode);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    if (listener != null)
-                        listener.onError(e);
-                } finally {
-                    if (conn != null)
-                        conn.disconnect();
-                }
+                getIt(address, listener);
             }
 
-        });
-        threadPool.add(t);
-        t.start();
+        }).start();
+    }
+
+    public static void getIt(final String address, final HttpCallbackListener listener) {
+        HttpURLConnection conn = null;
+        try {
+            URL url = new URL(address);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setConnectTimeout(8000);
+            conn.setReadTimeout(8000);
+            int responseCode = conn.getResponseCode();
+            if (responseCode == 200) {
+                InputStream in = conn.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                String line;
+                StringBuilder response = new StringBuilder();
+                while ((line = reader.readLine()) != null)
+                    response.append(line);
+                if (listener != null) {
+                    listener.onFinish(response.toString());
+                }
+            } else {
+                throw new NetworkErrorException("response status is " + responseCode);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (listener != null)
+                listener.onError(e);
+        } finally {
+            if (conn != null)
+                conn.disconnect();
+        }
     }
 }

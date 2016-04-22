@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
-              android:layout_height="match_parent">
+              android:layout_height="match_parent"
+    android:background="@color/white">
 
     <EditText
         android:id="@+id/dia_wheel_screen"
@@ -12,16 +13,19 @@
 
     <GridView
         android:id="@+id/dia_wheel_table"
+        android:layout_marginTop="3dp"
         android:numColumns="3"
+        android:background="@color/gray"
         android:columnWidth="90dp"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="10dp"
-        android:horizontalSpacing="10dp"
+        android:verticalSpacing="1dp"
+        android:horizontalSpacing="1dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
     </GridView>
 
     <LinearLayout
+        android:layout_marginTop="3dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">

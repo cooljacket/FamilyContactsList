@@ -1,16 +1,22 @@
 package hw.happyjacket.com.familycontactlist.myphonebook;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.CallLog;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.support.v7.widget.Toolbar;
 
 import java.util.HashMap;
 
@@ -27,7 +33,7 @@ import hw.happyjacket.com.familycontactlist.R;
 /**
  * Created by root on 16-3-29.
  */
-public class ContentActivity extends Activity {
+public class ContentActivity extends AppCompatActivity {
 
     private String TAG = this.getClass().toString();
     private String number;
@@ -45,14 +51,6 @@ public class ContentActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.content_main);
-        returns = (TextView) findViewById(R.id.button_return);
-        returns.bringToFront();
-        returns.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
         init();
     }
 
@@ -87,9 +85,22 @@ public class ContentActivity extends Activity {
         backup = intent.getStringExtra(PhoneDictionary.NAME);
         location = intent.getStringExtra(PhoneDictionary.LOCATION);
         name = backup == null ? defaultName : new String(backup);
-        head = (TextView) findViewById(R.id.content_name);
-        head.setText(name);
-        head.bringToFront();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.content_top_menu);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationContentDescription(name);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.content_head);
+        collapsingToolbarLayout.setTitle(name);
+        collapsingToolbarLayout.setExpandedTitleColor(Color.WHITE);
+        collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
+
+
         mListView = (ScrollListView) findViewById(R.id.content_number_and_detail);
         mContentShow = new ContentShow(this,R.layout.call_log_list,number);
         mContentShow.setDefaultNumber(location);

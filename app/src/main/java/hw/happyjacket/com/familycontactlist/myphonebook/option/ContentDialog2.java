@@ -41,12 +41,11 @@ public class ContentDialog2 extends PhoneDialog {
                 Operation.call(t.get(PhoneDictionary.NUMBER));
                 break;
             case 1:
-                Operation.delete(t.get(PhoneDictionary.ID),t.get(PhoneDictionary.NUMBER));
+                Operation.delete(getPos() == 1,t.get(PhoneDictionary.ID),t.get(PhoneDictionary.NUMBER));
                 break;
             default:
                 break;
         }
-
-
+        dismiss();
     }
 }

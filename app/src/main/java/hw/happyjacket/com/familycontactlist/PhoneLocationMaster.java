@@ -65,6 +65,7 @@ public class PhoneLocationMaster {
 
     public String[] get(String phoneNumber) {
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
+
         if (!db.isOpen())
             return null;
 
@@ -80,6 +81,7 @@ public class PhoneLocationMaster {
         String city = cursor.getString(cursor.getColumnIndex("city"));
         String card_type = cursor.getString(cursor.getColumnIndex("card_type"));
         cursor.close();
+        Log.i("chehe", phoneNumber + " " + city + " ");
         return new String[]{province, city, card_type};
     }
 }

@@ -15,4 +15,5 @@
     <color name="medium_red">#ee0000</color>
     <color name="tab_bk_deep_green">#469448</color>
     <color name="tab_bk_light_green">#98fb98</color>
+    <color name="gray">#DCDCDC</color>
 </resources>
