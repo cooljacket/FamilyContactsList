@@ -50,6 +50,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put("uid", user._id);
+        values.put("mobilephone", user.mobilephone);
         values.put("name",user.name);
         values.put("sortname",user.sortname);
         values.put("photo",user.photo);

@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import java.util.HashMap;
@@ -70,16 +71,17 @@ public class ContactActivity extends Activity{
 //        getOtherDetail();
         name = (String)data.get("contactName");
         contactID = (int)data.get("contactID");
-
+        Toast.makeText(getApplicationContext(), ""+contactID, Toast.LENGTH_SHORT).show();
         head.setTitle(name);
 
 
-//要改！！！！！！！！！！！！！！！！！！！！！！！！！！！
+//要改！！！！！！！！！！！！！！！！！！！
         mContactShow = new ContactShow(this,R.layout.call_log_list);
         mContactShow.getPhoneList().setDb(DBHelper.DB_NAME);
+        mContactShow.getPhoneList().setTable(DBHelper.DB_TABLENAME);
         mContactShow.InitAdapter(null, new String[]{"mobilephone"},
                 "uid = ?",
-                new String[]{"" + contactID}, " limit 1 ");
+                new String[]{"" + contactID}, null);
         ContactListView.setAdapter(mContactShow.getPhoneAdapter());
         ContactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

@@ -372,7 +372,6 @@ public class TabContactsFragment extends Fragment {
                 Bitmap contactPhoto=circleImage[0];//头像默认的图片
                 String contactSortname=contactName;
                 cursor = db.query("user",null,"uid="+contactID,null,null,null,null);
-
                 if(!cursor.moveToFirst()){
                     User user = new User();
                     user._id=contactid;
@@ -388,7 +387,7 @@ public class TabContactsFragment extends Fragment {
                     dbHelper.initUser(user);
 //                    Toast.makeText(mContext, "塞进去", Toast.LENGTH_SHORT).show();
                 }else{
-//
+
                         //photo
                         contactPhoto =  circleImage[cursor.getInt(4)];
 //                    contactPhotonum = cursor.getInt(2);
@@ -399,8 +398,6 @@ public class TabContactsFragment extends Fragment {
                         contactName = cursor.getString(1);
                         //group
                         contactSortname = cursor.getString(2);
-
-
 
                 }
 
