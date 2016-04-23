@@ -201,6 +201,18 @@ public class DialogFactory {
 
     }
 
+    public static AlertDialog WarningDialog(final Activity context,String positive, String warn){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(warn);
+        builder.setPositiveButton(positive, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        return  builder.create();
+    }
+
 
     public static AlertDialog getPhotoDialog(final Activity context, String title, final String [] content, final ViewSwitcher.ViewFactory factory, final ImageButton btn_img){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -297,7 +309,7 @@ public class DialogFactory {
         View view = LayoutInflater.from(context).inflate(R.layout.dia_wheel,null);
         final EditText editText = (EditText) view.findViewById(R.id.dia_wheel_screen);
         Button retrive = (Button) view.findViewById(R.id.dia_wheel_retrieve);
-        Button call = (Button) view.findViewById(R.id.dia_wheel_call);
+        ImageButton call = (ImageButton) view.findViewById(R.id.dia_wheel_call);
         Button delete = (Button) view.findViewById(R.id.dia_wheel_delete);
         editText.clearFocus();
         editText.setInputType(InputType.TYPE_NULL);
@@ -342,6 +354,7 @@ public class DialogFactory {
             }
         });
         phoneDialog.setContentView(view);
+        phoneDialog.setCanceledOnTouchOutside(true);
         Window window = phoneDialog.getWindow();
         window.setGravity(Gravity.BOTTOM);
         WindowManager.LayoutParams p = window.getAttributes();

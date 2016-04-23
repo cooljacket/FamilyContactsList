@@ -93,6 +93,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
             case PhoneDictionary.RESULT_REQUEST_CODE:
                 if(data != null){
                     btn_img.setImageDrawable(PhotoZoom.getImageToView(ChangePeopleDetail.this, data));
+                    imagePic = btn_img.getDrawingCache();
                 }
                 break;
             default:
@@ -106,8 +107,15 @@ public class ChangePeopleDetail extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         setResult(0);
+
         finish();
         super.onBackPressed();
+    }
+
+    @Override
+    public void onDestroy(){
+        PhotoZoom.saveBitmap(this, (int) map.get("contactID"), imagePic);
+        super.onDestroy();
     }
 
     @Override
@@ -134,7 +142,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
         mPeopleInfoAdapter = new PeopleInfoAdapter(this,R.layout.change_people_detail,info);
         mListView.setAdapter(mPeopleInfoAdapter);
 //        imagePic=(int) map.get("contactPhoto");
-        DialogFactory.setImagePicture(imagePic = (Bitmap) map.get("contactPhoto"));
+        DialogFactory.setImagePicture((imagePic = PhotoZoom.getBitmap(this,(int)map.get("contactID"),1281,901)) == null ? imagePic = (Bitmap) map.get("contactPhoto"):imagePic);
         btn_img.setImageBitmap(imagePic);
 
 //        btn_img.setImageResource(imagePic);

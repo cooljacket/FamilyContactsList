@@ -20,8 +20,6 @@
     <style name="CallLog_Button" parent="Base.Animation.AppCompat.DropDownUp">
         <item name="android:background">@drawable/button</item>
         <item name="android:textColor">@color/button_color</item>
-
-
     </style>
 
     <style name="Menu" parent="@style/AlertDialog.AppCompat.Light">
