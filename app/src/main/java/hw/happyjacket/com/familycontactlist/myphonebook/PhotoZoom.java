@@ -1,6 +1,7 @@
 package hw.happyjacket.com.familycontactlist.myphonebook;
 
 import android.app.Activity;
+import android.app.VoiceInteractor;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -12,8 +13,14 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 
@@ -90,6 +97,52 @@ public class PhotoZoom {
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),imgPath, newOpts);
         // 压缩好比例大小后再进行质量压缩
 //        return compress(bitmap, maxSize); // 这里再进行质量压缩的意义不大，反而耗资源，删除
+        return bitmap;
+    }
+
+    public static String saveBitmap(Activity context,int id,Bitmap image){
+        String path;
+        File location = new File(path = (Environment.getExternalStorageDirectory() + "/.wblog-image/"+id+".png"));
+        if(location.exists()){
+            location.delete();
+        }
+        try{
+            location.createNewFile();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        FileOutputStream fileOutputStream = null;
+        try{
+            fileOutputStream = new FileOutputStream(location);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        image.compress(Bitmap.CompressFormat.PNG,100,fileOutputStream);
+        try{
+            fileOutputStream.flush();
+            fileOutputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return path;
+    }
+
+    public static Bitmap getBitmap(Activity context,int id,int width,int height){
+        String path = Environment.getExternalStorageDirectory() + "/.wblog-image/" + id + ".png";
+        Bitmap bitmap = null;
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path,options);
+        options.inJustDecodeBounds = false;
+        int sampleSize = 1;
+        while(options.outHeight * options.outWidth / sampleSize >= width * height) sampleSize *= 2;
+        options.inSampleSize = sampleSize;
+        try{
+            bitmap = BitmapFactory.decodeFile(path,options);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
         return bitmap;
     }
 

@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/white">
 
     <EditText
         android:id="@+id/dia_wheel_screen"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"/>
+        android:gravity="center"
+        android:layout_alignParentTop="true"/>
 
     <GridView
         android:id="@+id/dia_wheel_table"
@@ -21,34 +22,43 @@
         android:verticalSpacing="1dp"
         android:horizontalSpacing="1dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/dia_wheel_screen">
     </GridView>
 
-    <LinearLayout
-        android:layout_marginTop="3dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
 
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:id="@+id/dia_wheel_retrieve"/>
+    <Button
+        android:layout_width="20dp"
+        android:layout_height="22dp"
+        android:background="@drawable/dialpad3x"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/dia_wheel_table"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginLeft="48dp"
+        android:id="@+id/dia_wheel_retrieve"/>
 
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center"
-            android:id="@+id/dia_wheel_call"/>
+    <ImageButton
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:background="@drawable/diawheel_call_selector"
+        android:src="@drawable/ic_menu_call"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/dia_wheel_table"
+        android:layout_marginTop="1dp"
+        android:id="@+id/dia_wheel_call"/>
 
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="right"
-            android:id="@+id/dia_wheel_delete"/>
-    </LinearLayout>
+    <Button
+        android:layout_width="28dp"
+        android:layout_height="20dp"
+        android:background="@drawable/backspace"
+        android:layout_gravity="right"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/dia_wheel_table"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginRight="48dp"
+        android:id="@+id/dia_wheel_delete"/>
 
-</LinearLayout>
+
+
+
+</RelativeLayout>

@@ -16,4 +16,6 @@
     <color name="tab_bk_deep_green">#469448</color>
     <color name="tab_bk_light_green">#98fb98</color>
     <color name="gray">#DCDCDC</color>
+    <color name="black">#111111</color>
+    <color name="green">#00CD00</color>
 </resources>
