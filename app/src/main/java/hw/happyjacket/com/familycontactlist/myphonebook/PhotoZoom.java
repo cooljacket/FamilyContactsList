@@ -42,13 +42,13 @@ public class PhotoZoom {
         context.startActivityForResult(intent, PhoneDictionary.RESULT_REQUEST_CODE);
     }
 
-    public static void getImageToView(Activity context, Intent data,ImageButton faceIamge) {
+    public static Drawable getImageToView(Activity context, Intent data) {
         Bundle extras = data.getExtras();
         if (extras != null) {
             Bitmap photo = extras.getParcelable("data");
-            Drawable drawable = new BitmapDrawable(context.getResources(), photo);
-            faceIamge.setImageDrawable(drawable);
+            return  new BitmapDrawable(context.getResources(), photo);
         }
+        return null;
     }
 
     public static Bitmap createCircleImage(Bitmap source,int min){

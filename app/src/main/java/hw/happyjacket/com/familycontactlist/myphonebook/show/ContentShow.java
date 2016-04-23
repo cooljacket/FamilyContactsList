@@ -61,7 +61,7 @@ public class ContentShow extends PhoneShow {
 
 
     @Override
-    public void DeletePhoneElement(String id,String number) {
+    public void DeletePhoneElement(Boolean first,String id,String number) {
         refresh();
         sPhoneAdapter.notifyDataSetChanged();
     }
@@ -117,7 +117,7 @@ public class ContentShow extends PhoneShow {
         phoneList.setArgument(argument);
         phoneList.setOrderby(orderby);
         refresh();
-        sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index);
+        sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index,true);
     }
 
 }

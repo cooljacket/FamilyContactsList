@@ -151,7 +151,7 @@ public abstract class PhoneList {
         try{
             dataBase = new DataBase(context,db,null,version);
             sqLiteDatabase  = dataBase.getWritableDatabase();
-            sqLiteDatabase.delete(table,condriton, argument);
+            sqLiteDatabase.delete(table, condriton, argument);
             sqLiteDatabase.close();
             dataBase.close();
         }

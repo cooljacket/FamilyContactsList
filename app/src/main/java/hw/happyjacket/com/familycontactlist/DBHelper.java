@@ -49,7 +49,8 @@ public class DBHelper extends SQLiteOpenHelper {
 //        openDatabase();
 
         ContentValues values = new ContentValues();
-        values.put("uid", user._id);
+//        values.put("uid", null);
+        values.put("cid", user.cid);
         values.put("mobilephone", user.mobilephone);
         values.put("name",user.name);
         values.put("sortname",user.sortname);
@@ -65,21 +66,21 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public void changeUser(User user){
         ContentValues values = new ContentValues();
-        int cid = user._id;
+        int uid = user.uid;
         values.put("name",user.name);
         values.put("sortname",user.sortname);
         values.put("mobilephone",user.mobilephone);
         values.put("photo",user.photo);
         values.put("groupname",user.groupname);
         values.put("info",user.info);
-        db.update("user",values,"uid = "+cid,null);
+        db.update("user",values,"uid = "+uid,null);
     }
 
     public void deleteUser(User user){
 //        openDatabase();
         ContentValues values = new ContentValues();
-        int cid = user._id;
-        db.delete("user","uid = "+cid,null);
+        int uid = user.uid;
+        db.delete("user","uid = "+uid,null);
     }
 
     public void initGroup(Group group){//初始化数据库，或者新建组群
@@ -114,13 +115,14 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         StringBuffer tableCreate = new StringBuffer();
-        tableCreate.append("create table user ( uid integer primary key,")//contactid0
-                .append("name text,")//1
-                .append("sortname text ,")//2
-                .append("mobilephone text default '0',")//3
-                .append("photo integer,")//头像编号4
-                .append("groupname text default 'NO',")//群组，默认no5
-                .append("info text);");//6
+        tableCreate.append("create table user ( uid integer primary key autoincrement,")//contactid0
+                .append("cid integer not null,")//1
+                .append("name text,")//2
+                .append("sortname text ,")//3
+                .append("mobilephone text default '0',")//4
+                .append("photo integer,")//头像编号5
+                .append("groupname text default 'NO',")//群组，默认no6
+                .append("info text);");//7
         db.execSQL(tableCreate.toString());
 
         StringBuffer tableCreate2 = new StringBuffer();

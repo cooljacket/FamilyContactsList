@@ -51,13 +51,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ContactList">
-            <intent-filter>
-                <action android:name="android.intent.action.CL" />
-                <category android:name="android.intent.category.DEFAULT" />
-
-            </intent-filter>
-        </activity>
 
         <activity android:name=".ChangePeopleDetail"
             android:windowSoftInputMode="adjustResize">
@@ -77,7 +70,7 @@
 
         <activity android:name=".myphonebook.ContentActivity"
                   android:label="Phone Content"
-                  android:theme="@style/AppTheme">
+                  android:theme="@style/AppTop">
         </activity>
 
         <activity android:name=".myphonebook.CallLogActivity"
@@ -87,8 +80,10 @@
         </activity>
 
         <activity android:name=".ContactActivity"
-                  android:theme="@style/AppTheme">
+                  android:theme="@style/AppTop">
         </activity>
+
+        <service android:name=".myphonebook.InitService"/>
 
         <!-- 监听短信的广播消息 -->
         <receiver android:name=".SMSFireWall">

@@ -5,19 +5,31 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import android.widget.Toolbar;
 
+//import android.support.v7.widget.Toolbar;
+
+
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 
 import hw.happyjacket.com.familycontactlist.extention.XiaoMiAccessory;
+import hw.happyjacket.com.familycontactlist.myphonebook.ContentActivity;
 import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
 import hw.happyjacket.com.familycontactlist.myphonebook.listview.ScrollListView;
 import hw.happyjacket.com.familycontactlist.myphonebook.show.ContactShow;
@@ -27,17 +39,24 @@ import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 /**
  * Created by root on 16-4-13.
  */
-public class ContactActivity extends Activity{
+public class ContactActivity extends AppCompatActivity{
 
     private String name;
     private int contactID;
     private ScrollListView ContactListView;
     private ContactShow mContactShow;
-    private TextView returns;
     private CollapsingToolbarLayout head;
     private HashMap data;
 
 
+
+
+    private android.support.v7.widget.Toolbar mToolbar;
+    String contactHome= new String();
+    String contactWork= new String();
+    String contactRemark= new String();
+    String contactEmail= new String();
+    String contactPhone = new String();
 
 
     @Override
@@ -54,16 +73,10 @@ public class ContactActivity extends Activity{
 
 
         ContactListView = (ScrollListView) findViewById(R.id.contact_number_and_detail);
-        head = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-
+        head = (CollapsingToolbarLayout) findViewById(R.id.contact_toolbar_layout);
         final Intent intent = getIntent();
         data = (HashMap)intent.getSerializableExtra("data");
-
         showDetail();
-
-
-
-
 
     }
 
@@ -71,17 +84,26 @@ public class ContactActivity extends Activity{
 //        getOtherDetail();
         name = (String)data.get("contactName");
         contactID = (int)data.get("contactID");
+
         Toast.makeText(getApplicationContext(), ""+contactID, Toast.LENGTH_SHORT).show();
+
+        mToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.contact_toolbar);
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
         head.setTitle(name);
 
 
 //要改！！！！！！！！！！！！！！！！！！！
         mContactShow = new ContactShow(this,R.layout.call_log_list);
-        mContactShow.getPhoneList().setDb(DBHelper.DB_NAME);
-        mContactShow.getPhoneList().setTable(DBHelper.DB_TABLENAME);
-        mContactShow.InitAdapter(null, new String[]{"mobilephone"},
-                "uid = ?",
-                new String[]{"" + contactID}, null);
+        mContactShow.getPhoneList().setUri(ContactsContract.Data.CONTENT_URI);
+        mContactShow.InitAdapter(new XiaoMiAccessory(), new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER}, ContactsContract.Data.CONTACT_ID + " = ? ", new String[]{"" + contactID}, null);
         ContactListView.setAdapter(mContactShow.getPhoneAdapter());
         ContactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -91,9 +113,19 @@ public class ContactActivity extends Activity{
                         Operation.call(mContactShow.getNumber());
                         break;
                     case 1:
-                        Intent intent1 = new Intent(ContactActivity.this,ChangePeopleDetail.class);
-                        intent1.putExtra("data",data);
-                        startActivity(intent1);
+                        break;
+                    case 2:
+                        Intent intent1 = new Intent(ContactActivity.this, ChangePeopleDetail.class);
+                        intent1.putExtra("data", data);
+                        startActivityForResult(intent1, PhoneDictionary.CONTACT_REQUEST_CODE);
+                        break;
+                    case 3:
+                        new BlackListMaster(ContactActivity.this).add(mContactShow.getNumber());
+                        break;
+                    case 4:
+                        new BlackListMaster(ContactActivity.this).delete(mContactShow.getNumber());
+                        break;
+                    case 5:
                         break;
                     default:
                         break;
@@ -196,6 +228,7 @@ public class ContactActivity extends Activity{
         newdata.put("contactName",this.data.get("contactName"));
         newdata.put("contactPhoto",this.data.get("contactPhoto"));
         newdata.put("contactID",this.data.get("contactID"));
+        newdata.put("UserID",this.data.get("UserID"));
         newdata.put("contactSortname", this.data.get("contactSortname"));
         data.putExtra("newdata", newdata);
         setResult(1, data);//不管有没修改都要更新数据
@@ -214,14 +247,22 @@ public class ContactActivity extends Activity{
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         switch (resultCode){//处理结果码
-            case 1://有修改
+            case PhoneDictionary.CONTACT_REQUEST_CODE://有修改
+                name = data.getStringExtra(PhoneDictionary.NAME);
+                Toast.makeText(ContactActivity.this,name,Toast.LENGTH_SHORT).show();
+                head.setTitle(name);
+                mContactShow.setNumber(data.getStringExtra(PhoneDictionary.NUMBER));
+                HashMap<String,String> theFirstLine = mContactShow.getPhoneListElementList().get(0);
+                theFirstLine.put(PhoneDictionary.NUMBER,data.getStringExtra(PhoneDictionary.NUMBER));
+                mContactShow.getPhoneListElementList().set(0,theFirstLine);
+                mContactShow.notifyDataSetChanged();
 
-                this.data =(HashMap)data.getSerializableExtra("newdata");
+
 //                imagePic = (int) map.get("contactPhoto");
 //                isfamily=(boolean)map.get("contactFamily");
 
 //                flag=true;
-                showDetail();
+/*                showDetail();*/
 
                 break;
 
@@ -231,9 +272,10 @@ public class ContactActivity extends Activity{
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public static void actionStart(Context context,HashMap map){
+    public static void actionStart(Activity context,HashMap map){
         Intent intent = new Intent(context,ContactActivity.class);
         intent.putExtra("data",map);
         context.startActivity(intent);
     }
+
 }

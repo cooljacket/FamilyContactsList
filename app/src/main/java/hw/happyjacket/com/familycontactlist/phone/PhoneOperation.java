@@ -37,6 +37,7 @@ public class PhoneOperation {
     public void delete(String id)
     {
         try {
+            Log.i("context",context + "");
             context.getContentResolver().delete(CallLog.Calls.CONTENT_URI, PhoneDictionary.ID + " = ? ", new String[]{id});
         }
         catch (SecurityException e)

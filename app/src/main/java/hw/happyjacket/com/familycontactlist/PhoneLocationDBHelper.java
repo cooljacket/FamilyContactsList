@@ -3,15 +3,18 @@ package hw.happyjacket.com.familycontactlist;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Created by jacket on 2016/4/11.
  */
 public class PhoneLocationDBHelper extends SQLiteOpenHelper {
     private static SQLiteOpenHelper mInstance;
+    public final static int CACHED = 0, NOSUCH = 1, ERROR = 2;
     public final static String DB_FILE_NAME = "phoneLocation.db", TABLE_NAME = "phoneLocation";
     public final static String CREATE_LOCATION = "create table phoneLocation(\n" +
             "    phoneNumber text primary key,\n" +
+            "    state integer,\n" +
             "    province text,\n" +
             "    city text,\n" +
             "    card_type text\n" +
@@ -31,6 +34,7 @@ public class PhoneLocationDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_LOCATION);
+        Log.d("db-create", CREATE_LOCATION);
     }
 
     @Override

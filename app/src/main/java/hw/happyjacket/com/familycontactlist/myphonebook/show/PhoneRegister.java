@@ -44,10 +44,10 @@ public class PhoneRegister {
             i.AddPhoneElement(accessory,newGuy);
     }
 
-    public static void delete(String id, String number)
+    public static void delete(Boolean first,String id, String number)
     {
         for(PhoneShow i : phoneTable)
-            i.DeletePhoneElement(id,number);
+            i.DeletePhoneElement(first,id,number);
     }
 
 }

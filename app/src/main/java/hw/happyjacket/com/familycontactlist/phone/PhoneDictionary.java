@@ -17,6 +17,7 @@ public class PhoneDictionary {
     public static final String DURATION = CallLog.Calls.DURATION;
     public static final String DATE = CallLog.Calls.DATE;
     public static final String ID = CallLog.Calls._ID;
+    public static final String OTHER = "something special";
     public static final String READ = CallLog.Calls.IS_READ;
     public static final String DATE_SAVE = "date_save";
     public static final String LOCATION = "location";
@@ -27,6 +28,9 @@ public class PhoneDictionary {
     public static final String CALLLOG_OPTION = "calllog";
     public static final String DEFAULT_DB = DataBaseDictionary.CALLLOG;
     public static final String DEFAULT_TABLE = DataBaseDictionary.CallLog;
+    public static final String DiaWheelNumber = "DialogNumber";
+    public static final String DialogAlphabet = "DialogAlphabet";
+
     public static final int BLUETOOTH_FOUND = 1;
     public static final int BLUETOOTH_FINISHED = 2;
     public static final int INCOMMING = 1;
@@ -44,6 +48,7 @@ public class PhoneDictionary {
     public static final int CHECKBOX_OPTION = 1;
     public static final int IMAGE_REQUEST_CODE = 1;
     public static final int RESULT_REQUEST_CODE = 2;
+    public static final int CONTACT_REQUEST_CODE  = 1;
 
 
 
@@ -52,7 +57,7 @@ public class PhoneDictionary {
     public static final String PhoneDetail[] = {ID,DATE,TYPE,DURATION};
     public static final String PhoneCallLog[] = {ID,NUMBER,DATE,TYPE,DURATION};
     public static final String TEST[] = {NUMBER,NAME,DATE,ID};
-    public static final String MainItems[] = {"呼叫","删除","添加黑名单"};
+    public static final String MainItems[] = {"呼叫","删除","添加黑名单","撤销黑名单"};
     public static final String CallLogItems[] = {"呼叫","删除"};
     public static final String ContentItems1[] = {"呼叫"};
     public static final String ContentItems2[] = {"呼叫","删除"};

@@ -40,8 +40,12 @@ public class MainDialog extends PhoneDialog {
                 Operation.call(data.get(PhoneDictionary.NUMBER));
                 break;
             case 1:
-                Operation.delete(data.get(PhoneDictionary.ID),data.get(PhoneDictionary.NUMBER));
+                Operation.delete(true,data.get(PhoneDictionary.ID),data.get(PhoneDictionary.NUMBER));
                 break;
+            case 2:
+                Operation.addBlackList(data.get(PhoneDictionary.NUMBER));
+            case 3:
+                Operation.deleteBlackList(data.get(PhoneDictionary.NUMBER));
             default:
                 break;
         }

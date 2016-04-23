@@ -11,10 +11,12 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +26,11 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
+import org.xmlpull.v1.XmlPullParserException;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -49,6 +56,15 @@ public class TabContactsFragment extends Fragment {
             ContactsContract.CommonDataKinds.Phone.NUMBER
     };
     public Vector contacts = new Vector();
+    static final int GB_SP_DIFF = 160;
+    // 存放国标一级汉字不同读音的起始区位码
+    static final int[] secPosValueList = { 1601, 1637, 1833, 2078, 2274, 2302,
+            2433, 2594, 2787, 3106, 3212, 3472, 3635, 3722, 3730, 3858, 4027,
+            4086, 4390, 4558, 4684, 4925, 5249, 5600 };
+    // 存放国标一级汉字不同读音的起始区位码对应读音
+    static final char[] firstLetter = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
+            'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'w', 'x',
+            'y', 'z' };
 
     @Nullable
     @Override
@@ -92,11 +108,9 @@ public class TabContactsFragment extends Fragment {
         mContext = getContext();
         dbHelper = new DBHelper(TabContactsFragment.super.getContext());
         db = dbHelper.openDatabase();
+
         getCircles();
 
-//        for(int i=0;i<6;i++){
-//            circleImage[i] = createCircleImage(a);
-//        }
 
         AL = getPhoneContacts();
         sortList();
@@ -233,9 +247,8 @@ public class TabContactsFragment extends Fragment {
                 Intent intent = new Intent(mContext, ContactActivity.class);
                 positionNew=position;
                 HashMap map = (HashMap) parent.getItemAtPosition(position);
-
                 // 当requestCode为3的时候表示请求转向CPD这个页面？？
-                ContactActivity.actionStart(getContext(),map);
+                ContactActivity.actionStart(getActivity(),map);
             }
         });
     }
@@ -254,8 +267,6 @@ public class TabContactsFragment extends Fragment {
 
         if (phoneCursor != null) {
             while (phoneCursor.moveToNext()) {
-
-                num++;
 //                    String phoneNumber = new String();
 //                    String homeNumber = new String();
                 //得到手机号码
@@ -279,6 +290,7 @@ public class TabContactsFragment extends Fragment {
 
                 String contactPhone = phoneCursor.getString(PHONES_NUMBER_INDEX);
 
+//                Log.i("hh",contactName+" "+contactid);
 ////                 根据contact_ID取得MobilePhone号码
 //                Cursor mobilePhoneCur = resolver1.query(ContactsContract.Data.CONTENT_URI,
 //                        new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
@@ -370,13 +382,13 @@ public class TabContactsFragment extends Fragment {
                 Cursor cursor;
                 int contactPhotonum =0;
                 Bitmap contactPhoto=circleImage[0];//头像默认的图片
-                String contactSortname=contactName;
-                cursor = db.query("user",null,"uid="+contactID,null,null,null,null);
-                if(!cursor.moveToFirst()){
+                String contactSortname=getSpells(contactName);
+                cursor = db.query("user",null,"cid="+contactID,null,null,null,null);
+                if(!cursor.moveToFirst()) {
                     User user = new User();
-                    user._id=contactid;
+                    user.cid=contactid;
                     user.name=contactName;
-                    user.sortname=contactName;
+                    user.sortname=contactSortname;
                     user.mobilephone=contactPhone;
 //                    user.mobilephone=
 //                    user.family=false;
@@ -385,23 +397,12 @@ public class TabContactsFragment extends Fragment {
                     Random random = new Random();
                     user.photo= random.nextInt(31);
                     dbHelper.initUser(user);
-//                    Toast.makeText(mContext, "塞进去", Toast.LENGTH_SHORT).show();
-                }else{
-
-                        //photo
-                        contactPhoto =  circleImage[cursor.getInt(4)];
-//                    contactPhotonum = cursor.getInt(2);
-                        //是否family
-//                        contactFamily = cursor.getInt(1)>0;
-//                    contactPhone=cursor.getString(3);
-                        //familyname
-                        contactName = cursor.getString(1);
-                        //group
-                        contactSortname = cursor.getString(2);
+//                    Toast.makeText(mContext, "塞进去" + contactName, Toast.LENGTH_SHORT).show();
 
                 }
-
                 cursor.close();
+
+
 
 //
 //
@@ -423,12 +424,7 @@ public class TabContactsFragment extends Fragment {
 //                }
 //                homePhoneCur.close();
 
-                HashMap map=new HashMap();
-                map.put("contactName",contactName);
-//                map.put("contactPhone",phoneNumber);
-                map.put("contactPhoto",contactPhoto);
-                map.put("contactSortname",contactSortname);
-                map.put("contactID",contactid);
+
 //                map.put("contactGroup", contactGroup);
 //                map.put("contactFamily", contactFamily);
 //                map.put("contactFamilyname", contactFamilyname);
@@ -437,12 +433,96 @@ public class TabContactsFragment extends Fragment {
 
 
                 // map.put();
-                contacts.add(map);
+
                 //Log.d("debug",contactName);
             }
 
             phoneCursor.close();
         }
+
+        Cursor cursor = db.query("user",null,null,null,null,null,null);
+        if (cursor != null)
+        while(cursor.moveToNext()){
+            num++;
+            //photo
+            Bitmap contactPhoto =  circleImage[cursor.getInt(5)];
+//                    contactPhotonum = cursor.getInt(2);
+            int contactid = cursor.getInt(1);
+            //familyname
+            String contactName = cursor.getString(2);
+            //group
+            String contactSortname = cursor.getString(3);
+
+            HashMap map=new HashMap();
+            map.put("contactName",contactName);
+//                map.put("contactPhone",phoneNumber);
+            map.put("contactPhoto",contactPhoto);
+            map.put("contactSortname",contactSortname);
+            map.put("contactID",contactid);
+            map.put("UserID",cursor.getInt(0));
+            contacts.add(map);
+        }
+
+
+
+
         return contacts;
     }
+
+
+    public static String getSpells(String characters) {
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < characters.length(); i++) {
+
+            char ch = characters.charAt(i);
+            if ((ch >> 7) == 0) {
+                // 判断是否为汉字，如果左移7为为0就不是汉字，否则是汉字
+            } else {
+                char spell = getFirstLetter(ch);
+                buffer.append(String.valueOf(spell));
+            }
+        }
+        return buffer.toString();
+    }
+
+    // 获取一个汉字的首字母
+    public static Character getFirstLetter(char ch) {
+
+        byte[] uniCode = null;
+        try {
+            uniCode = String.valueOf(ch).getBytes("GBK");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+            return null;
+        }
+        if (uniCode[0] < 128 && uniCode[0] > 0) { // 非汉字
+            return null;
+        } else {
+            return convert(uniCode);
+        }
+    }
+
+    /**
+     * 获取一个汉字的拼音首字母。 GB码两个字节分别减去160，转换成10进制码组合就可以得到区位码
+     * 例如汉字“你”的GB码是0xC4/0xE3，分别减去0xA0（160）就是0x24/0x43
+     * 0x24转成10进制就是36，0x43是67，那么它的区位码就是3667，在对照表中读音为‘n’
+     */
+    static char convert(byte[] bytes) {
+        char result = '-';
+        int secPosValue = 0;
+        int i;
+        for (i = 0; i < bytes.length; i++) {
+            bytes[i] -= GB_SP_DIFF;
+        }
+        secPosValue = bytes[0] * 100 + bytes[1];
+        for (i = 0; i < 23; i++) {
+            if (secPosValue >= secPosValueList[i]
+                    && secPosValue < secPosValueList[i + 1]) {
+                result = firstLetter[i];
+                break;
+            }
+        }
+        return result;
+    }
+
 }

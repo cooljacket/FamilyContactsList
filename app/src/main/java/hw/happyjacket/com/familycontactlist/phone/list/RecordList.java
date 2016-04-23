@@ -61,6 +61,18 @@ public class RecordList extends PhoneList {
         this.table = PhoneDictionary.DEFAULT_TABLE;
         this.uri = CallLog.Calls.CONTENT_URI;
         this.version = DataBaseDictionary.databaseVersion;
+        this.orderby = CallLog.Calls.DEFAULT_SORT_ORDER;
+    }
+    public RecordList(Context context, String[] projection, String selection, String[] argument,String orderby) {
+        super(context);
+        this.projection = projection;
+        this.selection = selection;
+        this.argument = argument;
+        this.db = PhoneDictionary.DEFAULT_DB;
+        this.table = PhoneDictionary.DEFAULT_TABLE;
+        this.uri = CallLog.Calls.CONTENT_URI;
+        this.version = DataBaseDictionary.databaseVersion;
+        this.orderby = orderby;
     }
 
     public RecordList(Context context, String db, String table, String[] projection, String[] argument, String selection, String orderby) {
@@ -113,6 +125,16 @@ public class RecordList extends PhoneList {
         }
         return changed;
 
+    }
+
+    public void CallLogUpdate(String date, int count){
+        SharedPreferences pref;
+        SharedPreferences.Editor editor;
+        pref = context.getSharedPreferences(PhoneDictionary.SHARE_PREFERANCE_NAME,Context.MODE_PRIVATE);
+        editor = pref.edit();
+        editor.putString("date",date);
+        editor.putInt("count",count);
+        editor.commit();
     }
 
     @Override
@@ -208,7 +230,7 @@ public class RecordList extends PhoneList {
         return result;
     }
 
-    public HashMap<String,String> findTheNewestOne(String pro[], String all[],String number, String num)
+    public HashMap<String,String> InsertTheNewestOne(String pro[], String all[],String number, String num)
     {
         int version = DataBaseDictionary.databaseVersion;
         int id;
@@ -230,7 +252,6 @@ public class RecordList extends PhoneList {
                 for (int i = 0; i < all.length; i++) {
                     result.put(all[i], t.getString(i));
                 }
-                sqLiteDatabase.update(table,contentValues,number + " = ? ",new String[]{num});
                 sqLiteDatabase.insert(table, null, contentValues);
             }
             t.close();
