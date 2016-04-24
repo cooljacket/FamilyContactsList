@@ -30,6 +30,7 @@ public class PhoneDictionary {
     public static final String DEFAULT_TABLE = DataBaseDictionary.CallLog;
     public static final String DiaWheelNumber = "DialogNumber";
     public static final String DialogAlphabet = "DialogAlphabet";
+    public static final String Photo = "photo";
 
     public static final int BLUETOOTH_FOUND = 1;
     public static final int BLUETOOTH_FINISHED = 2;
@@ -49,6 +50,7 @@ public class PhoneDictionary {
     public static final int IMAGE_REQUEST_CODE = 1;
     public static final int RESULT_REQUEST_CODE = 2;
     public static final int CONTACT_REQUEST_CODE  = 1;
+    public static final int CONTAT_ACTION_START = 2;
 
 
 

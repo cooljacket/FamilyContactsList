@@ -121,7 +121,7 @@ public class PhotoZoom {
             }
             location.createNewFile();
             fileOutputStream = new FileOutputStream(location);
-            image.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+            image.compress(Bitmap.CompressFormat.JPEG, 80, fileOutputStream);
             fileOutputStream.flush();
             fileOutputStream.close();
         } catch (IOException e) {

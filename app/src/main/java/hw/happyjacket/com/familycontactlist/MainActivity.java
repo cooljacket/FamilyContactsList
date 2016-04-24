@@ -1,5 +1,6 @@
 package hw.happyjacket.com.familycontactlist;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -12,12 +13,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.ViewTreeObserver;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+
+import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 
 public class MainActivity extends FragmentActivity {
     private ViewPager mPager;
@@ -191,5 +196,18 @@ public class MainActivity extends FragmentActivity {
             Drawable drawable = new BitmapDrawable(newb);
             btn.setBackgroundDrawable(drawable);
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case PhoneDictionary.CONTAT_ACTION_START:
+               /* Log.i("tt","Tt");
+                mContactTab.notifyDataSetChanged((HashMap<String,Object>)data.getSerializableExtra("newdata"));*/
+                break;
+            default:
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

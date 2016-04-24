@@ -126,8 +126,6 @@ public class TabRecordFragment extends Fragment {
             Dial.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                   /* Intent intent = new Intent(Intent.ACTION_DIAL);
-                    mContext.startActivity(intent);*/
                     DialogFactory.DiaWheel(getActivity(),R.style.Menu).show();
                 }
             });
