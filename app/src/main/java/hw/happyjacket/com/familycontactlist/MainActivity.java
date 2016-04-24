@@ -9,9 +9,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.ViewTreeObserver;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -19,7 +21,8 @@ import android.widget.RadioGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends FragmentActivity {
+// FragmentActivity
+public class MainActivity extends AppCompatActivity {
     private ViewPager mPager;
     private int selected_tab = 0, base_tab_id = 0;
     private RadioGroup tabs_group;
@@ -191,5 +194,13 @@ public class MainActivity extends FragmentActivity {
             Drawable drawable = new BitmapDrawable(newb);
             btn.setBackgroundDrawable(drawable);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // 为ActionBar扩展菜单项
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_activity_actions, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 }
