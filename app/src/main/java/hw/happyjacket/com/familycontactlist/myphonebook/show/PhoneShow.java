@@ -49,6 +49,14 @@ public abstract class PhoneShow {
         mPhoneListElementList = phoneListElementList;
     }
 
+    public Vector<HashMap<String, String>> getPhoneListElementList_backup() {
+        return mPhoneListElementList_backup;
+    }
+
+    public void setPhoneListElementList_backup(Vector<HashMap<String, String>> phoneListElementList_backup) {
+        mPhoneListElementList_backup = phoneListElementList_backup;
+    }
+
     public  PhoneAdapter getPhoneAdapter() {
         return sPhoneAdapter;
     }

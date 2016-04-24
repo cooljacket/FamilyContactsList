@@ -159,7 +159,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
         //mPeopleInfoAdapter.notifyDataSetChanged();
         mListView.setAdapter(mPeopleInfoAdapter);
 //        imagePic=(int) map.get("contactPhoto");
-        DialogFactory.setImagePicture((imagePic = PhotoZoom.getBitmap((int)map.get("contactID"),1281,901)) == null ? imagePic = (Bitmap) map.get("contactPhoto"):imagePic);
+        DialogFactory.setImagePicture((imagePic = PhotoZoom.ratio((int) map.get("contactID"))) == null ? imagePic = (Bitmap) map.get("contactPhoto"):(imagePic = PhotoZoom.createCircleImage(imagePic,180)));
         btn_img.setImageBitmap(imagePic);
 
 //        btn_img.setImageResource(imagePic);
@@ -248,7 +248,8 @@ public class ChangePeopleDetail extends AppCompatActivity {
                 setResult(1, data);
                 Intent intent = new Intent();
                 intent.putExtra(PhoneDictionary.NAME, et_name.getText().toString());
-                intent.putExtra(PhoneDictionary.NUMBER, mPeopleInfoAdapter.getItem(0).toString());
+                intent.putExtra(PhoneDictionary.NUMBER, mPeopleInfoAdapter.getItem(0)[1]);
+                intent.putExtra(PhoneDictionary.Photo,imagePic);
                 setResult(PhoneDictionary.CONTACT_REQUEST_CODE, intent);
                 PhotoZoom.saveBitmap((int) map.get("contactID"), imagePic);
                 finish();

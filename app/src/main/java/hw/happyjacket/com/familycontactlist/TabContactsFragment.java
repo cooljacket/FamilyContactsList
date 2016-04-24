@@ -6,12 +6,6 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -41,6 +35,7 @@ import java.util.Vector;
 
 
 import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
+import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 
 /**
  * Created by jacket on 2016/3/30.
@@ -48,7 +43,7 @@ import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
 public class TabContactsFragment extends Fragment {
     private Context mContext;
     private ListView listview;
-    private Vector AL;
+    private Vector<HashMap<String,Object>> AL;
     private int positionNew;
     private DBHelper dbHelper = null;
     private SQLiteDatabase db = null;
@@ -94,6 +89,8 @@ public class TabContactsFragment extends Fragment {
         return ContactView == null ? ContactView = inflater.inflate(R.layout.contact_list, container, false) : ContactView;
     }
 
+
+
     private int[] image = {R.drawable.p4,R.drawable.p5,R.drawable.p6,
             R.drawable.p1,R.drawable.p2,R.drawable.p3,
             R.drawable.p7,R.drawable.p8,R.drawable.p9,
@@ -110,15 +107,24 @@ public class TabContactsFragment extends Fragment {
     public Bitmap[] circleImage = new Bitmap[31];
 
 
+    public void notifyDataSetChanged(HashMap<String,Object> data){
+        AL.set(positionNew,data);
+        adapter.notifyDataSetChanged();
+    }
+
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (resultCode){
-            case 1:
+        switch (requestCode){
+            case PhoneDictionary.CONTAT_ACTION_START:
+                Log.i("hehe2","hehe2");
                 HashMap newmap = (HashMap)data.getSerializableExtra("newdata");
                 AL.set(positionNew, newmap);
-                loadList();
+                Log.i("hehe2",AL.get(positionNew).get("contactName") + "");
+                adapter.notifyDataSetChanged();
                 break;
             default:
+                Log.i("hehe2","hehe3");
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -235,10 +241,10 @@ public class TabContactsFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(mContext, ContactActivity.class);
-                positionNew=position;
+                positionNew = position;
                 HashMap map = (HashMap) parent.getItemAtPosition(position);
                 // 当requestCode为3的时候表示请求转向CPD这个页面？？
-                ContactActivity.actionStart(getActivity(),map);
+                ContactActivity.actionStart(getActivity(), map);
             }
         });
     }

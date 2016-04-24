@@ -1,5 +1,6 @@
 package hw.happyjacket.com.familycontactlist;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -21,7 +22,10 @@ import android.widget.RadioGroup;
 import java.util.ArrayList;
 import java.util.List;
 
-// FragmentActivity
+import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
+
+
+
 public class MainActivity extends AppCompatActivity {
     private ViewPager mPager;
     private int selected_tab = 0, base_tab_id = 0;
@@ -202,5 +206,17 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_activity_actions, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case PhoneDictionary.CONTAT_ACTION_START:
+               /* Log.i("tt","Tt");
+                mContactTab.notifyDataSetChanged((HashMap<String,Object>)data.getSerializableExtra("newdata"));*/
+                break;
+            default:
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

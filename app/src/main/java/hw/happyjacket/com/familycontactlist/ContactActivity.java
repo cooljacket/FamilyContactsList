@@ -5,6 +5,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -99,8 +100,6 @@ public class ContactActivity extends AppCompatActivity{
 
         head.setTitle(name);
 
-
-//要改！！！！！！！！！！！！！！！！！！！
         mContactShow = new ContactShow(this,R.layout.call_log_list);
         mContactShow.getPhoneList().setUri(ContactsContract.Data.CONTENT_URI);
         mContactShow.InitAdapter(new XiaoMiAccessory(), new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER}, ContactsContract.Data.CONTACT_ID + " = ? ", new String[]{"" + contactID}, null);
@@ -218,29 +217,23 @@ public class ContactActivity extends AppCompatActivity{
 //    }
 
 
-    @Override
-    public void onBackPressed() {
-
-        Intent data = new Intent();
-//        this.data = getChanged();
-
-        HashMap newdata = new HashMap();
-        newdata.put("contactName",this.data.get("contactName"));
-        newdata.put("contactPhoto",this.data.get("contactPhoto"));
-        newdata.put("contactID",this.data.get("contactID"));
-        newdata.put("UserID",this.data.get("UserID"));
-        newdata.put("contactSortname", this.data.get("contactSortname"));
-        data.putExtra("newdata", newdata);
-        setResult(1, data);//不管有没修改都要更新数据
-        finish();
-        super.onBackPressed();
-    }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+
         mContactShow.destroy();
         PhoneRegister.unRegister(mContactShow.getIndex());
+
+        Intent data = new Intent();
+        Intent intent = getIntent();
+//        this.data = getChanged();
+        HashMap<String,Object> newdata = new HashMap();
+        newdata.put("contactName",head.getTitle());
+        newdata.put("contactPhoto",intent.getSerializableExtra(PhoneDictionary.Photo));
+        newdata.put("contactSortname", this.data.get("contactSortname"));
+        data.putExtra("newdata", newdata);
+        setResult(PhoneDictionary.CONTAT_ACTION_START, data);//不管有没修改都要更新数据
+        super.onDestroy();
     }
 
     @Override
@@ -249,12 +242,12 @@ public class ContactActivity extends AppCompatActivity{
         switch (resultCode){//处理结果码
             case PhoneDictionary.CONTACT_REQUEST_CODE://有修改
                 name = data.getStringExtra(PhoneDictionary.NAME);
-                Toast.makeText(ContactActivity.this,name,Toast.LENGTH_SHORT).show();
                 head.setTitle(name);
                 mContactShow.setNumber(data.getStringExtra(PhoneDictionary.NUMBER));
                 HashMap<String,String> theFirstLine = mContactShow.getPhoneListElementList().get(0);
-                theFirstLine.put(PhoneDictionary.NUMBER,data.getStringExtra(PhoneDictionary.NUMBER));
-                mContactShow.getPhoneListElementList().set(0,theFirstLine);
+                theFirstLine.put(PhoneDictionary.DATE,data.getStringExtra(PhoneDictionary.NUMBER));
+                theFirstLine.put(PhoneDictionary.NUMBER,mContactShow.getPhoneListElementList().get(0).get(PhoneDictionary.NUMBER));
+                mContactShow.getPhoneListElementList().set(0, theFirstLine);
                 mContactShow.notifyDataSetChanged();
 
 
@@ -272,10 +265,10 @@ public class ContactActivity extends AppCompatActivity{
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    public static void actionStart(Activity context,HashMap map){
+    public static void actionStart(Activity context,HashMap<String,Object> map){
         Intent intent = new Intent(context,ContactActivity.class);
         intent.putExtra("data",map);
-        context.startActivity(intent);
+        context.startActivityForResult(intent, PhoneDictionary.CONTAT_ACTION_START);
     }
 
 }
