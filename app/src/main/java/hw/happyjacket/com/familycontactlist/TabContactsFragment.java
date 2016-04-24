@@ -13,6 +13,8 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -33,8 +35,12 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
+
+
+import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
 
 /**
  * Created by jacket on 2016/3/30.
@@ -47,6 +53,9 @@ public class TabContactsFragment extends Fragment {
     private DBHelper dbHelper = null;
     private SQLiteDatabase db = null;
     private View ContactView;
+    private SimpleAdapter adapter;
+    private Vector<Integer> AllID = new Vector<>();
+    private HashMap<Integer,Integer> IDtoPos = new HashMap<>();
     public static final int PHONES_DISPLAY_NAME_INDEX = 0;
     public static final int PHONES_CONTACT_ID_INDEX=1;
     public static final int PHONES_NUMBER_INDEX=2;
@@ -55,7 +64,7 @@ public class TabContactsFragment extends Fragment {
             ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
             ContactsContract.CommonDataKinds.Phone.NUMBER
     };
-    public Vector contacts = new Vector();
+    public Vector<HashMap> contacts = new Vector<>();
     static final int GB_SP_DIFF = 160;
     // 存放国标一级汉字不同读音的起始区位码
     static final int[] secPosValueList = { 1601, 1637, 1833, 2078, 2274, 2302,
@@ -65,6 +74,19 @@ public class TabContactsFragment extends Fragment {
     static final char[] firstLetter = { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
             'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'w', 'x',
             'y', 'z' };
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 0:
+                    adapter.notifyDataSetChanged();
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
 
     @Nullable
     @Override
@@ -108,12 +130,28 @@ public class TabContactsFragment extends Fragment {
         mContext = getContext();
         dbHelper = new DBHelper(TabContactsFragment.super.getContext());
         db = dbHelper.openDatabase();
-
         getCircles();
 
 
         AL = getPhoneContacts();
+
+
         sortList();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                for(int i = 0 ; i < AllID.size() ; ++i){
+                    int id = AllID.get(i);
+                    int pos = IDtoPos.get(id);
+                    contacts.get(pos).put("contactPhoto",PhotoZoom.createCircleImage(PhotoZoom.ratio(id),180));
+                }
+                Message message = handler.obtainMessage();
+                message.what = 0;
+                handler.sendMessage(message);
+
+            }
+        }).start();
 
         dbHelper.close();
     }
@@ -141,63 +179,11 @@ public class TabContactsFragment extends Fragment {
         Bitmap a;
         for(int i=0;i<31;i++){
 //            a= BitmapFactory.decodeResource(getResources(),image[i]);
-            a = ratio(image[i],50,50);
-            circleImage[i]=createCircleImage(a,180);//ratio(image[i],100,100)
+            a = PhotoZoom.ratio(getActivity(),image[i]);
+            circleImage[i]=PhotoZoom.createCircleImage(a, 180);//ratio(image[i],100,100)
         }
     }
 
-    private Bitmap createCircleImage(Bitmap source,int min){
-        final Paint paint = new Paint();
-        paint.setAntiAlias(true);
-//        min = source.getHeight();
-
-        Bitmap target = Bitmap.createBitmap(min,min, Bitmap.Config.ARGB_8888);
-        /*
-        产生一个同样大小的画布
-         */
-        Canvas canvas = new Canvas(target);
-        /*
-        首先绘制圆形
-         */
-        canvas.drawCircle(min/2,min/2,min/2,paint);
-        /*
-        使用SRC_IN
-         */
-        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        /*
-        绘制图片
-         */
-        canvas.drawBitmap(source,0,0,paint);
-
-        return target;
-    }
-
-
-    /**
-     * Compress image by pixel, this will modify image width/height.
-     * Used to get thumbnail
-     *
-     * @param imgPath image path
-     * @param pixelW target pixel of width
-     * @param pixelH target pixel of height
-     * @return
-     */
-    public Bitmap ratio(int imgPath, float pixelW, float pixelH) {
-        BitmapFactory.Options newOpts = new BitmapFactory.Options();
-        // 开始读入图片，此时把options.inJustDecodeBounds 设回true，即只读边不读内容
-
-        newOpts.inPreferredConfig = Bitmap.Config.RGB_565;
-
-
-        newOpts.inJustDecodeBounds = false;
-
-        newOpts.inSampleSize = 4;//设置缩放比例
-        // 开始压缩图片，注意此时已经把options.inJustDecodeBounds 设回false了
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),imgPath, newOpts);
-        // 压缩好比例大小后再进行质量压缩
-//        return compress(bitmap, maxSize); // 这里再进行质量压缩的意义不大，反而耗资源，删除
-        return bitmap;
-    }
 
 
     private void sortList(){
@@ -206,10 +192,14 @@ public class TabContactsFragment extends Fragment {
                 HashMap h1 = (HashMap)AL.get(i);
                 HashMap h2 = (HashMap)AL.get(j);
                 String v1 =(String) h1.get("contactSortname");
+                int id1 = (int) h1.get("contactID");
                 String v2 =(String) h2.get("contactSortname");
+                int id2 = (int) h2.get("contactID");
                 if(v1.compareTo(v2)>0){
                     AL.setElementAt(h2,i);
-                    AL.setElementAt(h1,j);
+                    AL.setElementAt(h1, j);
+                    IDtoPos.put(id2,i);
+                    IDtoPos.put(id1,j);
                 }
             }
         }
@@ -221,7 +211,7 @@ public class TabContactsFragment extends Fragment {
 
 
         //Toast.makeText(getApplicationContext(), ""+num, Toast.LENGTH_SHORT).show();
-        SimpleAdapter adapter = new SimpleAdapter(mContext, AL, R.layout.list_item
+         adapter = new SimpleAdapter(mContext, AL, R.layout.list_item
                 ,new String[]{"contactName","contactPhoto"}
                 ,new int[]{R.id.name, R.id.imageView});
 //        adapter.
@@ -395,7 +385,9 @@ public class TabContactsFragment extends Fragment {
 //                    user.mobilephone
 //                    user.group="UNKNOWN";
                     Random random = new Random();
-                    user.photo= random.nextInt(31);
+                    contactPhoto = circleImage[random.nextInt(31)];
+                    PhotoZoom.saveBitmap(contactid,contactPhoto);
+
                     dbHelper.initUser(user);
 //                    Toast.makeText(mContext, "塞进去" + contactName, Toast.LENGTH_SHORT).show();
 
@@ -445,9 +437,16 @@ public class TabContactsFragment extends Fragment {
         while(cursor.moveToNext()){
             num++;
             //photo
-            Bitmap contactPhoto =  circleImage[cursor.getInt(5)];
+
 //                    contactPhotonum = cursor.getInt(2);
             int contactid = cursor.getInt(1);
+
+            AllID.add(contactid);
+            IDtoPos.put(contactid,AllID.size() - 1);
+
+
+
+
             //familyname
             String contactName = cursor.getString(2);
             //group
@@ -456,18 +455,16 @@ public class TabContactsFragment extends Fragment {
             HashMap map=new HashMap();
             map.put("contactName",contactName);
 //                map.put("contactPhone",phoneNumber);
-            map.put("contactPhoto",contactPhoto);
             map.put("contactSortname",contactSortname);
             map.put("contactID",contactid);
             map.put("UserID",cursor.getInt(0));
             contacts.add(map);
         }
 
-
-
-
         return contacts;
     }
+
+
 
 
     public static String getSpells(String characters) {
@@ -524,5 +521,8 @@ public class TabContactsFragment extends Fragment {
         }
         return result;
     }
+
+
+
 
 }

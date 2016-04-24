@@ -262,7 +262,7 @@ public class DialogFactory {
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Bitmap a= PhotoZoom.ratio(context,image[imagePosition], 50, 50);
+                Bitmap a= PhotoZoom.ratio(context,image[imagePosition]);
                 Bitmap circleImage=PhotoZoom.createCircleImage(a, 180);
                 btn_img.setImageBitmap(circleImage);
                 ImagePicture=circleImage;

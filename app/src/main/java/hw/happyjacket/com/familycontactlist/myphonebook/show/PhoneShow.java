@@ -8,6 +8,7 @@ import hw.happyjacket.com.familycontactlist.extention.Decorate;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.PhoneAdapter;
 import hw.happyjacket.com.familycontactlist.phone.list.PhoneList;
 import hw.happyjacket.com.familycontactlist.phone.list.RecordList;
+import hw.happyjacket.com.familycontactlist.phone.phonelistener.PhoneLocationThread;
 
 import java.util.HashMap;
 import java.util.List;
@@ -102,6 +103,7 @@ public abstract class PhoneShow {
     public void destroy()
     {
         phoneList.destroyPhoneList();
+        PhoneLocationThread.setFlag(false);
     }
 
     public abstract void AddPhoneElement(Accessory accessory, HashMap<String,String> input);

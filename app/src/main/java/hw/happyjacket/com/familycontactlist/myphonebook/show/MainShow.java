@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.CallLog;
 import android.support.annotation.Nullable;
+import android.support.v4.util.Pools;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -24,17 +25,16 @@ import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 import hw.happyjacket.com.familycontactlist.phone.database.DataBaseDictionary;
 import hw.happyjacket.com.familycontactlist.phone.list.PhoneList;
 import hw.happyjacket.com.familycontactlist.phone.list.RecordList;
+import hw.happyjacket.com.familycontactlist.phone.phonelistener.PhoneLocationThread;
 
 /**
  * Created by root on 16-4-1.
  */
 public class MainShow extends PhoneShow {
-    private PhoneLocationMaster PLMaster;
-    private boolean errorOfGetingLocation = false;
+
 
     public MainShow(Context context, int table) {
         super(context, table);
-        PLMaster = new PhoneLocationMaster(context);
     }
 
     public void ElementCopy() {
@@ -146,90 +146,25 @@ public class MainShow extends PhoneShow {
 
         sPhoneAdapter = new MainAdapter(context, table, mPhoneListElementList,index);
 
-        ArrayList<String> phoneNumberList = new ArrayList<>();
+        final ArrayList<String> phoneNumberList = new ArrayList<>();
         for (HashMap<String,String> i : mPhoneListElementList)
            phoneNumberList.add(i.get(PhoneDictionary.NUMBER));
 
-        Message msg = handler.obtainMessage();
-        msg.obj = phoneNumberList;
-        msg.what = 0;
-        handler.sendMessage(msg);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                PhoneLocationThread.CheckLocation(handler,phoneNumberList,context);
+            }
+        }).start();
+
     }
 
     private Handler handler = new Handler() {
         @Override
-        public void handleMessage(Message msg) {
+        public void handleMessage(final Message msg) {
             switch (msg.what) {
-                case 0:
-                    final Message msg_for_location = new Message();
-                    msg_for_location.what = 1;
-
-                    ArrayList<String> phoneNumberList = (ArrayList<String>) msg.obj;
-                    final Vector<HashMap<String, String> > locations = new Vector<>();
-
-                    int ACCESS_NETWORK_COUNT = 0;
-
-                    for (final String phoneNumber : phoneNumberList) {
-                        String[] places = PLMaster.get(phoneNumber);
-                        if (places != null) {
-                            HashMap<String,String> tmp = new HashMap<>();
-                            if(places[1] != null && places[0].equals(places[1]))
-                                tmp.put(phoneNumber,places[0]);
-                            else
-                                tmp.put(phoneNumber, places[0] + places[1]);
-                            locations.add(tmp);
-                            continue ;
-                        }
-
-                        final String HostURL = "http://webservice.webxml.com.cn";
-                        String LocationURL = String.format("%s/WebServices/MobileCodeWS.asmx/getMobileCodeInfo?mobileCode=%s&userID=", HostURL, phoneNumber);
-                        HttpConnectionUtil.get(LocationURL, new HttpConnectionUtil.HttpCallbackListener() {
-                            @Override
-                            public void onFinish(String response) {
-                                response = response.replaceAll("<[^>]+>", "");
-                                Log.d("hehe-response", phoneNumber + " " + response);
-                                int state = PhoneLocationDBHelper.CACHED;
-
-                                // if there is no location for the querying phonenumber
-                                if (response.contains("手机号码错误") || response.contains("没有此号码记录")) {
-                                    response = null;
-                                    state = PhoneLocationDBHelper.NOSUCH;
-                                } else if (response.contains("http")){
-                                    state = PhoneLocationDBHelper.ERROR;
-                                }
-
-                                PLMaster.add(phoneNumber, response, state);
-                                Log.d("hehe-number", PLMaster.get(phoneNumber)[2] + ", " + state);
-                                HashMap<String,String> tmp = new HashMap<>();
-                                tmp.put(phoneNumber, PLMaster.get(phoneNumber)[2]);
-                                locations.add(tmp);
-                            }
-
-                            @Override
-                            public void onError(Exception e) {
-                                errorOfGetingLocation = true;
-                            }
-                        });
-
-                        if (errorOfGetingLocation) {
-                            msg_for_location.obj = new Vector<HashMap<String, String> >();
-                            handler.sendMessage(msg_for_location);
-                            break;
-                        }
-
-                        // 每次限定最多从网络拿15个归属地，因为免费的api服务有限制，也没必要一下子拿太多
-                        if (++ACCESS_NETWORK_COUNT > 15)
-                        {
-                           break;
-                        }
-                    }
-
-
-                    msg_for_location.obj = locations;
-                    handler.sendMessage(msg_for_location);
-                    break;
-
                 case 1:
+
                     Vector<HashMap<String, String> > t = (Vector<HashMap<String, String> >) msg.obj;
                     for(HashMap<String,String> i : t){
                         for(Map.Entry<String,String> j : i.entrySet()) {

@@ -98,11 +98,13 @@ public class ChangePeopleDetail extends AppCompatActivity {
         switch (requestCode){//处理请求
 
             case PhoneDictionary.IMAGE_REQUEST_CODE:
-                PhotoZoom.startPhotoZoom(ChangePeopleDetail.this,data.getData());
+                if(data != null)
+                    PhotoZoom.startPhotoZoom(ChangePeopleDetail.this,data.getData());
                 break;
             case PhoneDictionary.RESULT_REQUEST_CODE:
                 if(data != null){
                     btn_img.setImageDrawable(PhotoZoom.getImageToView(ChangePeopleDetail.this, data));
+                    btn_img.setDrawingCacheEnabled(true);
                     imagePic = btn_img.getDrawingCache();
                 }
                 break;
@@ -124,7 +126,6 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
     @Override
     public void onDestroy(){
-        PhotoZoom.saveBitmap(this, (int) map.get("contactID"), imagePic);
         super.onDestroy();
     }
 
@@ -158,7 +159,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
         //mPeopleInfoAdapter.notifyDataSetChanged();
         mListView.setAdapter(mPeopleInfoAdapter);
 //        imagePic=(int) map.get("contactPhoto");
-        DialogFactory.setImagePicture((imagePic = PhotoZoom.getBitmap(this,(int)map.get("contactID"),1281,901)) == null ? imagePic = (Bitmap) map.get("contactPhoto"):imagePic);
+        DialogFactory.setImagePicture((imagePic = PhotoZoom.getBitmap((int)map.get("contactID"),1281,901)) == null ? imagePic = (Bitmap) map.get("contactPhoto"):imagePic);
         btn_img.setImageBitmap(imagePic);
 
 //        btn_img.setImageResource(imagePic);
@@ -242,16 +243,14 @@ public class ChangePeopleDetail extends AppCompatActivity {
                 updateUser();
 
                /* map = getChanged();*/
-//<<<<<<< HEAD
                 Intent data = new Intent();
                 data.putExtra("newdata", map);
                 setResult(1, data);
-//=======
                 Intent intent = new Intent();
                 intent.putExtra(PhoneDictionary.NAME, et_name.getText().toString());
                 intent.putExtra(PhoneDictionary.NUMBER, mPeopleInfoAdapter.getItem(0).toString());
                 setResult(PhoneDictionary.CONTACT_REQUEST_CODE, intent);
-//>>>>>>> 430c90b976648e3c30734c9bd6d9e5b5a4e9ff58
+                PhotoZoom.saveBitmap((int) map.get("contactID"), imagePic);
                 finish();
 
             }

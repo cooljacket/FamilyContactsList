@@ -14,10 +14,13 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -83,15 +86,12 @@ public class PhotoZoom {
     }
 
 
-    public static Bitmap ratio(Activity context,int imgPath, float pixelW, float pixelH) {
+    public static Bitmap ratio(Activity context,int imgPath) {
         BitmapFactory.Options newOpts = new BitmapFactory.Options();
         // 开始读入图片，此时把options.inJustDecodeBounds 设回true，即只读边不读内容
 
         newOpts.inPreferredConfig = Bitmap.Config.RGB_565;
-
-
         newOpts.inJustDecodeBounds = false;
-
         newOpts.inSampleSize = 4;//设置缩放比例
         // 开始压缩图片，注意此时已经把options.inJustDecodeBounds 设回false了
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),imgPath, newOpts);
@@ -100,36 +100,43 @@ public class PhotoZoom {
         return bitmap;
     }
 
-    public static String saveBitmap(Activity context,int id,Bitmap image){
+    public static Bitmap ratio(int id){
+        File d = new File(Environment.getExternalStorageDirectory(),"image");
+        File filename = new File(d,id + ".jpg");
+        Bitmap bitmap1 = BitmapFactory.decodeFile(filename.getPath());
+        return bitmap1;
+    }
+
+    public static void saveBitmap(int id,Bitmap image){
         String path;
-        File location = new File(path = (Environment.getExternalStorageDirectory() + "/.wblog-image/"+id+".png"));
-        if(location.exists()){
-            location.delete();
-        }
-        try{
-            location.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        File d = new File(Environment.getExternalStorageDirectory(),"image");
+        if(!d.exists())
+            d.mkdir();
+        File location = new File(d,id + ".jpg");
         FileOutputStream fileOutputStream = null;
+
         try{
+            if(location.exists()){
+                location.delete();
+            }
+            location.createNewFile();
             fileOutputStream = new FileOutputStream(location);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        image.compress(Bitmap.CompressFormat.PNG,100,fileOutputStream);
-        try{
+            image.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
             fileOutputStream.flush();
             fileOutputStream.close();
         } catch (IOException e) {
+            Log.i("error","error");
             e.printStackTrace();
         }
-        return path;
     }
 
-    public static Bitmap getBitmap(Activity context,int id,int width,int height){
-        String path = Environment.getExternalStorageDirectory() + "/.wblog-image/" + id + ".png";
+    public static Bitmap getBitmap(int id,int width,int height){
+
+        String path;
         Bitmap bitmap = null;
+        File f = new File(Environment.getExternalStorageDirectory(),"image");
+        File inputStream = new File(f,id + ".jpg");
+        path = inputStream.getPath();
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
         BitmapFactory.decodeFile(path,options);
