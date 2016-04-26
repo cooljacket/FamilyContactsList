@@ -3,6 +3,7 @@ package hw.happyjacket.com.familycontactlist;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -50,6 +51,9 @@ public class TabContactsFragment extends Fragment {
     private Vector<Integer> AllID = new Vector<>();
     private HashMap<Integer,Integer> IDtoPos = new HashMap<>();
     private static Bitmap picture;
+    private static String SHARE_NAME = "contactSharePreference";
+    private static int born;
+    private static String The_First_Time = "first";
     public static final int PHONES_DISPLAY_NAME_INDEX = 0;
     public static final int PHONES_CONTACT_ID_INDEX=1;
     public static final int PHONES_NUMBER_INDEX=2;
@@ -264,13 +268,16 @@ public class TabContactsFragment extends Fragment {
         ContentResolver resolver1 = mContext.getContentResolver();
 //        ArrayList contacts = new ArrayList();
         // 获取手机联系人
-        Cursor phoneCursor = resolver1.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, PHONES_PROJECTION, null, null, null);
-
-        if (phoneCursor != null) {
-            while (phoneCursor.moveToNext()) {
+        SharedPreferences pref = mContext.getSharedPreferences(SHARE_NAME,Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        born = pref.getInt(The_First_Time,-1);
+        if(born == -1) {
+            Cursor phoneCursor = resolver1.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, PHONES_PROJECTION, null, null, null);
+            if (phoneCursor != null) {
+                while (phoneCursor.moveToNext()) {
 //                    String phoneNumber = new String();
 //                    String homeNumber = new String();
-                //得到手机号码
+                    //得到手机号码
 //                    int index=0;
 //                    int num=0;
 //                    if(phoneCursor.getCount()>0){
@@ -281,15 +288,15 @@ public class TabContactsFragment extends Fragment {
 //                        else homeNumber = phoneCursor.getString(index);
 //                        num++;
 //                    }
-                //得到联系人名称
-                String contactName = phoneCursor.getString(PHONES_DISPLAY_NAME_INDEX);
+                    //得到联系人名称
+                    String contactName = phoneCursor.getString(PHONES_DISPLAY_NAME_INDEX);
 
-                //得到联系人ID
-                int contactid = phoneCursor.getInt(PHONES_CONTACT_ID_INDEX);
+                    //得到联系人ID
+                    int contactid = phoneCursor.getInt(PHONES_CONTACT_ID_INDEX);
 
-                String contactID = phoneCursor.getString(PHONES_CONTACT_ID_INDEX);
+                    String contactID = phoneCursor.getString(PHONES_CONTACT_ID_INDEX);
 
-                String contactPhone = phoneCursor.getString(PHONES_NUMBER_INDEX);
+                    String contactPhone = phoneCursor.getString(PHONES_NUMBER_INDEX);
 
 //                Log.i("hh",contactName+" "+contactid);
 ////                 根据contact_ID取得MobilePhone号码
@@ -305,7 +312,7 @@ public class TabContactsFragment extends Fragment {
 //                mobilePhoneCur.close();
 
 
-                // 根据contact_ID取得WorkPhone号码
+                    // 根据contact_ID取得WorkPhone号码
 //                String workPhone = new String();
 //                Cursor workPhoneCur = resolver1.query(ContactsContract.Data.CONTENT_URI,
 //                        new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
@@ -318,13 +325,12 @@ public class TabContactsFragment extends Fragment {
 //                }
 //                workPhoneCur.close();
 
-                //debug
+                    //debug
 //                    Toast.makeText(mContext, "11111", Toast.LENGTH_SHORT).show();
-                //debug
+                    //debug
 
 
-
-                //String Group = new String();
+                    //String Group = new String();
 //                String email=new String();
 //                String remark = new String();
 //
@@ -361,14 +367,14 @@ public class TabContactsFragment extends Fragment {
 //
 //                noteCursor.close();
 
-                //debug
+                    //debug
 //                    Toast.makeText(mContext, "3333", Toast.LENGTH_SHORT).show();
-                //debug
+                    //debug
 
-                //得到联系人头像ID
+                    //得到联系人头像ID
 //                Long photoid = phoneCursor.getLong(PHONES_PHOTO_ID_INDEX);
 
-                //得到联系人头像Bitamp
+                    //得到联系人头像Bitamp
 //                Bitmap contactPhoto = null;
 //
 //                //photoid 大于0 表示联系人有头像 如果没有给此人设置头像则给他一个默认的
@@ -379,32 +385,31 @@ public class TabContactsFragment extends Fragment {
 //                }else {
 //                    contactPhoto = BitmapFactory.decodeResource(getResources(), R.drawable.q);
 //                }
-                //photo
-                Cursor cursor;
-                int contactPhotonum =0;
-                Bitmap contactPhoto=circleImage[0];//头像默认的图片
-                String contactSortname=getSpells(contactName);
-                cursor = db.query("user",null,"cid="+contactID,null,null,null,null);
-                if(!cursor.moveToFirst()) {
-                    User user = new User();
-                    user.cid=contactid;
-                    user.name=contactName;
-                    user.sortname=contactSortname;
-                    user.mobilephone=contactPhone;
+                    //photo
+                    Cursor cursor;
+                    int contactPhotonum = 0;
+                    Bitmap contactPhoto = circleImage[0];//头像默认的图片
+                    String contactSortname = getSpells(contactName);
+                    cursor = db.query("user", null, "cid = " + contactID, null, null, null, null);
+                    if (!cursor.moveToFirst()) {
+                        User user = new User();
+                        user.cid = contactid;
+                        user.name = contactName;
+                        user.sortname = contactSortname;
+                        user.mobilephone = contactPhone;
 //                    user.mobilephone=
 //                    user.family=false;
 //                    user.mobilephone
 //                    user.group="UNKNOWN";
-                    Random random = new Random();
-                    contactPhoto = circleImage[random.nextInt(31)];
-                    PhotoZoom.saveBitmap(contactid,contactPhoto);
+                        Random random = new Random();
+                        contactPhoto = circleImage[random.nextInt(31)];
+                        PhotoZoom.saveBitmap(contactid, contactPhoto);
 
-                    dbHelper.insertAUser(user);
+                        dbHelper.insertAUser(user);
 //                    Toast.makeText(mContext, "塞进去" + contactName, Toast.LENGTH_SHORT).show();
 
-                }
-                cursor.close();
-
+                    }
+                    cursor.close();
 
 
 //
@@ -414,7 +419,7 @@ public class TabContactsFragment extends Fragment {
 //
 //                cursor2.close();
 
-                // 根据contact_ID取得HomePhone号码
+                    // 根据contact_ID取得HomePhone号码
 //                String homeNumber=new String();
 //                Cursor homePhoneCur = resolver1.query(ContactsContract.Data.CONTENT_URI,
 //                        new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
@@ -433,14 +438,15 @@ public class TabContactsFragment extends Fragment {
 //                map.put("contactFamilyname", contactFamilyname);
 
 
+                    // map.put();
 
+                    //Log.d("debug",contactName);
+                }
 
-                // map.put();
-
-                //Log.d("debug",contactName);
+                phoneCursor.close();
             }
-
-            phoneCursor.close();
+            editor.putInt(The_First_Time, 1);
+            editor.commit();
         }
 
         Cursor cursor = db.query("user",null,null,null,null,null,null);
@@ -485,6 +491,7 @@ public class TabContactsFragment extends Fragment {
             char ch = characters.charAt(i);
             if ((ch >> 7) == 0) {
                 // 判断是否为汉字，如果左移7为为0就不是汉字，否则是汉字
+                buffer.append(String.valueOf(ch));
             } else {
                 char spell = getFirstLetter(ch);
                 buffer.append(String.valueOf(spell));

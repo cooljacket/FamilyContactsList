@@ -177,6 +177,9 @@ public class ContactShow extends PhoneShow {
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            if(weatherInfo == null) {
+
+            }
             try {
                 weatherInfo = CommonSettingsAndFuncs.ParseWeatherXML(new ByteArrayInputStream(weatherInfo.getBytes()));
             } catch (XmlPullParserException e) {

@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import hw.happyjacket.com.familycontactlist.MyDirPicker.DirPicker;

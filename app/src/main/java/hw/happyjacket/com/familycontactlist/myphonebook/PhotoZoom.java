@@ -83,7 +83,6 @@ public class PhotoZoom {
     public static Bitmap ratio(Activity context,int imgPath) {
         BitmapFactory.Options newOpts = new BitmapFactory.Options();
         // 开始读入图片，此时把options.inJustDecodeBounds 设回true，即只读边不读内容
-
         newOpts.inPreferredConfig = Bitmap.Config.RGB_565;
         newOpts.inJustDecodeBounds = false;
         newOpts.inSampleSize = 4;//设置缩放比例
