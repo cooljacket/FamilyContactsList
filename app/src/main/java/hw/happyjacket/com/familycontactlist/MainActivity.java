@@ -207,10 +207,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i("main",resultCode + " " + PhoneDictionary.CONTAT_ACTION_START);
         switch (requestCode){
             case PhoneDictionary.CONTAT_ACTION_START:
-               /* Log.i("tt","Tt");
-                mContactTab.notifyDataSetChanged((HashMap<String,Object>)data.getSerializableExtra("newdata"));*/
+                if(data != null && data.getSerializableExtra(PhoneDictionary.OTHER) != null)
+                    mContactTab.notifyDataSetChanged((HashMap<String,Object>)data.getSerializableExtra(PhoneDictionary.OTHER));
                 break;
             case MainActivity.FILE_SELECT_CODE:
                 Uri uri = data.getData();

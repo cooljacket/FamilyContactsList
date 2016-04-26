@@ -19,7 +19,10 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -82,6 +85,20 @@ public class ChangePeopleDetail extends AppCompatActivity {
     ScrollListView mListView;
     PeopleInfoAdapter mPeopleInfoAdapter;
 
+    Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what){
+                case 0:
+                    imagePic = (Bitmap)msg.obj;
+                    break;
+                default:
+                    break;
+            }
+            super.handleMessage(msg);
+        }
+    };
+
 
     final String  param [] = {"contactPhone","contactWork","contactHome","contactEmail","contactRemark","contactGroup"};
     final String PeopleInfo[] = {"手机","公司","家庭","邮箱","备注","群组"};
@@ -103,9 +120,9 @@ public class ChangePeopleDetail extends AppCompatActivity {
                 break;
             case PhoneDictionary.RESULT_REQUEST_CODE:
                 if(data != null){
-                    btn_img.setImageDrawable(PhotoZoom.getImageToView(ChangePeopleDetail.this, data));
-                    btn_img.setDrawingCacheEnabled(true);
-                    imagePic = btn_img.getDrawingCache();
+                    imagePic = PhotoZoom.getImageToView(ChangePeopleDetail.this, data);
+                    imagePic = PhotoZoom.createCircleImage(imagePic,imagePic.getWidth(),imagePic.getHeight());
+                    btn_img.setImageBitmap(imagePic);
                 }
                 break;
             default:
@@ -119,7 +136,6 @@ public class ChangePeopleDetail extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         setResult(0);
-
         finish();
         super.onBackPressed();
     }
@@ -137,8 +153,6 @@ public class ChangePeopleDetail extends AppCompatActivity {
         map = (HashMap)intent.getSerializableExtra("data");
 
         this.setContentView(R.layout.edit_people_detail);
-
-
 
         getUser();
 
@@ -159,14 +173,14 @@ public class ChangePeopleDetail extends AppCompatActivity {
         //mPeopleInfoAdapter.notifyDataSetChanged();
         mListView.setAdapter(mPeopleInfoAdapter);
 //        imagePic=(int) map.get("contactPhoto");
-        DialogFactory.setImagePicture((imagePic = PhotoZoom.ratio((int) map.get("contactID"))) == null ? imagePic = (Bitmap) map.get("contactPhoto"):(imagePic = PhotoZoom.createCircleImage(imagePic,180)));
+        DialogFactory.setImagePicture((imagePic = PhotoZoom.ratio((int) map.get("contactID"))) == null ? imagePic = (Bitmap) map.get("contactPhoto"):(imagePic = PhotoZoom.createCircleImage(imagePic,imagePic.getWidth(),imagePic.getHeight())));
         btn_img.setImageBitmap(imagePic);
 
 //        btn_img.setImageResource(imagePic);
         btn_img.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFactory.getPhotoDialog(ChangePeopleDetail.this, "请选择方法",new String[]{"从相库中选取","从默认图片选取"},new MyViewFactory(ChangePeopleDetail.this),btn_img).show();;
+                DialogFactory.getPhotoDialog(ChangePeopleDetail.this, "请选择方法",new String[]{"从相库中选取","从默认图片选取"},new MyViewFactory(ChangePeopleDetail.this),btn_img,mHandler).show();
 
             }
         });
@@ -247,9 +261,11 @@ public class ChangePeopleDetail extends AppCompatActivity {
                 data.putExtra("newdata", map);
                 setResult(1, data);
                 Intent intent = new Intent();
-                intent.putExtra(PhoneDictionary.NAME, et_name.getText().toString());
-                intent.putExtra(PhoneDictionary.NUMBER, mPeopleInfoAdapter.getItem(0)[1]);
-                intent.putExtra(PhoneDictionary.Photo,imagePic);
+                HashMap<String,Object> t = new HashMap<String, Object>();
+                t.put(PhoneDictionary.NAME, et_name.getText().toString());
+                t.put(PhoneDictionary.NUMBER, mPeopleInfoAdapter.getItem(0)[1]);
+                t.put(PhoneDictionary.Photo, imagePic);
+                intent.putExtra(PhoneDictionary.OTHER,t);
                 setResult(PhoneDictionary.CONTACT_REQUEST_CODE, intent);
                 PhotoZoom.saveBitmap((int) map.get("contactID"), imagePic);
                 finish();

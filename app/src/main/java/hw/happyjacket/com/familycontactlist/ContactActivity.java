@@ -8,6 +8,8 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.ContactsContract;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -28,6 +30,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Objects;
 
 import hw.happyjacket.com.familycontactlist.extention.XiaoMiAccessory;
 import hw.happyjacket.com.familycontactlist.myphonebook.ContentActivity;
@@ -43,11 +46,15 @@ import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 public class ContactActivity extends AppCompatActivity{
 
     private String name;
+    private String number;
     private int contactID;
     private ScrollListView ContactListView;
     private ContactShow mContactShow;
     private CollapsingToolbarLayout head;
     private HashMap data;
+    private int id;
+    private Bitmap picture;
+
 
 
 
@@ -85,9 +92,6 @@ public class ContactActivity extends AppCompatActivity{
 //        getOtherDetail();
         name = (String)data.get("contactName");
         contactID = (int)data.get("contactID");
-
-        Toast.makeText(getApplicationContext(), ""+contactID, Toast.LENGTH_SHORT).show();
-
         mToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.contact_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -100,9 +104,13 @@ public class ContactActivity extends AppCompatActivity{
 
         head.setTitle(name);
 
+        DBHelper dbHelper = new DBHelper(this);
+        id = (int) data.get("UserID");
+
         mContactShow = new ContactShow(this,R.layout.call_log_list);
-        mContactShow.getPhoneList().setUri(ContactsContract.Data.CONTENT_URI);
-        mContactShow.InitAdapter(new XiaoMiAccessory(), new String[]{ContactsContract.CommonDataKinds.Phone.NUMBER}, ContactsContract.Data.CONTACT_ID + " = ? ", new String[]{"" + contactID}, null);
+        mContactShow.getPhoneList().setDb("contact");
+        mContactShow.getPhoneList().setTable("user");
+        mContactShow.InitAdapter(new XiaoMiAccessory(), new String[]{"mobilephone"},  "uid" +  " = ? ", new String[]{"" + id}, null);
         ContactListView.setAdapter(mContactShow.getPhoneAdapter());
         ContactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -133,106 +141,25 @@ public class ContactActivity extends AppCompatActivity{
         });
     }
 
-//    private void getOtherDetail(){//从id查其他数据
-//        int contactid = (int)data.get("contactID");
-//        ContentResolver resolver1 = this.getApplicationContext().getContentResolver();
-//
-//        //mobile
-//        // 根据contact_ID取得MobilePhone号码
-//        Cursor mobilePhoneCur = resolver1.query(ContactsContract.Data.CONTENT_URI,
-//                new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
-//                ContactsContract.Data.CONTACT_ID + "=?" + " AND "
-//                        + ContactsContract.Data.MIMETYPE + "=? "+" AND "
-//                        +ContactsContract.CommonDataKinds.Phone.TYPE + "=?",
-//                new String[]{""+contactid,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE)}, null);
-//        if(mobilePhoneCur.moveToFirst()){
-//            contactPhone=mobilePhoneCur.getString(mobilePhoneCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-//        }
-//        mobilePhoneCur.close();
-//
-//
-//        //home
-//        Cursor homePhoneCur = resolver1.query(ContactsContract.Data.CONTENT_URI,
-//                new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
-//                ContactsContract.Data.CONTACT_ID + "=?" + " AND "
-//                        + ContactsContract.Data.MIMETYPE + "=? "+" AND "
-//                        + ContactsContract.CommonDataKinds.Phone.TYPE + "=?",
-//                new String[]{""+contactid,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_HOME)}, null);
-//
-//        if (homePhoneCur.moveToFirst()) {
-//            contactHome = homePhoneCur.getString(homePhoneCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-//        }
-//        homePhoneCur.close();
-//        // work
-//        Cursor workPhoneCur = resolver1.query(ContactsContract.Data.CONTENT_URI,
-//                new String[] {ContactsContract.CommonDataKinds.Phone.NUMBER},
-//                ContactsContract.Data.CONTACT_ID + "=?" + " AND "
-//                        + ContactsContract.Data.MIMETYPE + "=? "+" AND "
-//                        +ContactsContract.CommonDataKinds.Phone.TYPE + "=?",
-//                new String[]{""+contactid,ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE,String.valueOf(ContactsContract.CommonDataKinds.Phone.TYPE_WORK)}, null);
-//        if(workPhoneCur.moveToFirst()){
-//            contactWork=workPhoneCur.getString(workPhoneCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-//        }
-//        workPhoneCur.close();
-//
-//        //email
-//
-//        Cursor dataCursor = resolver1.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null,
-//                ContactsContract.CommonDataKinds.Email.CONTACT_ID + "=" + contactid, null, null);
-//        while (dataCursor.moveToNext()){
-//            contactEmail = dataCursor.getString(dataCursor.getColumnIndex(
-//                    ContactsContract.CommonDataKinds.Email.DATA));
-//            break;
-//        }
-//        dataCursor.close();
-//        //remark
-//        String noteWhere =
-//                ContactsContract.Data.CONTACT_ID + " = ? AND " +
-//                        ContactsContract.Data.MIMETYPE + " = ?";
-//
-//        String[] noteWhereParams = new String[]{
-//                ""+contactid,
-//                ContactsContract.CommonDataKinds.Note.CONTENT_ITEM_TYPE};
-//
-//        Cursor noteCursor = resolver1.query(ContactsContract.Data.CONTENT_URI,
-//                null,
-//                noteWhere,
-//                noteWhereParams,
-//                null);
-//        if (noteCursor.moveToFirst()) {
-//            contactRemark = noteCursor.getString(noteCursor.getColumnIndex(
-//                    ContactsContract.CommonDataKinds.Note.NOTE));
-//        }
-//
-//        noteCursor.close();
-//
-//
-//
-//        //补充进map
-//        data.put("contactPhone",contactPhone);
-//        data.put("contactHome",contactHome);
-//        data.put("contactWork", contactWork);
-//        data.put("contactRemark", contactRemark);
-//        data.put("contactEmail", contactEmail);
-//    }
+    @Override
+    public void onBackPressed() {
 
-
+        Intent data = new Intent();
+//        this.data = getChanged();
+        HashMap<String,Object> newdata = new HashMap<String,Object>();
+        newdata.put("contactName", name);
+        newdata.put("contactPhoto", picture);
+        newdata.put("contactSortname", this.data.get("contactSortname"));
+        data.putExtra(PhoneDictionary.OTHER, newdata);
+        setResult(PhoneDictionary.CONTAT_ACTION_START, data);//不管有没修改都要更新数据
+        super.onBackPressed();
+    }
 
     @Override
     protected void onDestroy() {
 
         mContactShow.destroy();
         PhoneRegister.unRegister(mContactShow.getIndex());
-
-        Intent data = new Intent();
-        Intent intent = getIntent();
-//        this.data = getChanged();
-        HashMap<String,Object> newdata = new HashMap();
-        newdata.put("contactName",head.getTitle());
-        newdata.put("contactPhoto",intent.getSerializableExtra(PhoneDictionary.Photo));
-        newdata.put("contactSortname", this.data.get("contactSortname"));
-        data.putExtra("newdata", newdata);
-        setResult(PhoneDictionary.CONTAT_ACTION_START, data);//不管有没修改都要更新数据
         super.onDestroy();
     }
 
@@ -241,14 +168,16 @@ public class ContactActivity extends AppCompatActivity{
 
         switch (resultCode){//处理结果码
             case PhoneDictionary.CONTACT_REQUEST_CODE://有修改
-                name = data.getStringExtra(PhoneDictionary.NAME);
+                HashMap<String,Object> t = (HashMap<String,Object>) data.getSerializableExtra(PhoneDictionary.OTHER);
+                name = (String) t.get(PhoneDictionary.NAME);
                 head.setTitle(name);
-                mContactShow.setNumber(data.getStringExtra(PhoneDictionary.NUMBER));
+                mContactShow.setNumber(number = (String) t.get(PhoneDictionary.NUMBER));
                 HashMap<String,String> theFirstLine = mContactShow.getPhoneListElementList().get(0);
-                theFirstLine.put(PhoneDictionary.DATE,data.getStringExtra(PhoneDictionary.NUMBER));
+                theFirstLine.put(PhoneDictionary.DATE,number);
                 theFirstLine.put(PhoneDictionary.NUMBER,mContactShow.getPhoneListElementList().get(0).get(PhoneDictionary.NUMBER));
                 mContactShow.getPhoneListElementList().set(0, theFirstLine);
                 mContactShow.notifyDataSetChanged();
+                picture = (Bitmap) t.get(PhoneDictionary.Photo);
 
 
 //                imagePic = (int) map.get("contactPhoto");
