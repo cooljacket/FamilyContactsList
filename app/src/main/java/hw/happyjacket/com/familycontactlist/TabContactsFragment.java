@@ -35,12 +35,16 @@ import java.util.Vector;
 
 
 import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
+import hw.happyjacket.com.familycontactlist.myphonebook.adapter.TabContactAdapter;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 
 /**
  * Created by jacket on 2016/3/30.
  */
 public class TabContactsFragment extends Fragment {
+
+    public static String NAME = "contactName";
+    public static String PHOTO = "contactPhoto";
     private Context mContext;
     private ListView listview;
     private Vector<HashMap<String,Object>> AL;
@@ -48,9 +52,10 @@ public class TabContactsFragment extends Fragment {
     private DBHelper dbHelper = null;
     private SQLiteDatabase db = null;
     private View ContactView;
-    private SimpleAdapter adapter;
+    private TabContactAdapter adapter;
     private Vector<Integer> AllID = new Vector<>();
     private HashMap<Integer,Integer> IDtoPos = new HashMap<>();
+    private static Bitmap picture;
     public static final int PHONES_DISPLAY_NAME_INDEX = 0;
     public static final int PHONES_CONTACT_ID_INDEX=1;
     public static final int PHONES_NUMBER_INDEX=2;
@@ -77,6 +82,8 @@ public class TabContactsFragment extends Fragment {
                 case 0:
                     adapter.notifyDataSetChanged();
                     break;
+                case 1:
+                    loadList();
                 default:
                     break;
             }
@@ -106,9 +113,14 @@ public class TabContactsFragment extends Fragment {
 
     public Bitmap[] circleImage = new Bitmap[31];
 
+    private Thread mThread;
+
 
     public void notifyDataSetChanged(HashMap<String,Object> data){
-        AL.set(positionNew,data);
+        if(data.get(PHOTO) == null)
+            return;
+        AL.get(positionNew).put(NAME,data.get(NAME));
+        AL.get(positionNew).put(PHOTO,data.get(PHOTO));
         adapter.notifyDataSetChanged();
     }
 
@@ -120,7 +132,7 @@ public class TabContactsFragment extends Fragment {
                 Log.i("hehe2","hehe2");
                 HashMap newmap = (HashMap)data.getSerializableExtra("newdata");
                 AL.set(positionNew, newmap);
-                Log.i("hehe2",AL.get(positionNew).get("contactName") + "");
+                Log.i("hehe2",AL.get(positionNew).get(NAME) + "");
                 adapter.notifyDataSetChanged();
                 break;
             default:
@@ -133,42 +145,54 @@ public class TabContactsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = getContext();
-        dbHelper = new DBHelper(TabContactsFragment.super.getContext());
-        db = dbHelper.openDatabase();
-        getCircles();
-
-
-        AL = getPhoneContacts();
-
-
-        sortList();
-
         new Thread(new Runnable() {
             @Override
             public void run() {
-                for(int i = 0 ; i < AllID.size() ; ++i){
-                    int id = AllID.get(i);
-                    int pos = IDtoPos.get(id);
-                    contacts.get(pos).put("contactPhoto",PhotoZoom.createCircleImage(PhotoZoom.ratio(id),180));
-                }
-                Message message = handler.obtainMessage();
-                message.what = 0;
-                handler.sendMessage(message);
+                mContext = getContext();
+                dbHelper = new DBHelper(TabContactsFragment.super.getContext());
+                db = dbHelper.openDatabase();
+                getCircles();
+                AL = getPhoneContacts();
+                sortList();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {for(int i = 0 ; i < AllID.size() ; ++i){
+                        int id = AllID.get(i);
+                        int pos = IDtoPos.get(id);
+                        picture = PhotoZoom.ratio(id);
+                        contacts.get(pos).put("contactPhoto",PhotoZoom.createCircleImage(picture,picture.getWidth(),picture.getHeight()));
+                    }
+                        Message message = handler.obtainMessage();
+                        message.what = 0;
+                        handler.sendMessage(message);
+
+                    }
+                }).start();
+                dbHelper.close();
+                mThread.start();
+
 
             }
         }).start();
 
-        dbHelper.close();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (listview == null) {
-            listview = (ListView) getView().findViewById(R.id.list_view);
-            loadList();
-        }
+        mThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (listview == null) {
+                    listview = (ListView) getView().findViewById(R.id.list_view);
+                    Message message = handler.obtainMessage();
+                    message.what = 1;
+                    handler.sendMessage(message);
+                }
+            }
+        });
+
+
 
 //        Button go = (Button) getView().findViewById(R.id.goToCL);
 //        go.setOnClickListener(new View.OnClickListener() {
@@ -186,7 +210,7 @@ public class TabContactsFragment extends Fragment {
         for(int i=0;i<31;i++){
 //            a= BitmapFactory.decodeResource(getResources(),image[i]);
             a = PhotoZoom.ratio(getActivity(),image[i]);
-            circleImage[i]=PhotoZoom.createCircleImage(a, 180);//ratio(image[i],100,100)
+            circleImage[i]=PhotoZoom.createCircleImage(a, a.getWidth(),a.getHeight());//ratio(image[i],100,100)
         }
     }
 
@@ -217,26 +241,13 @@ public class TabContactsFragment extends Fragment {
 
 
         //Toast.makeText(getApplicationContext(), ""+num, Toast.LENGTH_SHORT).show();
-         adapter = new SimpleAdapter(mContext, AL, R.layout.list_item
-                ,new String[]{"contactName","contactPhoto"}
-                ,new int[]{R.id.name, R.id.imageView});
+        adapter = new TabContactAdapter(mContext,R.layout.list_item,AL);
 //        adapter.
-        adapter.setViewBinder(new SimpleAdapter.ViewBinder() {
-            @Override
-            public boolean setViewValue(View view, Object data, String textRepresentation) {
-                if(view instanceof ImageView  && data instanceof Bitmap ){
-                    ImageView iv = (ImageView)view;
-                    iv.setImageBitmap((Bitmap)data);
-                    return true;
-                }else{
-                    return false;
-                }
-            }
-        });
+
         listview.setAdapter(adapter);
 
 
-        Toast.makeText(mContext, "" + num, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(mContext, "" + num, Toast.LENGTH_SHORT).show();
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

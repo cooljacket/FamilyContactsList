@@ -1,8 +1,12 @@
 package hw.happyjacket.com.familycontactlist.myphonebook.show;
 
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Handler;
+import android.os.IBinder;
 import android.os.Message;
 import android.provider.CallLog;
 import android.support.annotation.Nullable;
@@ -19,6 +23,7 @@ import hw.happyjacket.com.familycontactlist.PhoneLocationDBHelper;
 import hw.happyjacket.com.familycontactlist.PhoneLocationMaster;
 import hw.happyjacket.com.familycontactlist.extention.Accessory;
 import hw.happyjacket.com.familycontactlist.extention.Decorate;
+import hw.happyjacket.com.familycontactlist.myphonebook.InitService;
 import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.MainAdapter;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
@@ -146,17 +151,19 @@ public class MainShow extends PhoneShow {
 
         sPhoneAdapter = new MainAdapter(context, table, mPhoneListElementList,index);
 
-        final ArrayList<String> phoneNumberList = new ArrayList<>();
+        final Vector<String> phoneNumberList = new Vector<>();
         for (HashMap<String,String> i : mPhoneListElementList)
            phoneNumberList.add(i.get(PhoneDictionary.NUMBER));
+
+        Log.i(TAG, phoneNumberList.toString());
 
         new Thread(new Runnable() {
             @Override
             public void run() {
+                PhoneLocationThread.setFlag(true);
                 PhoneLocationThread.CheckLocation(handler,phoneNumberList,context);
             }
         }).start();
-
     }
 
     private Handler handler = new Handler() {

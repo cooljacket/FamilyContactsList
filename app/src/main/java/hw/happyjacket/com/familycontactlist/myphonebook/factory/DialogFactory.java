@@ -214,7 +214,7 @@ public class DialogFactory {
     }
 
 
-    public static AlertDialog getPhotoDialog(final Activity context, String title, final String [] content, final ViewSwitcher.ViewFactory factory, final ImageButton btn_img){
+    public static AlertDialog getPhotoDialog(final Activity context, String title, final String [] content, final ViewSwitcher.ViewFactory factory, final ImageButton btn_img, final Handler handler){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(title);
         builder.setItems(content, new DialogInterface.OnClickListener() {
@@ -228,7 +228,7 @@ public class DialogFactory {
                         context.startActivityForResult(intent, PhoneDictionary.IMAGE_REQUEST_CODE);
                         break;
                     case 1:
-                        DialogFactory.getImageDialog(context,"请选择图片",factory,PhoneDictionary.ImageID,btn_img).show();
+                        DialogFactory.getImageDialog(context,"请选择图片",factory,PhoneDictionary.ImageID,btn_img,handler).show();
                         break;
                     default:
                         break;
@@ -247,7 +247,7 @@ public class DialogFactory {
      return builder.create();
     }
 
-    public static AlertDialog getImageDialog(final Activity context, String title, ViewSwitcher.ViewFactory factory, final int [] image, final ImageButton btn_img){
+    public static AlertDialog getImageDialog(final Activity context, String title, ViewSwitcher.ViewFactory factory, final int [] image, final ImageButton btn_img, final Handler handler){
 
         final Gallery gallery;
         final ImageSwitcher IS;
@@ -263,11 +263,15 @@ public class DialogFactory {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Bitmap a= PhotoZoom.ratio(context,image[imagePosition]);
-                Bitmap circleImage=PhotoZoom.createCircleImage(a, 180);
+                Bitmap circleImage=PhotoZoom.createCircleImage(a, a.getWidth(),a.getHeight());
                 btn_img.setImageBitmap(circleImage);
-                ImagePicture=circleImage;
+                ImagePicture = circleImage;
                 ImageP = imagePosition;
-                ImagePP =image[imagePosition];
+                ImagePP = image[imagePosition];
+                Message message = handler.obtainMessage();
+                message.what = 0;
+                message.obj = ImagePicture;
+                handler.sendMessage(message);
             }
         });
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {

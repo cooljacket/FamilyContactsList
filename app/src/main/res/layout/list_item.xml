@@ -8,25 +8,35 @@
 
 
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:id="@+id/seperate_alphebat"
+        />
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/contact_icon"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_marginLeft="10dp"
         android:layout_centerVertical="true"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_alignParentLeft="true"
         />
 
 
         <TextView
-            android:id="@+id/name"
+            android:id="@+id/contact_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="17dp"
+            android:textSize="19dp"
+            android:textStyle="bold"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_toRightOf="@id/imageView"
+            android:layout_toRightOf="@id/contact_icon"
             />
 
 
