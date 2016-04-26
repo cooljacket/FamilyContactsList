@@ -34,6 +34,8 @@ public class PhoneLocationMaster {
 
         if (data != null) {
             String[] locations = data.split(" ");
+            if (locations.length < 3)
+                return null;
             int divider = locations[0].indexOf("：");
             province = locations[0].substring(divider + 1);
             city = locations[1];
