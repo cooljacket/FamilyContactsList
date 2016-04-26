@@ -1,55 +1,34 @@
 package hw.happyjacket.com.familycontactlist;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
-
-//import com.example.menu.MyLetterListView.OnTouchingLetterChangedListener;
-
-import android.app.AlertDialog;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.Gallery;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
-import hw.happyjacket.com.familycontactlist.myphonebook.adapter.ImageAdapter;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.PeopleInfoAdapter;
 import hw.happyjacket.com.familycontactlist.myphonebook.factory.DialogFactory;
 import hw.happyjacket.com.familycontactlist.myphonebook.listview.ScrollListView;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
+
+//import com.example.menu.MyLetterListView.OnTouchingLetterChangedListener;
 
 /**
  * Created by leo on 2016/3/30.
@@ -90,7 +69,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
         public void handleMessage(Message msg) {
             switch (msg.what){
                 case 0:
-                    imagePic = (Bitmap)msg.obj;
+                    imagePic = DialogFactory.getImagePicture();
                     break;
                 default:
                     break;
@@ -121,7 +100,8 @@ public class ChangePeopleDetail extends AppCompatActivity {
             case PhoneDictionary.RESULT_REQUEST_CODE:
                 if(data != null){
                     imagePic = PhotoZoom.getImageToView(ChangePeopleDetail.this, data);
-                    imagePic = PhotoZoom.createCircleImage(imagePic,imagePic.getWidth(),imagePic.getHeight());
+                    imagePic = PhotoZoom.createCircleImage(imagePic, imagePic.getWidth(), imagePic.getHeight());
+                    DialogFactory.setImageP(-1);
                     btn_img.setImageBitmap(imagePic);
                 }
                 break;
@@ -249,6 +229,8 @@ public class ChangePeopleDetail extends AppCompatActivity {
 //                        break;
 //                    }
 //                }
+
+
 
                 map = getChanged();
 //                Toast.makeText(getApplicationContext(),"image1  "+imageP

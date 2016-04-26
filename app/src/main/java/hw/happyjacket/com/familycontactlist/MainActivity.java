@@ -14,7 +14,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,6 +26,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Vector;
 
 import hw.happyjacket.com.familycontactlist.MyDirPicker.DirPicker;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
@@ -208,25 +208,27 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i("main",resultCode + " " + PhoneDictionary.CONTAT_ACTION_START);
-        switch (requestCode){
-            case PhoneDictionary.CONTAT_ACTION_START:
-                if(data != null && data.getSerializableExtra(PhoneDictionary.OTHER) != null)
-                    mContactTab.notifyDataSetChanged((HashMap<String,Object>)data.getSerializableExtra(PhoneDictionary.OTHER));
-                break;
-            case MainActivity.FILE_SELECT_CODE:
-                Uri uri = data.getData();
-                Log.i("hehe", "------->" + uri.getPath());
-                break;
-            case DirPicker.TO_PICK_A_DIR:
-                Log.d("hehe", data.getStringExtra(DirPicker.PATH_KEY));
-                CommonSettingsAndFuncs.ExportContacts(MainActivity.this, data.getStringExtra(DirPicker.PATH_KEY));
-//                CommonSettingsAndFuncs.ExportContacts(MainActivity.this, Environment.getExternalStorageDirectory().toString());
-                Toast.makeText(MainActivity.this, "export", Toast.LENGTH_SHORT).show();
-                break;
-            default:
-                break;
+        if (resultCode == RESULT_OK) {
+            switch (requestCode){
+                case PhoneDictionary.CONTAT_ACTION_START:
+                    if(data != null && data.getSerializableExtra(PhoneDictionary.OTHER) != null)
+                        mContactTab.notifyDataSetChanged((HashMap<String,Object>)data.getSerializableExtra(PhoneDictionary.OTHER));
+                    break;
+                case MainActivity.FILE_SELECT_CODE:
+                    Uri uri = data.getData();
+                    Vector<User> newUsers = CommonSettingsAndFuncs.ImportContacts(MainActivity.this, uri.getPath());
+                    // newUsers是导入后新增的用户数据，需要根据这个来更新列表
+                    // ps，联系人修改姓名之后，sortname要记得也要同步更新！！！
+                    break;
+                case DirPicker.TO_PICK_A_DIR:
+                    CommonSettingsAndFuncs.ExportContacts(MainActivity.this, data.getStringExtra(DirPicker.PATH_KEY));
+                    Toast.makeText(MainActivity.this, "export", Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    break;
+            }
         }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -252,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.action_import:
                 Toast.makeText(MainActivity.this, "import", Toast.LENGTH_SHORT).show();
-                CommonSettingsAndFuncs.ImportContacts(MainActivity.this, CommonSettingsAndFuncs.FileHeader + "haha.txt");
+                chooseFile();
                 return true;
             case R.id.action_settings:
                 // do some settings...
