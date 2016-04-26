@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 /**
  * Created by leo on 2016/4/10.
@@ -25,10 +24,14 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
+        this.context = context;
+        openDatabase();
     }
 
     public DBHelper(Context context, String name, int version) {
         super(context, DB_NAME, null, VERSION);
+        this.context = context;
+        openDatabase();
     }
 
     public DBHelper(Context context){
@@ -59,7 +62,6 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public boolean isInList(String phoneNumber) {
-        Log.d("hehe-look", phoneNumber);
         Cursor cursor = db.query(DB_TABLENAME, null, "mobilephone=?", new String[]{phoneNumber}, null, null, null, null);
         if (cursor == null)
             return false;
@@ -68,10 +70,9 @@ public class DBHelper extends SQLiteOpenHelper {
         return result;
     }
 
-    public void insertFromStrings(String[] data) {
+    public User insertFromStrings(String[] data) {
         if (isInList(data[2])) {
-            Log.d("hehehihi", "inlist " + data[2]);
-            return ;
+            return null;
         }
 
         // 0: name, 1: sortname, 2: mobilephone, 3: photo, 4: groupname, 5: info
@@ -83,6 +84,8 @@ public class DBHelper extends SQLiteOpenHelper {
         user.groupname = data[4];
         user.info = data[5];
         insertAUser(user);
+
+        return user;
     }
 
     public void insertAUser(User user) {//初始化数据库，新建联系人
@@ -155,7 +158,8 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {//版本号不一样就重新创建
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        //版本号不一样就重新创建
         String sql = "drop table if exists user";
         db.execSQL(sql);
 

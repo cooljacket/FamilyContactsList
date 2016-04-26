@@ -17,16 +17,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
-import android.widget.Toast;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Vector;
-
 
 import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.TabContactAdapter;
@@ -114,7 +110,7 @@ public class TabContactsFragment extends Fragment {
         if(data.get(PHOTO) == null)
             return;
         AL.get(positionNew).put(NAME,data.get(NAME));
-        AL.get(positionNew).put(PHOTO,data.get(PHOTO));
+        AL.get(positionNew).put(PHOTO, data.get(PHOTO));
         adapter.notifyDataSetChanged();
     }
 
@@ -148,24 +144,8 @@ public class TabContactsFragment extends Fragment {
                 getCircles();
                 AL = getPhoneContacts();
                 sortList();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {for(int i = 0 ; i < AllID.size() ; ++i){
-                        int id = AllID.get(i);
-                        int pos = IDtoPos.get(id);
-                        picture = PhotoZoom.ratio(id);
-                        contacts.get(pos).put("contactPhoto",PhotoZoom.createCircleImage(picture,picture.getWidth(),picture.getHeight()));
-                    }
-                        Message message = handler.obtainMessage();
-                        message.what = 0;
-                        handler.sendMessage(message);
-
-                    }
-                }).start();
                 dbHelper.close();
                 mThread.start();
-
-
             }
         }).start();
 
@@ -212,20 +192,19 @@ public class TabContactsFragment extends Fragment {
 
     private void sortList(){
         for(int i=0;i<AL.size();i++){
+            String smallest =(String) ((HashMap)AL.get(i)).get("contactSortname");
+            int key_idx = i;
             for(int j=i+1;j<AL.size();j++){
-                HashMap h1 = (HashMap)AL.get(i);
-                HashMap h2 = (HashMap)AL.get(j);
-                String v1 =(String) h1.get("contactSortname");
-                int id1 = (int) h1.get("contactID");
-                String v2 =(String) h2.get("contactSortname");
-                int id2 = (int) h2.get("contactID");
-                if(v1.compareTo(v2)>0){
-                    AL.setElementAt(h2,i);
-                    AL.setElementAt(h1, j);
-                    IDtoPos.put(id2,i);
-                    IDtoPos.put(id1,j);
+                String now =(String) ((HashMap)AL.get(j)).get("contactSortname");
+                if (smallest.compareToIgnoreCase(now) > 0) {
+                    smallest = now;
+                    key_idx = j;
                 }
             }
+
+            HashMap tmp = AL.get(i);
+            AL.setElementAt(AL.get(key_idx), i);
+            AL.setElementAt(tmp, key_idx);
         }
     }
 
@@ -237,6 +216,23 @@ public class TabContactsFragment extends Fragment {
         //Toast.makeText(getApplicationContext(), ""+num, Toast.LENGTH_SHORT).show();
         adapter = new TabContactAdapter(mContext,R.layout.list_item,AL);
 //        adapter.
+
+        for(int i = 0 ; i < AL.size() ; ++i){
+            HashMap now = AL.get(i);
+            int photo = (int) now.get("photo");
+            int id = (int) now.get("contactID");
+            if(photo != -1){
+                picture = circleImage[photo];
+            }
+            else {
+                picture = PhotoZoom.ratio(id);
+                picture = PhotoZoom.createCircleImage(picture,picture.getWidth(), picture.getHeight());
+            }
+            AL.get(i).put("contactPhoto", picture);
+        }
+        Message message = handler.obtainMessage();
+        message.what = 0;
+        handler.sendMessage(message);
 
         listview.setAdapter(adapter);
 
@@ -396,8 +392,10 @@ public class TabContactsFragment extends Fragment {
 //                    user.mobilephone
 //                    user.group="UNKNOWN";
                     Random random = new Random();
-                    contactPhoto = circleImage[random.nextInt(31)];
-                    PhotoZoom.saveBitmap(contactid,contactPhoto);
+                    int tmp;
+                    contactPhoto = circleImage[tmp = random.nextInt(31)];
+                    user.photo = tmp;
+//                    PhotoZoom.saveBitmap(contactid,contactPhoto);
 
                     dbHelper.insertAUser(user);
 //                    Toast.makeText(mContext, "塞进去" + contactName, Toast.LENGTH_SHORT).show();
@@ -456,7 +454,7 @@ public class TabContactsFragment extends Fragment {
             IDtoPos.put(contactid,AllID.size() - 1);
 
 
-
+            int photo_id = cursor.getInt(5);
 
             //familyname
             String contactName = cursor.getString(2);
@@ -465,13 +463,13 @@ public class TabContactsFragment extends Fragment {
 
             HashMap map=new HashMap();
             map.put("contactName",contactName);
+            map.put("photo",photo_id);
 //                map.put("contactPhone",phoneNumber);
             map.put("contactSortname",contactSortname);
             map.put("contactID",contactid);
             map.put("UserID",cursor.getInt(0));
             contacts.add(map);
         }
-
         return contacts;
     }
 

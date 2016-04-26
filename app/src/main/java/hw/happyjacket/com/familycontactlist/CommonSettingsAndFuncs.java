@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -142,10 +143,11 @@ public class CommonSettingsAndFuncs {
         return fileName;
     }
 
-    public static boolean ImportContacts(Context context, String fileName) {
+    public static Vector<User> ImportContacts(Context context, String fileName) {
         DBHelper dbHelper = new DBHelper(context);
         FileInputStream input = null;
         BufferedReader reader = null;
+        Vector<User> newUsers = new Vector<>();
 
         try {
             input = new FileInputStream(fileName);
@@ -156,7 +158,9 @@ public class CommonSettingsAndFuncs {
                 for (int i = 0; i < data.length; ++i)
                     if (data[i].equals("null"))
                         data[i] = "";
-                dbHelper.insertFromStrings(data);
+                User user = dbHelper.insertFromStrings(data);
+                if (user != null)
+                    newUsers.add(user);
             }
 
             if (reader != null)
@@ -167,7 +171,7 @@ public class CommonSettingsAndFuncs {
             dbHelper.close();
         }
 
-        return true;
+        return newUsers;
     }
 
     public static String joinStrs(List<String> data, String spliter) {
