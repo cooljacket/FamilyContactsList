@@ -8,20 +8,26 @@ import android.graphics.Point;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.ViewTreeObserver;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import hw.happyjacket.com.familycontactlist.MyDirPicker.DirPicker;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 
 
@@ -37,14 +43,16 @@ public class MainActivity extends AppCompatActivity {
     private TabSettingFragment mSettingTab;
     private List<Fragment> mTabs;
     private FragmentPagerAdapter mPagerAdapter;
+    private static final int FILE_SELECT_CODE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        CommonSettingsAndFuncs.FileHeader = getExternalFilesDir(null) + File.separator;
 //        InitTabSizes();
         InitFragments();
-
 
 
         mPager = (ViewPager) findViewById(R.id.pager);
@@ -72,11 +80,9 @@ public class MainActivity extends AppCompatActivity {
     private void InitFragments() {
         mRecordTab = new TabRecordFragment();
         mContactTab = new TabContactsFragment();
-//        mSettingTab = new TabSettingFragment();
         mTabs = new ArrayList<Fragment>();
         mTabs.add(mRecordTab);
         mTabs.add(mContactTab);
-//        mTabs.add(mSettingTab);
 
         mPagerAdapter = new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -200,6 +206,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case PhoneDictionary.CONTAT_ACTION_START:
+               /* Log.i("tt","Tt");
+                mContactTab.notifyDataSetChanged((HashMap<String,Object>)data.getSerializableExtra("newdata"));*/
+                break;
+            case MainActivity.FILE_SELECT_CODE:
+                Uri uri = data.getData();
+                Log.i("hehe", "------->" + uri.getPath());
+                break;
+            case DirPicker.TO_PICK_A_DIR:
+                Log.d("hehe", data.getStringExtra(DirPicker.PATH_KEY));
+                CommonSettingsAndFuncs.ExportContacts(MainActivity.this, data.getStringExtra(DirPicker.PATH_KEY));
+//                CommonSettingsAndFuncs.ExportContacts(MainActivity.this, Environment.getExternalStorageDirectory().toString());
+                Toast.makeText(MainActivity.this, "export", Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // 为ActionBar扩展菜单项
@@ -208,15 +236,39 @@ public class MainActivity extends AppCompatActivity {
         return super.onCreateOptionsMenu(menu);
     }
 
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode){
-            case PhoneDictionary.CONTAT_ACTION_START:
-               /* Log.i("tt","Tt");
-                mContactTab.notifyDataSetChanged((HashMap<String,Object>)data.getSerializableExtra("newdata"));*/
-                break;
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // 处理动作按钮的点击事件
+        switch (item.getItemId()) {
+            case R.id.action_search:
+                // do search...
+                Toast.makeText(MainActivity.this, "search", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.action_export:
+                Intent intent = new Intent(DirPicker.ACTION);
+                startActivityForResult(intent, DirPicker.TO_PICK_A_DIR);
+                return true;
+            case R.id.action_import:
+                Toast.makeText(MainActivity.this, "import", Toast.LENGTH_SHORT).show();
+                CommonSettingsAndFuncs.ImportContacts(MainActivity.this, CommonSettingsAndFuncs.FileHeader + "haha.txt");
+                return true;
+            case R.id.action_settings:
+                // do some settings...
+                Toast.makeText(MainActivity.this, "some settings...", Toast.LENGTH_SHORT).show();
+                return true;
             default:
-                break;
+                return super.onOptionsItemSelected(item);
         }
-        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void chooseFile() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("*/*");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        try {
+            startActivityForResult(Intent.createChooser(intent, "选择文件"), FILE_SELECT_CODE);
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, "亲，木有文件管理器啊啊啊啊-_-!!", Toast.LENGTH_SHORT).show();
+        }
     }
 }

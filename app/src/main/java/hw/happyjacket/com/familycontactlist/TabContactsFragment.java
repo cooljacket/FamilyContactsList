@@ -22,14 +22,8 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.Toast;
 
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
 
@@ -394,7 +388,7 @@ public class TabContactsFragment extends Fragment {
                     contactPhoto = circleImage[random.nextInt(31)];
                     PhotoZoom.saveBitmap(contactid,contactPhoto);
 
-                    dbHelper.initUser(user);
+                    dbHelper.insertAUser(user);
 //                    Toast.makeText(mContext, "塞进去" + contactName, Toast.LENGTH_SHORT).show();
 
                 }

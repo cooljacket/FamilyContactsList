@@ -1,9 +1,11 @@
 <resources>
     <!--<string name="app_name">FamilyContactList</string>-->
-    <string name="app_name">FCL</string>
+    <string name="app_name">关怀通话簿</string>
     <string name="title_activity_black_list">BlackListActivity</string>
     <string name="call_log_button">></string>
     <string name="return_button">&lt;</string>
     <string name="action_search">搜索</string>
-    <string name="action_settings">设置lo</string>
+    <string name="action_settings">其它设置lo</string>
+    <string name="action_export">导出联系人</string>
+    <string name="action_import">导入联系人</string>
 </resources>

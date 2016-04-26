@@ -1,7 +1,6 @@
 package hw.happyjacket.com.familycontactlist.myphonebook;
 
 import android.app.Activity;
-import android.app.VoiceInteractor;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,14 +13,9 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -131,7 +125,6 @@ public class PhotoZoom {
     }
 
     public static Bitmap getBitmap(int id,int width,int height){
-
         String path;
         Bitmap bitmap = null;
         File f = new File(Environment.getExternalStorageDirectory(),"image");
@@ -152,6 +145,4 @@ public class PhotoZoom {
         }
         return bitmap;
     }
-
-
 }
