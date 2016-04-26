@@ -2,6 +2,7 @@ package hw.happyjacket.com.familycontactlist;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Vector;
 
 //import com.example.menu.MyLetterListView.OnTouchingLetterChangedListener;
 
@@ -67,18 +68,13 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
     EditText et_familyName;
     EditText et_name;
-    EditText et_phone;
-    EditText et_home;
-    EditText et_email;
-    EditText et_work;
-    EditText et_group;
-    EditText et_remark;
+    Button add_info;
     Button btn_save;
     Button btn_return;
     int imageP;//头像序号
     Bitmap imagePic;//头像Rid
     int imagePP;
-    String [][] info;
+    Vector<String[]> info;
     ScrollListView mListView;
     PeopleInfoAdapter mPeopleInfoAdapter;
 
@@ -155,7 +151,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
         mListView = (ScrollListView) findViewById(R.id.people_info);
         mPeopleInfoAdapter = new PeopleInfoAdapter(this,R.layout.change_people_detail,info);
-        Toast.makeText(this,mPeopleInfoAdapter.getItem(1)[1],Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this,mPeopleInfoAdapter.getItem(1)[1],Toast.LENGTH_SHORT).show();
         //mPeopleInfoAdapter.notifyDataSetChanged();
         mListView.setAdapter(mPeopleInfoAdapter);
 //        imagePic=(int) map.get("contactPhoto");
@@ -191,6 +187,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
         et_name = (EditText) findViewById(R.id.et_name);
         et_familyName=(EditText)findViewById(R.id.et_familyName);
         et_name.setText(map.get("contactName").toString());
+        add_info = (Button)findViewById(R.id.add_info);
 
 //        family = (boolean)map.get("contactFamily");
 //        if(family){
@@ -223,6 +220,21 @@ public class ChangePeopleDetail extends AppCompatActivity {
 //                }
 //            }
 //        });
+
+        add_info.setOnClickListener(new OnClickListener() {//创建新项目；更新adapter
+            @Override
+            public void onClick(View v) {
+
+                info.add(new String[]{"",""});
+                mPeopleInfoAdapter.notifyDataSetChanged();
+
+//                mPeopleInfoAdapter.notifyDataSetChanged();
+//                mPeopleInfoAdapter = new PeopleInfoAdapter(this,R.layout.change_people_detail,info);
+//        Toast.makeText(this,mPeopleInfoAdapter.getItem(1)[1],Toast.LENGTH_SHORT).show();
+                //mPeopleInfoAdapter.notifyDataSetChanged();
+//                mListView.setAdapter(mPeopleInfoAdapter);
+            }
+        });
 
         btn_save.setOnClickListener(new OnClickListener() {
             @Override
@@ -295,7 +307,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
 //        String[] s2 =(String[]) mListView.getItemAtPosition(mListView.getCount()-1);
 //        mPeopleInfoAdapter.notifyDataSetChanged();
-        String s2 = mPeopleInfoAdapter.getItem(1)[1];
+        String s2 = mPeopleInfoAdapter.getItem(mListView.getCount()-1)[1];
         user.groupname=s2;
         Toast.makeText(getApplicationContext(),s1+" "+s2,Toast.LENGTH_SHORT).show();
         user.info=sb.toString();
@@ -351,11 +363,6 @@ public class ChangePeopleDetail extends AppCompatActivity {
         SQLiteDatabase db =helper.openDatabase();
         int Userid = (int) map.get("UserID");
         Cursor cursor = db.query("user",null,"uid="+Userid,null,null,null,null);
-        //String[][] info;
-        String[] param;
-        String[] paramName;
-        ArrayList list1=new ArrayList();
-        ArrayList list2=new ArrayList();
         int photo=0;
         String infos="";
         String groupname="NO",mobile="";
@@ -368,33 +375,36 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
         }
         cursor.close();
-        list1.add(mobile);
-        list2.add("手机");
-        //String infos2=null;
+        info.add(new String[]{"手机",mobile});
+        String pname="",parameter = "";
         if(infos!=null)
         for(int i=0;i<infos.length();i++){
             int index = infos.indexOf(";");
-            list2.add(infos.substring(0,index-1));//name
+//            list2.add(infos.substring(0,index-1));//name
+            pname = infos.substring(0,index-1);
             infos = infos.substring(index+1);
             index = infos.indexOf(";");
-            list1.add(infos.substring(0,index-1));//param
+//            list1.add(infos.substring(0,index-1));//param
+            parameter = infos.substring(0,index-1);
             infos = infos.substring(index+1);
+            info.add(new String[]{pname,parameter});
             if(infos.length()==1){
                 break;
             }
         }
-        list1.add(groupname);
-        list2.add("组群");
-        int size = list1.size();
-        param = (String[])list1.toArray(new String[size]);
-        paramName=(String[])list2.toArray(new String[size]);
-
-        info = new String[param.length][2];
-
-        for(int i = 0 ; i < param.length ; i++){
-            info[i][0] = paramName[i];
-            info[i][1] = param[i];
-        }
+//        list1.add(groupname);
+//        list2.add("组群");
+        info.add(new String[]{"组群",groupname});
+//        int size = list1.size();
+//        param = (String[])list1.toArray(new String[size]);
+//        paramName=(String[])list2.toArray(new String[size]);
+//
+//        info = new String[param.length][2];
+//
+//        for(int i = 0 ; i < param.length ; i++){
+//            info[i][0] = paramName[i];
+//            info[i][1] = param[i];
+//        }
         helper.close();
     }
 

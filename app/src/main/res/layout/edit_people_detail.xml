@@ -41,13 +41,16 @@
         android:layout_marginTop="49dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:scrollbars="vertical">
+        android:scrollbars="vertical"
+        android:background="#00000000"
+        >
 
 
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:background="#00000000"
             >
             <LinearLayout
                 android:layout_width="fill_parent"
@@ -133,10 +136,24 @@
                 android:id="@+id/people_info">
             </hw.happyjacket.com.familycontactlist.myphonebook.listview.ScrollListView>
 
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:textSize="16dp"
+                android:textColor="#84CA8B"
+                android:text="添加新项目"
+                android:id="@+id/add_info"
+                android:background="#00000000"
+
+
+                />
+
+
 
         </LinearLayout>
 
     </ScrollView>
+
 
     <LinearLayout
 

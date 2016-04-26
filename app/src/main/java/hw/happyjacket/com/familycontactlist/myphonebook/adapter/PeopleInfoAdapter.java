@@ -13,13 +13,15 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 
 import hw.happyjacket.com.familycontactlist.R;
 
 /**
  * Created by root on 16-4-16.
  */
-public class PeopleInfoAdapter extends ArrayAdapter<String[]> {
+public class PeopleInfoAdapter extends ArrayAdapter<String[] > {
 
     private int recourceID;
 
@@ -33,8 +35,8 @@ public class PeopleInfoAdapter extends ArrayAdapter<String[]> {
         recourceID = resource;
     }
 
-    public PeopleInfoAdapter(Context context, int resource, String[][] objects) {
-        super(context, resource, objects);
+    public PeopleInfoAdapter(Context context, int resource, List<String[]> objects) {
+        super(context,resource,objects);
         recourceID = resource;
     }
 
