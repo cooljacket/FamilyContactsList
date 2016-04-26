@@ -34,6 +34,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public DBHelper(Context context){
         super(context, DB_NAME, null, VERSION);
         this.context = context;
+        openDatabase();
     }
 
     public SQLiteDatabase openDatabase() {
@@ -59,7 +60,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public boolean isInList(String phoneNumber) {
         Log.d("hehe-look", phoneNumber);
-        Cursor cursor = db.query(DB_TABLENAME, null, "mobilephone="+phoneNumber, null, null, null, null);
+        Cursor cursor = db.query(DB_TABLENAME, null, "mobilephone=?", new String[]{phoneNumber}, null, null, null, null);
         if (cursor == null)
             return false;
         boolean result = cursor.moveToFirst();

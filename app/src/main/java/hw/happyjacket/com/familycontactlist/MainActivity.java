@@ -215,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
             case MainActivity.FILE_SELECT_CODE:
                 Uri uri = data.getData();
                 Log.i("hehe", "------->" + uri.getPath());
+                CommonSettingsAndFuncs.ImportContacts(MainActivity.this, uri.getPath());
                 break;
             case DirPicker.TO_PICK_A_DIR:
                 Log.d("hehe", data.getStringExtra(DirPicker.PATH_KEY));
@@ -250,7 +251,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.action_import:
                 Toast.makeText(MainActivity.this, "import", Toast.LENGTH_SHORT).show();
-                CommonSettingsAndFuncs.ImportContacts(MainActivity.this, CommonSettingsAndFuncs.FileHeader + "haha.txt");
+                chooseFile();
                 return true;
             case R.id.action_settings:
                 // do some settings...

@@ -19,8 +19,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -91,11 +93,11 @@ public class CommonSettingsAndFuncs {
     }
 
 
-    public static boolean ExportContacts(Context context, String dirName) {
+    public static String ExportContacts(Context context, String dirName) {
         DBHelper dbHelper = new DBHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         if (!db.isOpen())
-            return false;
+            return null;
 
         Cursor cursor = db.query(DBHelper.DB_TABLENAME, null, null, null, null, null, null);
         int name_idx = cursor.getColumnIndex("name");
@@ -108,9 +110,13 @@ public class CommonSettingsAndFuncs {
 
         FileOutputStream out = null;
         BufferedWriter writer = null;
+        SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        String date  = sDateFormat.format(new java.util.Date());
+        String fileName = dirName + File.separator + date + randomString(6) + ".txt";
+        Log.d("hehe", fileName);
 
         try {
-            out = new FileOutputStream(dirName + File.separator + "haha.txt");
+            out = new FileOutputStream(fileName);
             writer = new BufferedWriter(new OutputStreamWriter(out));
 
             while (cursor.moveToNext()) {
@@ -133,7 +139,7 @@ public class CommonSettingsAndFuncs {
             dbHelper.close();
         }
 
-        return true;
+        return fileName;
     }
 
     public static boolean ImportContacts(Context context, String fileName) {
@@ -173,5 +179,13 @@ public class CommonSettingsAndFuncs {
         }
         builder.append("\n");
         return builder.toString();
+    }
+
+    public static String randomString(int len) {
+        Random random = new Random();
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < len; ++i)
+            buffer.append((char)('a' + random.nextInt(26)));
+        return buffer.toString();
     }
 }
