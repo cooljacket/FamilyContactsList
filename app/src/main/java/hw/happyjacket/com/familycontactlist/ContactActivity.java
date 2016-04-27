@@ -30,6 +30,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import hw.happyjacket.com.familycontactlist.extention.XiaoMiAccessory;
@@ -51,7 +52,7 @@ public class ContactActivity extends AppCompatActivity{
     private ScrollListView ContactListView;
     private ContactShow mContactShow;
     private CollapsingToolbarLayout head;
-    private HashMap data;
+    private HashMap<String,Object> data;
     private int id;
     private Bitmap picture;
 
@@ -110,7 +111,7 @@ public class ContactActivity extends AppCompatActivity{
         mContactShow = new ContactShow(this,R.layout.call_log_list);
         mContactShow.getPhoneList().setDb("contact");
         mContactShow.getPhoneList().setTable("user");
-        mContactShow.InitAdapter(new XiaoMiAccessory(), new String[]{"mobilephone"},  "uid" +  " = ? ", new String[]{"" + id}, null);
+        mContactShow.InitAdapter(new XiaoMiAccessory(), new String[]{"mobilephone"}, "uid" + " = ? ", new String[]{"" + id}, null);
         ContactListView.setAdapter(mContactShow.getPhoneAdapter());
         ContactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -144,14 +145,15 @@ public class ContactActivity extends AppCompatActivity{
     @Override
     public void onBackPressed() {
 
-        Intent data = new Intent();
+        Intent datas = new Intent();
 //        this.data = getChanged();
         HashMap<String,Object> newdata = new HashMap<String,Object>();
         newdata.put("contactName", name);
         newdata.put("contactPhoto", picture);
         newdata.put("contactSortname", this.data.get("contactSortname"));
-        data.putExtra(PhoneDictionary.OTHER, newdata);
-        setResult(PhoneDictionary.CONTAT_ACTION_START, data);//不管有没修改都要更新数据
+        newdata.put(PhoneDictionary.Photo,data.get(PhoneDictionary.Photo));
+        datas.putExtra(PhoneDictionary.OTHER, newdata);
+        setResult(PhoneDictionary.CONTAT_ACTION_START, datas);//不管有没修改都要更新数据
         super.onBackPressed();
     }
 
@@ -164,21 +166,26 @@ public class ContactActivity extends AppCompatActivity{
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent datas) {
 
         switch (resultCode){//处理结果码
             case PhoneDictionary.CONTACT_REQUEST_CODE://有修改
-                HashMap<String,Object> t = (HashMap<String,Object>) data.getSerializableExtra(PhoneDictionary.OTHER);
+                HashMap<String,Object> t = (HashMap<String,Object>) datas.getSerializableExtra(PhoneDictionary.OTHER);
                 name = (String) t.get(PhoneDictionary.NAME);
                 head.setTitle(name);
                 mContactShow.setNumber(number = (String) t.get(PhoneDictionary.NUMBER));
                 HashMap<String,String> theFirstLine = mContactShow.getPhoneListElementList().get(0);
-                theFirstLine.put(PhoneDictionary.DATE,number);
-                theFirstLine.put(PhoneDictionary.NUMBER,mContactShow.getPhoneListElementList().get(0).get(PhoneDictionary.NUMBER));
+                theFirstLine.put(PhoneDictionary.DATE, number);
+                theFirstLine.put(PhoneDictionary.NUMBER, mContactShow.getPhoneListElementList().get(0).get(PhoneDictionary.NUMBER));
                 mContactShow.getPhoneListElementList().set(0, theFirstLine);
                 mContactShow.notifyDataSetChanged();
-                picture = (Bitmap) t.get(PhoneDictionary.Photo);
-
+                picture = (Bitmap) t.get(PhoneDictionary.Picture);
+                Object tmp;
+                for(Map.Entry<String,Object> i : data.entrySet()){
+                    if((tmp = t.get(i.getKey()))!= null){
+                        data.put(i.getKey(),tmp);
+                    }
+                }
 
 //                imagePic = (int) map.get("contactPhoto");
 //                isfamily=(boolean)map.get("contactFamily");
@@ -191,7 +198,7 @@ public class ContactActivity extends AppCompatActivity{
             default:
                 break;
         }
-        super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, datas);
     }
 
     public static void actionStart(Activity context,HashMap<String,Object> map){

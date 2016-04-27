@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -47,8 +48,9 @@ import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
  * Created by leo on 2016/3/30.
  */
 public class ChangePeopleDetail extends AppCompatActivity {
+
     ImageButton btn_img;
-    HashMap map;
+    public static HashMap<String,Object> map;
     int imagePosition;
     static final int GB_SP_DIFF = 160;
     // 存放国标一级汉字不同读音的起始区位码
@@ -78,6 +80,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
             switch (msg.what){
                 case 0:
                     imagePic = DialogFactory.getImagePicture();
+                    map.put(PhoneDictionary.Photo,DialogFactory.getImagePosition());
                     break;
                 default:
                     break;
@@ -111,6 +114,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
                     imagePic = PhotoZoom.createCircleImage(imagePic, imagePic.getWidth(), imagePic.getHeight());
                     DialogFactory.setImageP(-1);
                     btn_img.setImageBitmap(imagePic);
+                    map.put(PhoneDictionary.Photo,-1);
                 }
                 break;
             default:
@@ -161,7 +165,8 @@ public class ChangePeopleDetail extends AppCompatActivity {
         //mPeopleInfoAdapter.notifyDataSetChanged();
         mListView.setAdapter(mPeopleInfoAdapter);
 //        imagePic=(int) map.get("contactPhoto");
-        DialogFactory.setImagePicture((imagePic = PhotoZoom.ratio((int) map.get("contactID"))) == null ? imagePic = (Bitmap) map.get("contactPhoto"):(imagePic = PhotoZoom.createCircleImage(imagePic,imagePic.getWidth(),imagePic.getHeight())));
+        Log.i("detail",(int)map.get(PhoneDictionary.Photo) + "");
+        DialogFactory.setImagePicture(imagePic = PhotoZoom.getBitmap((int)map.get("contactID"),(int)map.get(PhoneDictionary.Photo),TabContactsFragment.circleImage));
         btn_img.setImageBitmap(imagePic);
 
 //        btn_img.setImageResource(imagePic);
@@ -253,27 +258,22 @@ public class ChangePeopleDetail extends AppCompatActivity {
 //                        break;
 //                    }
 //                }
-
-
-
-                map = getChanged();
 //                Toast.makeText(getApplicationContext(),"image1  "+imageP
 //                        +"image2  "+imagePosition, Toast.LENGTH_SHORT).show();
 //                imagePic= btn_img.();
-                updateUser();
+                updateUser(getChanged());
 
                /* map = getChanged();*/
-                Intent data = new Intent();
-                data.putExtra("newdata", map);
-                setResult(1, data);
                 Intent intent = new Intent();
                 HashMap<String,Object> t = new HashMap<String, Object>();
                 t.put(PhoneDictionary.NAME, et_name.getText().toString());
                 t.put(PhoneDictionary.NUMBER, mPeopleInfoAdapter.getItem(0)[1]);
-                t.put(PhoneDictionary.Photo, imagePic);
-                intent.putExtra(PhoneDictionary.OTHER,t);
+                t.put(PhoneDictionary.Photo, map.get(PhoneDictionary.Photo));
+                t.put(PhoneDictionary.Picture, imagePic);
+                intent.putExtra(PhoneDictionary.OTHER, t);
                 setResult(PhoneDictionary.CONTACT_REQUEST_CODE, intent);
-                PhotoZoom.saveBitmap((int) map.get("contactID"), imagePic);
+                if((int) map.get(PhoneDictionary.Photo) == -1)
+                    PhotoZoom.saveBitmap((int) map.get("contactID"), imagePic);
                 finish();
 
             }
@@ -292,7 +292,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
     }
 
-    private void updateUser(){
+    private void updateUser(HashMap map){
         DBHelper helper =new DBHelper(ChangePeopleDetail.this.getApplicationContext());
         SQLiteDatabase db =helper.openDatabase();
 
@@ -495,8 +495,8 @@ public class ChangePeopleDetail extends AppCompatActivity {
         newmap.put("contactName", et_name.getText().toString());
 //        newmap.put("contactPhone",et_phone.getText().toString());
         newmap.put("UserID",map.get("UserID"));
-        newmap.put("contactID",map.get("contactID"));
-        newmap.put("contactPhoto", DialogFactory.getImagePicture());
+        newmap.put("contactID", map.get("contactID"));
+        newmap.put("photo", DialogFactory.getImagePosition());
         return newmap;
     }
 

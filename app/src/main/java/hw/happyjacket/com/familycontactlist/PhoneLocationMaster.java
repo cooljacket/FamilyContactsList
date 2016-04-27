@@ -23,9 +23,12 @@ public class PhoneLocationMaster {
         if (!db.isOpen())
             return false;
 
+        Log.i("locationMaster",data);
+
         ContentValues values = addHelper(phoneNumber, data, state);
 
         long result = db.insert(PhoneLocationDBHelper.TABLE_NAME, null, values);
+
         return result != -1;
     }
 
