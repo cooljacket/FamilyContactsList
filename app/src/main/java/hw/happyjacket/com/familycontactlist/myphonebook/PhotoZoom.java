@@ -1,7 +1,6 @@
 package hw.happyjacket.com.familycontactlist.myphonebook;
 
 import android.app.Activity;
-import android.app.VoiceInteractor;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -14,14 +13,9 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
 import android.util.Log;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -52,19 +46,19 @@ public class PhotoZoom {
         context.startActivityForResult(intent, PhoneDictionary.RESULT_REQUEST_CODE);
     }
 
-    public static Drawable getImageToView(Activity context, Intent data) {
+    public static Bitmap getImageToView(Activity context, Intent data) {
         Bundle extras = data.getExtras();
         if (extras != null) {
             Bitmap photo = extras.getParcelable("data");
-            return  new BitmapDrawable(context.getResources(), photo);
+            return photo;
         }
         return null;
     }
 
-    public static Bitmap createCircleImage(Bitmap source,int min){
+    public static Bitmap createCircleImage(Bitmap source,int width,int height){
         final Paint paint = new Paint();
         paint.setAntiAlias(true);
-        Bitmap target = Bitmap.createBitmap(min,min, Bitmap.Config.ARGB_8888);
+        Bitmap target = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
         /*
         产生一个同样大小的画布
          */
@@ -72,7 +66,7 @@ public class PhotoZoom {
         /*
         首先绘制圆形
          */
-        canvas.drawCircle(min/2,min/2,min/2,paint);
+        canvas.drawCircle(width/2,height/2,Math.min(width,height)/2,paint);
         /*
         使用SRC_IN
          */
@@ -131,7 +125,6 @@ public class PhotoZoom {
     }
 
     public static Bitmap getBitmap(int id,int width,int height){
-
         String path;
         Bitmap bitmap = null;
         File f = new File(Environment.getExternalStorageDirectory(),"image");
@@ -152,6 +145,4 @@ public class PhotoZoom {
         }
         return bitmap;
     }
-
-
 }

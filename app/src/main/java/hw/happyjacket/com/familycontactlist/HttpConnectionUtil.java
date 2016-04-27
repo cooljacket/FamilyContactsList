@@ -1,6 +1,7 @@
 package hw.happyjacket.com.familycontactlist;
 
 import android.accounts.NetworkErrorException;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -36,6 +37,7 @@ public class HttpConnectionUtil {
             conn.setConnectTimeout(8000);
             conn.setReadTimeout(8000);
             int responseCode = conn.getResponseCode();
+            Log.d("responseCode", "" + responseCode);
             if (responseCode == 200) {
                 InputStream in = conn.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(in));

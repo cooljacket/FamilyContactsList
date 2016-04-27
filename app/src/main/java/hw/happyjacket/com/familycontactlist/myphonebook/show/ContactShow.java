@@ -2,6 +2,8 @@ package hw.happyjacket.com.familycontactlist.myphonebook.show;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.ContactsContract;
 import android.util.Log;
 
@@ -19,6 +21,7 @@ import hw.happyjacket.com.familycontactlist.extention.Accessory;
 import hw.happyjacket.com.familycontactlist.extention.Decorate;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.CallLogAdapter;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
+import hw.happyjacket.com.familycontactlist.phone.phonelistener.PhoneLocationThread;
 
 /**
  * Created by root on 16-4-13.
@@ -29,6 +32,31 @@ public class ContactShow extends PhoneShow {
     private String number;
     private String [] defaultList = new String[]{"查找中...","编辑联系人","加入黑名单","从黑名单中移除","删除联系人"};
     private String defaultNumber = "电话";
+    private String location;
+
+    private Thread mThread;
+    private Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 0:
+                    if(msg.obj == null || "".equals((location = (String)msg.obj))) {
+                        mPhoneListElementList.get(1).put(PhoneDictionary.DATE,"无信息");
+                        sPhoneAdapter.notifyDataSetChanged();
+                        break;
+                    }
+                     location = (String) msg.obj;
+                     Log.i("getWeather",location);
+                     new GetWeather(location).execute();
+                    break;
+                default:
+                    break;
+
+            }
+        }
+    };
+
     public ContactShow(Context context, int table) {
         super(context, table);
     }
@@ -104,19 +132,19 @@ public class ContactShow extends PhoneShow {
         phoneList.setSelection(selection);
         phoneList.setArgument(argument);
         phoneList.setOrderby(orderby);
-        phoneList.connectContentResolver();
-        number = phoneList.getPhoneList().get(1).get(ContactsContract.CommonDataKinds.Phone.NUMBER);
-        number = number.replace(" ", "");
+        phoneList.connectDataBase();
+        number = phoneList.getPhoneList().get(0).get("mobilephone");
+        number = number.replace(" ", "").replace("+86","").replace("+", "");
         mPhoneListElementList = getDefaultData();
         sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index);
-        PhoneLocationMaster phoneLocationMaster = new PhoneLocationMaster(context);
-        String location [] = phoneLocationMaster.get(number);
-//        String location [] = phoneLocationMaster.get("18819461579");
-        Log.i("ccchehe-after", number);
-        if(location != null)
-            new GetWeather(location[1]).execute();
-        else
-            mPhoneListElementList.get(1).put(PhoneDictionary.DATE,"");
+        mThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                PhoneLocationThread.CheckLocation(mHandler,number,context);
+            }
+        });
+        mThread.start();
+
     }
 
      class GetWeather extends AsyncTask<Void, Void, Void> {
@@ -134,6 +162,7 @@ public class ContactShow extends PhoneShow {
             HttpConnectionUtil.getIt(weatherURL, new HttpConnectionUtil.HttpCallbackListener() {
                 @Override
                 public void onFinish(String response) {
+                    Log.i("weather",response);
                     weatherInfo = response;
                 }
 

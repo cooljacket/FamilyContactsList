@@ -9,6 +9,18 @@
         android1:title="@string/action_search"
         android:showAsAction="always" />
 
+    <item
+        android1:id="@+id/action_export"
+        android:icon="@android:drawable/ic_menu_compass"
+        android1:title="@string/action_export"
+        android:showAsAction="never" />
+
+    <item
+        android1:id="@+id/action_import"
+        android:icon="@android:drawable/ic_input_add"
+        android1:title="@string/action_import"
+        android:showAsAction="never" />
+
     <!-- 设置, 在溢出菜单中展示 -->
     <item
         android1:id="@+id/action_settings"
