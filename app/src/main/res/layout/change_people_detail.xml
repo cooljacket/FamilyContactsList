@@ -22,9 +22,10 @@
             android:textAlignment="center"
             android:id="@+id/people_info_name"
             android:drawableRight="@drawable/button_down"
-            android:hint="21"
 
-            ></Button>
+            >
+
+        </Button>
         <TextView
             android:layout_width="0.8dp"
             android:layout_height="25dp"
@@ -34,7 +35,7 @@
             />
 
         <EditText
-            android:layout_width="fill_parent"
+            android:layout_width="240dp"
             android:layout_height="match_parent"
             android:id="@+id/people_info_content"
             android:singleLine="true"
@@ -44,8 +45,6 @@
             android:textSize="16dp"
             android:background="#00000000"
             android:textCursorDrawable="@drawable/color_cursor"
-            android:hint="121"
-            android:phoneNumber="true"
             />
 
     </LinearLayout>

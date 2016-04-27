@@ -1,5 +1,5 @@
 package hw.happyjacket.com.familycontactlist;
-<<<<<<< HEAD
+//<<<<<<< HEAD
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,8 +10,8 @@ import java.util.Vector;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
-=======
->>>>>>> ba496a7e51e53a41d93d25654edf96a5c366226a
+//=======
+//>>>>>>> ba496a7e51e53a41d93d25654edf96a5c366226a
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -29,6 +30,8 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
@@ -67,10 +70,12 @@ public class ChangePeopleDetail extends AppCompatActivity {
     Button add_info;
     Button btn_save;
     Button btn_return;
+    TextView groupName;
+    LinearLayout group;
     int imageP;//头像序号
     Bitmap imagePic;//头像Rid
     int imagePP;
-    Vector<String[]> info;
+    Vector<String[]> info;// = new Vector<>();
     ScrollListView mListView;
     PeopleInfoAdapter mPeopleInfoAdapter;
 
@@ -145,6 +150,8 @@ public class ChangePeopleDetail extends AppCompatActivity {
         map = (HashMap)intent.getSerializableExtra("data");
 
         this.setContentView(R.layout.edit_people_detail);
+        group = (LinearLayout)findViewById(R.id.edit_group);
+        groupName = (TextView)findViewById(R.id.groupname);
 
         getUser();
 
@@ -181,6 +188,15 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
         btn_return=(Button)findViewById(R.id.btn_return);
         btn_save=(Button)findViewById(R.id.btn_save);
+
+
+
+        group.setOnClickListener(new OnClickListener() {//群组弹框
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
 
 
@@ -297,10 +313,12 @@ public class ChangePeopleDetail extends AppCompatActivity {
         SQLiteDatabase db =helper.openDatabase();
 
         StringBuffer sb=new StringBuffer();
-        for(int i=1;i<mListView.getCount()-1;i++){
+        for(int i=1;i<mListView.getCount();i++){//int i=1;i<mListView.getCount()-1;i++
             String[] ss =(String[]) mListView.getItemAtPosition(i);
             sb.append(ss[0]).append(";").append(ss[1]).append(";");
         }
+
+
 
 
         User user = new User();
@@ -317,9 +335,9 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
 //        String[] s2 =(String[]) mListView.getItemAtPosition(mListView.getCount()-1);
 //        mPeopleInfoAdapter.notifyDataSetChanged();
-        String s2 = mPeopleInfoAdapter.getItem(mListView.getCount()-1)[1];
-        user.groupname=s2;
-        Toast.makeText(getApplicationContext(),s1+" "+s2,Toast.LENGTH_SHORT).show();
+//        String s2 = mPeopleInfoAdapter.getItem(mListView.getCount()-1)[1];
+        user.groupname=groupName.getText().toString();
+        Toast.makeText(getApplicationContext(),sb.toString(),Toast.LENGTH_SHORT).show();
         user.info=sb.toString();
 //                user.group=mListView.getItemAtPosition(5);
 //                user.family = family;
@@ -369,13 +387,14 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
 
     private void getUser(){
+        info = new Vector<>();
         DBHelper helper =new DBHelper(ChangePeopleDetail.this.getApplicationContext());
         SQLiteDatabase db =helper.openDatabase();
         int Userid = (int) map.get("UserID");
         Cursor cursor = db.query("user",null,"uid="+Userid,null,null,null,null);
         int photo=0;
         String infos="";
-        String groupname="NO",mobile="";
+        String groupname="",mobile="";
 //        Toast.makeText(getApplicationContext(),"get"+Userid, Toast.LENGTH_SHORT).show();
         if(cursor.moveToFirst()){
             infos = cursor.getString(7);
@@ -384,6 +403,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
             mobile = cursor.getString(4);
 
         }
+        Toast.makeText(getApplicationContext(),infos+" "+groupname,Toast.LENGTH_SHORT).show();
         cursor.close();
         info.add(new String[]{"手机",mobile});
         String pname="",parameter = "";
@@ -402,9 +422,11 @@ public class ChangePeopleDetail extends AppCompatActivity {
                 break;
             }
         }
+        groupName.setText(groupname);
+//        groupName.setText("aaaaaaaaaa");
 //        list1.add(groupname);
 //        list2.add("组群");
-        info.add(new String[]{"组群",groupname});
+//        info.add(new String[]{"组群",groupname});
 //        int size = list1.size();
 //        param = (String[])list1.toArray(new String[size]);
 //        paramName=(String[])list2.toArray(new String[size]);
