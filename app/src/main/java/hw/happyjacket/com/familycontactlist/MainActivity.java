@@ -210,10 +210,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             switch (requestCode){
-                case PhoneDictionary.CONTAT_ACTION_START:
-                    if(data != null && data.getSerializableExtra(PhoneDictionary.OTHER) != null)
-                        mContactTab.notifyDataSetChanged((HashMap<String,Object>)data.getSerializableExtra(PhoneDictionary.OTHER));
-                    break;
                 case MainActivity.FILE_SELECT_CODE:
                     Uri uri = data.getData();
                     Vector<User> newUsers = CommonSettingsAndFuncs.ImportContacts(MainActivity.this, uri.getPath());
@@ -229,6 +225,17 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+        else{
+            switch (requestCode) {
+                case PhoneDictionary.CONTAT_ACTION_START:
+                    if (data != null && data.getSerializableExtra(PhoneDictionary.OTHER) != null)
+                        mContactTab.notifyDataSetChanged((HashMap<String, Object>) data.getSerializableExtra(PhoneDictionary.OTHER));
+                    break;
+                default:
+                    break;
+            }
+        }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -236,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // 为ActionBar扩展菜单项
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.main_activity_actions, menu);
+            inflater.inflate(R.menu.main_activity_actions, menu);
         return super.onCreateOptionsMenu(menu);
     }
 

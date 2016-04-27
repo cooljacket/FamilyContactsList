@@ -22,9 +22,11 @@ import android.widget.ListView;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
 
+import hw.happyjacket.com.familycontactlist.extention.ChineseWord;
 import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.TabContactAdapter;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
@@ -44,8 +46,6 @@ public class TabContactsFragment extends Fragment {
     private SQLiteDatabase db = null;
     private View ContactView;
     private TabContactAdapter adapter;
-    private Vector<Integer> AllID = new Vector<>();
-    private HashMap<Integer,Integer> IDtoPos = new HashMap<>();
     private static Bitmap picture;
     private static String SHARE_NAME = "contactSharePreference";
     private static int born;
@@ -105,7 +105,7 @@ public class TabContactsFragment extends Fragment {
             R.drawable.p31
     };
 
-    public Bitmap[] circleImage = new Bitmap[31];
+    public static Bitmap[] circleImage = new Bitmap[31];
 
     private Thread mThread;
 
@@ -113,8 +113,15 @@ public class TabContactsFragment extends Fragment {
     public void notifyDataSetChanged(HashMap<String,Object> data){
         if(data.get(PHOTO) == null)
             return;
-        AL.get(positionNew).put(NAME,data.get(NAME));
-        AL.get(positionNew).put(PHOTO, data.get(PHOTO));
+        HashMap<String,Object> t = AL.get(positionNew);
+        Object tmp;
+        for(Map.Entry<String,Object> i : t.entrySet()){
+            if((tmp = data.get(i.getKey())) != null){
+                t.put(i.getKey(),tmp);
+            }
+        }
+      /*  AL.get(positionNew).put(NAME, data.get(NAME));
+        AL.get(positionNew).put(PHOTO, data.get(PHOTO));*/
         adapter.notifyDataSetChanged();
     }
 
@@ -220,18 +227,11 @@ public class TabContactsFragment extends Fragment {
         //Toast.makeText(getApplicationContext(), ""+num, Toast.LENGTH_SHORT).show();
         adapter = new TabContactAdapter(mContext,R.layout.list_item,AL);
 //        adapter.
-
         for(int i = 0 ; i < AL.size() ; ++i){
             HashMap now = AL.get(i);
             int photo = (int) now.get("photo");
             int id = (int) now.get("contactID");
-            if(photo != -1){
-                picture = circleImage[photo];
-            }
-            else {
-                picture = PhotoZoom.ratio(id);
-                picture = PhotoZoom.createCircleImage(picture,picture.getWidth(), picture.getHeight());
-            }
+            picture = PhotoZoom.getBitmap(id,photo,circleImage);
             AL.get(i).put("contactPhoto", picture);
         }
         Message message = handler.obtainMessage();
@@ -247,7 +247,7 @@ public class TabContactsFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(mContext, ContactActivity.class);
                 positionNew = position;
-                HashMap map = (HashMap) parent.getItemAtPosition(position);
+                HashMap map = AL.get(position);
                 // 当requestCode为3的时候表示请求转向CPD这个页面？？
                 ContactActivity.actionStart(getActivity(), map);
             }
@@ -385,7 +385,8 @@ public class TabContactsFragment extends Fragment {
                     Cursor cursor;
                     int contactPhotonum = 0;
                     Bitmap contactPhoto = circleImage[0];//头像默认的图片
-                    String contactSortname = getSpells(contactName);
+                    String contactSortname = ChineseWord.Pinyin(contactName);
+//                    Log.i("Chinese",contactSortname + " " + contactName);
                     cursor = db.query("user", null, "cid = " + contactID, null, null, null, null);
                     if (!cursor.moveToFirst()) {
                         User user = new User();
@@ -457,8 +458,6 @@ public class TabContactsFragment extends Fragment {
 //                    contactPhotonum = cursor.getInt(2);
             int contactid = cursor.getInt(1);
 
-            AllID.add(contactid);
-            IDtoPos.put(contactid,AllID.size() - 1);
 
 
             int photo_id = cursor.getInt(5);

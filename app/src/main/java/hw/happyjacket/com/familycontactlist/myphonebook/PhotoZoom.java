@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.File;
@@ -93,11 +94,18 @@ public class PhotoZoom {
         return bitmap;
     }
 
-    public static Bitmap ratio(int id){
-        File d = new File(Environment.getExternalStorageDirectory(),"image");
-        File filename = new File(d,id + ".jpg");
-        Bitmap bitmap1 = BitmapFactory.decodeFile(filename.getPath());
-        return bitmap1;
+
+    public static Bitmap getBitmap(int id,int photo,Bitmap [] picutres) {
+        if(photo < 0) {
+            File d = new File(Environment.getExternalStorageDirectory(), "image");
+            File filename = new File(d, id + ".jpg");
+            Bitmap bitmap1 = BitmapFactory.decodeFile(filename.getPath());
+            bitmap1 = createCircleImage(bitmap1,bitmap1.getWidth(),bitmap1.getHeight());
+            return bitmap1;
+        }
+        else{
+            return picutres[photo];
+        }
     }
 
     public static void saveBitmap(int id,Bitmap image){

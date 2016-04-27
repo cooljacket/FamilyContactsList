@@ -73,24 +73,30 @@ public class CommonSettingsAndFuncs {
     }
 
     public static String ParseWeatherXML(InputStream xml) throws XmlPullParserException, IOException {
-        ArrayList<String> weather = ParseXMLHelper(xml);
-        for (int i = 0; i < weather.size(); ++i)
-            Log.d("index " + i, weather.get(i));
-        String location = weather.get(1);
-        String wea = weather.get(7).split(" ")[1];
-        String temperature = weather.get(8);
-        String sun = weather.get(5).replace("：", "").replace("。", "，");
+        try {
+            ArrayList<String> weather = ParseXMLHelper(xml);
+            for (int i = 0; i < weather.size(); ++i)
+                Log.d("index " + i, weather.get(i));
+            String location = weather.get(1);
+            String wea = weather.get(7).split(" ")[1];
+            String temperature = weather.get(8);
+            String sun = weather.get(5).replace("：", "").replace("。", "，");
 
-        String content = weather.get(6);
-        Pattern p = Pattern.compile("(感冒指数：[^，]*，([^。]*)。)(穿衣指数：[^，]*，([^。]*)。)(洗车指数：[^。]*。)(运动指数：[^，]*，([^。]*)。)");
-        Matcher m = p.matcher(content);
-        if (m.find())
-            content = m.group(2) + "；" + m.group(4) + "；" + m.group(7);
+            String content = weather.get(6);
+            Pattern p = Pattern.compile("(感冒指数：[^，]*，([^。]*)。)(穿衣指数：[^，]*，([^。]*)。)(洗车指数：[^。]*。)(运动指数：[^，]*，([^。]*)。)");
+            Matcher m = p.matcher(content);
+            if (m.find())
+                content = m.group(2) + "；" + m.group(4) + "；" + m.group(7);
 
-        for (int i = 1; i <= m.groupCount(); ++i)
-            Log.d("index " + i, m.group(i));
+            for (int i = 1; i <= m.groupCount(); ++i)
+                Log.d("index " + i, m.group(i));
 
-        return String.format("%s，今天%s%s，气温%s，%s%s。注意好身体，爱你们。", location, wea, temperature, sun, content).replaceAll("您", "");
+            return String.format("%s，今天%s%s，气温%s，%s%s。注意好身体，爱你们。", location, wea, temperature, sun, content).replaceAll("您", "");
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
 
 
