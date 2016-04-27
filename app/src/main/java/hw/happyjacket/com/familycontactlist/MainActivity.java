@@ -32,7 +32,6 @@ import hw.happyjacket.com.familycontactlist.MyDirPicker.DirPicker;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 
 
-
 public class MainActivity extends AppCompatActivity {
     private ViewPager mPager;
     private int selected_tab = 0, base_tab_id = 0;
@@ -253,7 +252,7 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_search:
                 // do search...
-                Toast.makeText(MainActivity.this, "search", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, CommonSettingsAndFuncs.convertToPinyin(MainActivity.this, "郭庆潼"), Toast.LENGTH_LONG).show();
                 return true;
             case R.id.action_export:
                 Intent intent = new Intent(DirPicker.ACTION);
