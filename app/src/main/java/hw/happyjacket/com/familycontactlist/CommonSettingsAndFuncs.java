@@ -27,6 +27,8 @@ import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import jpinyin.stuxuhai.github.com.PinyinHelper;
+
 /**
  * Created by jacket on 2016/4/19.
  */
@@ -191,5 +193,10 @@ public class CommonSettingsAndFuncs {
         for (int i = 0; i < len; ++i)
             buffer.append((char)('a' + random.nextInt(26)));
         return buffer.toString();
+    }
+
+    public static String convertToPinyin(Context context, String str) {
+        PinyinHelper.getInstance(context);
+        return PinyinHelper.convertToPinyinString(str, "");
     }
 }
