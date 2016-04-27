@@ -2,6 +2,7 @@ package hw.happyjacket.com.familycontactlist.myphonebook.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,10 @@ import hw.happyjacket.com.familycontactlist.TabContactsFragment;
 public class TabContactAdapter extends ArrayAdapter<HashMap<String,Object> > {
 
     private int recourceID;
+    private Character sortName = null;
+    private int height;
+    private String TAG = this.getClass().toString();
+
     public TabContactAdapter(Context context, int resource) {
         super(context, resource);
         recourceID = resource;
@@ -48,6 +53,7 @@ public class TabContactAdapter extends ArrayAdapter<HashMap<String,Object> > {
             myHolder.icon = (ImageView) view.findViewById(R.id.contact_icon);
             myHolder.name = (TextView) view.findViewById(R.id.contact_name);
             myHolder.alphebat = (TextView) view.findViewById(R.id.seperate_alphebat);
+            height = myHolder.alphebat.getLineHeight();
             view.setTag(myHolder);
         }
         else{
@@ -56,6 +62,17 @@ public class TabContactAdapter extends ArrayAdapter<HashMap<String,Object> > {
         }
 
         HashMap<String,Object> item = getItem(position);
+
+        String t = (String) item.get(TabContactsFragment.SORTNAME);
+        char h;
+        if(t.length() > 0 && 'A'<= (h = (char) (t.charAt(0) - 'a' + 'A')) && h <= 'Z' && ((sortName == null) || h != sortName)){
+            sortName = h;
+            myHolder.alphebat.setHeight(height);
+            myHolder.alphebat.setText(" " + sortName.toString());
+        }
+        else
+            myHolder.alphebat.setHeight(0);
+
         myHolder.name.setText((String)item.get(TabContactsFragment.NAME));
         myHolder.icon.setImageBitmap((Bitmap)item.get(TabContactsFragment.PHOTO));
         return view;
