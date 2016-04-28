@@ -272,6 +272,7 @@ public class TabContactsFragment extends Fragment {
                         user.name = contactName;
                         user.sortname = contactSortname;
                         user.mobilephone = contactPhone;
+                        user.groupname = "NO";
                         Random random = new Random();
                         user.photo = random.nextInt(31);
                         dbHelper.insertAUser(user);

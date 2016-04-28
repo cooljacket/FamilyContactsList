@@ -16,6 +16,8 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 
 import hw.happyjacket.com.familycontactlist.R;
 import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
@@ -25,7 +27,7 @@ import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 /**
  * Created by root on 16-4-16.
  */
-public class PeopleInfoAdapter extends ArrayAdapter<String[]> {
+public class PeopleInfoAdapter extends ArrayAdapter<String[] > {
 
     private int recourceID;
     private Handler mHandler;
@@ -40,11 +42,11 @@ public class PeopleInfoAdapter extends ArrayAdapter<String[]> {
         recourceID = resource;
     }
 
-    public PeopleInfoAdapter(Context context, int resource, String[][] objects) {
-        super(context, resource, objects);
+    public PeopleInfoAdapter(Context context, int resource, List<String[]> objects) {
+        super(context,resource,objects);
         recourceID = resource;
     }
-    public PeopleInfoAdapter(Context context, int resource, String[][] objects, Handler handler) {
+    public PeopleInfoAdapter(Context context, int resource, List<String[]> objects, Handler handler) {
         super(context, resource, objects);
         recourceID = resource;
         mHandler = handler;
@@ -59,12 +61,11 @@ public class PeopleInfoAdapter extends ArrayAdapter<String[]> {
         final String[] phoneElement = getItem(position);
         View view;
         MyViewHolder viewHolder;
-
         view = LayoutInflater.from(getContext()).inflate(recourceID, null);
         viewHolder = new MyViewHolder();
-        viewHolder.name = (Button)view.findViewById(R.id.people_info_name);
+        viewHolder.name = (Button) view.findViewById(R.id.people_info_name);
         viewHolder.content = (EditText) view.findViewById(R.id.people_info_content);
-        viewHolder.clear = (ImageButton) view.findViewById(R.id.text_clear);
+        view.setTag(viewHolder);
         viewHolder.name.setText(phoneElement[0]);
         viewHolder.content.setText(phoneElement[1]);
         viewHolder.content.setHint(phoneElement[0]);
