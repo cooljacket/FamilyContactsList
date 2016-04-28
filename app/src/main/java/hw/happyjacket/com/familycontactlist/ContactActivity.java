@@ -53,8 +53,9 @@ public class ContactActivity extends AppCompatActivity{
     private ContactShow mContactShow;
     private CollapsingToolbarLayout head;
     private HashMap<String,Object> data;
-    private int id;
+    private int uid;
     private Bitmap picture;
+
 
 
 
@@ -106,12 +107,12 @@ public class ContactActivity extends AppCompatActivity{
         head.setTitle(name);
 
         DBHelper dbHelper = new DBHelper(this);
-        id = (int) data.get("UserID");
+        uid = (int) data.get("UserID");
 
         mContactShow = new ContactShow(this,R.layout.call_log_list);
         mContactShow.getPhoneList().setDb("contact");
         mContactShow.getPhoneList().setTable("user");
-        mContactShow.InitAdapter(new XiaoMiAccessory(), new String[]{"mobilephone"}, "uid" + " = ? ", new String[]{"" + id}, null);
+        mContactShow.InitAdapter(new XiaoMiAccessory(), new String[]{"mobilephone"}, "uid" + " = ? ", new String[]{"" + uid}, null);
         ContactListView.setAdapter(mContactShow.getPhoneAdapter());
         ContactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

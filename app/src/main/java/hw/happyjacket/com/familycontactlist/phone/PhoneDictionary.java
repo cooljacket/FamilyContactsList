@@ -46,8 +46,8 @@ public class PhoneDictionary {
     public static final int CONTENT_OPTIONS1 = 1;
     public static final int CONTENT_OPTIONS2 = 2;
     public static final int CALLLOG_OPTIONS = 3;
-    public static final int RADIO_OPTION = 0;
-    public static final int CHECKBOX_OPTION = 1;
+    public static final int RADIO_OPTION = 1;
+    public static final int CHECKBOX_OPTION = 2;
     public static final int IMAGE_REQUEST_CODE = 1;
     public static final int RESULT_REQUEST_CODE = 2;
     public static final int CONTACT_REQUEST_CODE  = 1;
@@ -66,6 +66,7 @@ public class PhoneDictionary {
     public static final String ContentItems2[] = {"呼叫","删除"};
     public static final String PhoneCallNumber[] = {"1","2","3","4","5","6","7","8","9","*","0","#"};
     public static final String PhoneCallAlphabet[] = {"","abc","def","ghi","jkl","nmo","pqrs","tuv","wxyz",",","+",""};
+    public static final String PhoneCallChoices[] = {"手机","单位", "住宅", "总机", "单位传真", "住宅传真", "寻呼机" ,"其他"};
 
 
     public static final int ImageID[] = {R.drawable.p4,R.drawable.p5,R.drawable.p6,

@@ -51,17 +51,9 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
     EditText et_familyName;
     EditText et_name;
-    EditText et_phone;
-    EditText et_home;
-    EditText et_email;
-    EditText et_work;
-    EditText et_group;
-    EditText et_remark;
     Button btn_save;
     Button btn_return;
-    int imageP;//头像序号
     Bitmap imagePic;//头像Rid
-    int imagePP;
     String [][] info;
     ScrollListView mListView;
     PeopleInfoAdapter mPeopleInfoAdapter;
@@ -73,6 +65,10 @@ public class ChangePeopleDetail extends AppCompatActivity {
                 case 0:
                     imagePic = DialogFactory.getImagePicture();
                     map.put(PhoneDictionary.Photo,DialogFactory.getImagePosition());
+                    break;
+                case 1:
+                    info[0][0] = PhoneDictionary.PhoneCallChoices[msg.arg1];
+                    mPeopleInfoAdapter.notifyDataSetChanged();
                     break;
                 default:
                     break;
@@ -152,10 +148,6 @@ public class ChangePeopleDetail extends AppCompatActivity {
         btn_img = (ImageButton) findViewById(R.id.btn_img);
 
         mListView = (ScrollListView) findViewById(R.id.people_info);
-        mPeopleInfoAdapter = new PeopleInfoAdapter(this,R.layout.change_people_detail,info);
-        Toast.makeText(this,mPeopleInfoAdapter.getItem(1)[1],Toast.LENGTH_SHORT).show();
-        //mPeopleInfoAdapter.notifyDataSetChanged();
-        mListView.setAdapter(mPeopleInfoAdapter);
 //        imagePic=(int) map.get("contactPhoto");
         Log.i("detail",(int)map.get(PhoneDictionary.Photo) + "");
         DialogFactory.setImagePicture(imagePic = PhotoZoom.getBitmap((int)map.get("contactID"),(int)map.get(PhoneDictionary.Photo),TabContactsFragment.circleImage));
@@ -166,7 +158,6 @@ public class ChangePeopleDetail extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 DialogFactory.getPhotoDialog(ChangePeopleDetail.this, "请选择方法",new String[]{"从相库中选取","从默认图片选取"},new MyViewFactory(ChangePeopleDetail.this),btn_img,mHandler).show();
-
             }
         });
 
@@ -241,14 +232,15 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
                /* map = getChanged();*/
                 Intent intent = new Intent();
+                int tmp;
                 HashMap<String,Object> t = new HashMap<String, Object>();
                 t.put(PhoneDictionary.NAME, et_name.getText().toString());
                 t.put(PhoneDictionary.NUMBER, mPeopleInfoAdapter.getItem(0)[1]);
-                t.put(PhoneDictionary.Photo, map.get(PhoneDictionary.Photo));
+                t.put(PhoneDictionary.Photo,tmp = (int)map.get(PhoneDictionary.Photo));
                 t.put(PhoneDictionary.Picture, imagePic);
                 intent.putExtra(PhoneDictionary.OTHER, t);
                 setResult(PhoneDictionary.CONTACT_REQUEST_CODE, intent);
-                if((int) map.get(PhoneDictionary.Photo) == -1)
+                if(tmp == -1)
                     PhotoZoom.saveBitmap((int) map.get("contactID"), imagePic);
                 finish();
 
@@ -266,6 +258,13 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
 
 
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        mPeopleInfoAdapter = new PeopleInfoAdapter(this,R.layout.change_people_detail,info,mHandler);
+        mListView.setAdapter(mPeopleInfoAdapter);
     }
 
     private void updateUser(HashMap map){

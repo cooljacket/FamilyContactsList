@@ -19,6 +19,7 @@ import hw.happyjacket.com.familycontactlist.HttpConnectionUtil;
 import hw.happyjacket.com.familycontactlist.PhoneLocationMaster;
 import hw.happyjacket.com.familycontactlist.extention.Accessory;
 import hw.happyjacket.com.familycontactlist.extention.Decorate;
+import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.CallLogAdapter;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 import hw.happyjacket.com.familycontactlist.phone.phonelistener.PhoneLocationThread;
@@ -30,9 +31,11 @@ public class ContactShow extends PhoneShow {
 
 
     private String number;
-    private String [] defaultList = new String[]{"查找中...","编辑联系人","加入黑名单","从黑名单中移除","删除联系人"};
+    private String [] defaultList = new String[]{"查找中...","编辑联系人","加入黑名单","删除联系人"};
+    private String [] BlackOption = new String[]{"加入黑名单","从黑名单中移除"};
     private String defaultNumber = "电话";
     private String location;
+    private boolean inBlackList;
 
     private Thread mThread;
     private Handler mHandler = new Handler(){
@@ -111,6 +114,10 @@ public class ContactShow extends PhoneShow {
 
     public Vector<HashMap<String,String>> getDefaultData()
     {
+        if(inBlackList)
+            defaultList[2] = BlackOption[1];
+        else
+            defaultList[2] = BlackOption[0];
         Vector<HashMap<String,String>> data = new Vector<>(1 + defaultList.length);
         HashMap<String,String> numbers = new HashMap<>();
         numbers.put(PhoneDictionary.DATE, number);
@@ -134,7 +141,8 @@ public class ContactShow extends PhoneShow {
         phoneList.setOrderby(orderby);
         phoneList.connectDataBase();
         number = phoneList.getPhoneList().get(0).get("mobilephone");
-        number = number.replace(" ", "").replace("+86","").replace("+", "");
+        number = number.replace(" ", "").replace("+86", "").replace("+", "");
+        inBlackList = Operation.isBlackList(number);
         mPhoneListElementList = getDefaultData();
         sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index);
         mThread = new Thread(new Runnable() {

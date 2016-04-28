@@ -62,16 +62,22 @@ public class TabContactAdapter extends ArrayAdapter<HashMap<String,Object> > {
         }
 
         HashMap<String,Object> item = getItem(position);
+        HashMap<String,Object> last = null;
+        if(position > 0)
+            last = getItem(position - 1);
 
-        String t = (String) item.get(TabContactsFragment.SORTNAME);
-        char h;
-        if(t.length() > 0 && 'A'<= (h = (char) (t.charAt(0) - 'a' + 'A')) && h <= 'Z' && ((sortName == null) || h != sortName)){
-            sortName = h;
-            myHolder.alphebat.setHeight(height);
-            myHolder.alphebat.setText(" " + sortName.toString());
+        String t1 = (String) item.get(TabContactsFragment.SORTNAME),t2;
+        char h1,h2;
+        myHolder.alphebat.setHeight(0);
+        if(last != null && (t2 = (String)last.get(TabContactsFragment.SORTNAME)) != null && t2.length() > 0
+                && t1 != null && t1.length() > 0 && 'A'<= (h1 = Character.toUpperCase(t1.charAt(0))) && h1 <= 'Z'){
+            h2 = Character.toUpperCase(t2.charAt(0));
+            if(h2 != h1) {
+                myHolder.alphebat.setHeight(height);
+                myHolder.alphebat.setText(" " + h1);
+            }
         }
-        else
-            myHolder.alphebat.setHeight(0);
+
 
         myHolder.name.setText((String)item.get(TabContactsFragment.NAME));
         myHolder.icon.setImageBitmap((Bitmap)item.get(TabContactsFragment.PHOTO));

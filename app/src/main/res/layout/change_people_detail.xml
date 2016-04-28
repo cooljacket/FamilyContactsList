@@ -6,49 +6,61 @@
 
     android:id="@+id/people_info_detail">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_marginLeft="20dp"
-        android:layout_height="52dp">
+        android:layout_height="wrap_content">
 
         <Button
-            android:layout_width="60dp"
-            android:layout_height="50dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:gravity="center_vertical"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
             android:textColor="#000000"
             android:background="#00000000"
             android:textSize="17dp"
-            android:textAlignment="center"
             android:id="@+id/people_info_name"
-            android:drawableRight="@drawable/button_down"
-            android:hint="21"
-
-            ></Button>
+            />
         <TextView
-            android:layout_width="0.8dp"
-            android:layout_height="25dp"
-            android:layout_marginLeft="15dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@drawable/horizontal_divider"
             android:gravity="center_vertical"
+            android:id="@+id/people_info_divider"
+            android:layout_toRightOf="@+id/people_info_name"
+            android:layout_centerVertical="true"
             />
 
+        <ImageButton
+            android:id="@+id/text_clear"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/text_delete"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"/>
         <EditText
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:minWidth="120dp"
+            android:maxWidth="150dp"
             android:id="@+id/people_info_content"
             android:singleLine="true"
             android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/people_info_divider"
             android:gravity="center_vertical"
+            android:layout_centerVertical="true"
             android:textColor="#000000"
             android:textSize="16dp"
             android:background="#00000000"
             android:textCursorDrawable="@drawable/color_cursor"
-            android:hint="121"
             android:phoneNumber="true"
             />
 
-    </LinearLayout>
+
+    </RelativeLayout>
     <TextView
         android:layout_width="320dp"
         android:layout_height="0.8dp"

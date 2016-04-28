@@ -73,12 +73,12 @@ public class Operation {
     public static void endCall(String number){sPhoneCallUtis.endCall(number);}
 
     public static boolean isBlackList(String number){
-        Log.e("eeeee","ee");
+        number = number.replace(" ","").replace("+86","").replace("+","");
         return sBlackListMaster.isInBlackList(number);
     }
 
     public static void addBlackList(String number){
-        Log.e("eeeee","add");
+        number = number.replace(" ","").replace("+86","").replace("+","");
         sBlackListMaster.add(number);
     }
 

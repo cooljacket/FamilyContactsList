@@ -7,6 +7,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.LightingColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract;
@@ -126,7 +129,7 @@ public class DialogFactory {
         return option;
     }
 
-    public static PhoneDialog getRadioDialog(Context context, int style, String content[], final Handler handler){
+    public static PhoneDialog getRadioDialog(Context context, int style, String content[], final Handler handler, final int msgIndex){
 
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_option,null);
         final RadioAdapter radioAdapter = new RadioAdapter(context,R.layout.dialog_radio,content);
@@ -147,7 +150,7 @@ public class DialogFactory {
             @Override
             public void onClick(View v) {
                 Message message = handler.obtainMessage();
-                message.what = PhoneDictionary.RADIO_OPTION;
+                message.what = msgIndex;
                 message.arg1 = radioAdapter.getIndex();
                 Log.i("haha",message.arg1 + "");
                 handler.sendMessage(message);
@@ -315,6 +318,8 @@ public class DialogFactory {
         Button retrive = (Button) view.findViewById(R.id.dia_wheel_retrieve);
         ImageButton call = (ImageButton) view.findViewById(R.id.dia_wheel_call);
         Button delete = (Button) view.findViewById(R.id.dia_wheel_delete);
+        call.setImageResource(R.drawable.ic_menu_call);
+        call.setColorFilter(new LightingColorFilter(0,0xffffff));
         editText.clearFocus();
         editText.setInputType(InputType.TYPE_NULL);
         GridView gridView = (GridView)view.findViewById(R.id.dia_wheel_table);
