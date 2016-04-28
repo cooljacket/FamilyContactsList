@@ -140,8 +140,8 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         StringBuffer tableCreate = new StringBuffer();
-        tableCreate.append("create table user ( uid integer primary key autoincrement,")//contactid0
-                .append("cid integer default 0,")//1
+        tableCreate.append("create table user ( uid integer primary key autoincrement,")//userid0
+                .append("cid integer not null,")//1contactid
                 .append("name text,")//2
                 .append("sortname text ,")//3
                 .append("mobilephone text default '0',")//4

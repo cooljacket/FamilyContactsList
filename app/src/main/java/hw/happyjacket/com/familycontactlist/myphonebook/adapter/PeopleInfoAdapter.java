@@ -8,18 +8,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 
 import hw.happyjacket.com.familycontactlist.R;
 
 /**
  * Created by root on 16-4-16.
  */
-public class PeopleInfoAdapter extends ArrayAdapter<String[]> {
+public class PeopleInfoAdapter extends ArrayAdapter<String[] > {
 
     private int recourceID;
 
@@ -33,8 +36,8 @@ public class PeopleInfoAdapter extends ArrayAdapter<String[]> {
         recourceID = resource;
     }
 
-    public PeopleInfoAdapter(Context context, int resource, String[][] objects) {
-        super(context, resource, objects);
+    public PeopleInfoAdapter(Context context, int resource, List<String[]> objects) {
+        super(context,resource,objects);
         recourceID = resource;
     }
 
@@ -49,7 +52,7 @@ public class PeopleInfoAdapter extends ArrayAdapter<String[]> {
         {*/
             view = LayoutInflater.from(getContext()).inflate(recourceID, null);
             viewHolder = new MyViewHolder();
-            viewHolder.name = (TextView)view.findViewById(R.id.people_info_name);
+            viewHolder.name = (TextView) view.findViewById(R.id.people_info_name);
             viewHolder.content = (EditText) view.findViewById(R.id.people_info_content);
             view.setTag(viewHolder);
         /*}*/
@@ -58,7 +61,15 @@ public class PeopleInfoAdapter extends ArrayAdapter<String[]> {
             view = convertView;
             viewHolder = (MyViewHolder) view.getTag();
         }
+
+
 */
+//        viewHolder.name.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
         viewHolder.name.setText(phoneElement[0]);
         viewHolder.content.setText(phoneElement[1]);
         viewHolder.content.setHint(phoneElement[0]);

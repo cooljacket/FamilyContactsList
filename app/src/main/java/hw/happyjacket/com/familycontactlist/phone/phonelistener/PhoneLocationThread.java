@@ -36,7 +36,6 @@ public class PhoneLocationThread {
         final Vector<HashMap<String, String> > locations = new Vector<>();
         int ACCESS_NETWORK_COUNT = 0;
         int count = 0;
-        Log.i("che",phoneNumberList.size() + " " + phoneNumberList.toString());
         for ( int y = 0 ; y < phoneNumberList.size() ; y++) {
             if(!flag)
                 break;
@@ -67,8 +66,8 @@ public class PhoneLocationThread {
                     } else if (response.contains("http")) {
                         state = PhoneLocationDBHelper.ERROR;
                     }
+                    Log.i("locationm",response);
                     PLMaster.add(phoneNumber, response, state);
-                    Log.d("hehe-number", PLMaster.get(phoneNumber)[2] + ", " + state);
                     HashMap<String, String> tmp = new HashMap<>();
                     tmp.put(phoneNumber, PLMaster.get(phoneNumber)[2]);
                     locations.add(tmp);
@@ -144,7 +143,6 @@ public class PhoneLocationThread {
             handler.sendMessage(msg_for_location);
             return;
         }
-
         msg_for_location.obj = result;
         handler.sendMessage(msg_for_location);
     }

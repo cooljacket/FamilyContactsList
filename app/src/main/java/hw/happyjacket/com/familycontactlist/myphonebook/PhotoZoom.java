@@ -13,6 +13,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.File;
@@ -83,7 +84,6 @@ public class PhotoZoom {
     public static Bitmap ratio(Activity context,int imgPath) {
         BitmapFactory.Options newOpts = new BitmapFactory.Options();
         // 开始读入图片，此时把options.inJustDecodeBounds 设回true，即只读边不读内容
-
         newOpts.inPreferredConfig = Bitmap.Config.RGB_565;
         newOpts.inJustDecodeBounds = false;
         newOpts.inSampleSize = 4;//设置缩放比例
@@ -94,11 +94,18 @@ public class PhotoZoom {
         return bitmap;
     }
 
-    public static Bitmap ratio(int id){
-        File d = new File(Environment.getExternalStorageDirectory(),"image");
-        File filename = new File(d,id + ".jpg");
-        Bitmap bitmap1 = BitmapFactory.decodeFile(filename.getPath());
-        return bitmap1;
+
+    public static Bitmap getBitmap(int id,int photo,Bitmap [] picutres) {
+        if(photo < 0) {
+            File d = new File(Environment.getExternalStorageDirectory(), "image");
+            File filename = new File(d, id + ".jpg");
+            Bitmap bitmap1 = BitmapFactory.decodeFile(filename.getPath());
+            bitmap1 = createCircleImage(bitmap1,bitmap1.getWidth(),bitmap1.getHeight());
+            return bitmap1;
+        }
+        else{
+            return picutres[photo];
+        }
     }
 
     public static void saveBitmap(int id,Bitmap image){

@@ -3,6 +3,7 @@ package hw.happyjacket.com.familycontactlist;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -20,9 +21,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
 
+import hw.happyjacket.com.familycontactlist.extention.ChineseWord;
 import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.TabContactAdapter;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
@@ -34,6 +37,7 @@ public class TabContactsFragment extends Fragment {
     public static final int LIST_LOAD_SOME = 0, LIST_LOAD_OK = 1;
     public static String NAME = "contactName";
     public static String PHOTO = "contactPhoto";
+    public static String SORTNAME = "contactSortname";
     private Context mContext;
     private ListView listview;
     private Vector<HashMap<String,Object> > AL;
@@ -43,6 +47,9 @@ public class TabContactsFragment extends Fragment {
     private View ContactView;
     private TabContactAdapter adapter;
     private static Bitmap picture;
+    private static String SHARE_NAME = "contactSharePreference";
+    private static int born;
+    private static String The_First_Time = "first";
     public static final int PHONES_DISPLAY_NAME_INDEX = 0;
     public static final int PHONES_CONTACT_ID_INDEX = 1;
     public static final int PHONES_NUMBER_INDEX = 2;
@@ -51,7 +58,7 @@ public class TabContactsFragment extends Fragment {
             ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
             ContactsContract.CommonDataKinds.Phone.NUMBER
     };
-    public Vector<HashMap> contacts = new Vector<>();
+    public Vector<HashMap<String,Object>> contacts = new Vector<>();
     private int[] image = {R.drawable.p4,R.drawable.p5,R.drawable.p6,
             R.drawable.p1,R.drawable.p2,R.drawable.p3,
             R.drawable.p7,R.drawable.p8,R.drawable.p9,
@@ -64,7 +71,7 @@ public class TabContactsFragment extends Fragment {
             R.drawable.p28,R.drawable.p29,R.drawable.p30,
             R.drawable.p31
     };
-    public Bitmap[] circleImage = new Bitmap[31];
+    public static Bitmap[] circleImage = new Bitmap[31];
     private Thread mThread;
     private Handler handler = new Handler(){
         @Override
@@ -104,11 +111,17 @@ public class TabContactsFragment extends Fragment {
     }
 
 
+
     public void notifyDataSetChanged(HashMap<String,Object> data){
         if(data.get(PHOTO) == null)
             return;
-        AL.get(positionNew).put(NAME,data.get(NAME));
-        AL.get(positionNew).put(PHOTO, data.get(PHOTO));
+        HashMap<String,Object> t = AL.get(positionNew);
+        Object tmp;
+        for(Map.Entry<String,Object> i : t.entrySet()){
+            if((tmp = data.get(i.getKey())) != null){
+                t.put(i.getKey(),tmp);
+            }
+        }
         adapter.notifyDataSetChanged();
     }
 
@@ -195,6 +208,7 @@ public class TabContactsFragment extends Fragment {
     }
 
 
+
     private void loadList() {
         for(int i = 0 ; i < AL.size() ; ++i) {
             HashMap now = AL.get(i);
@@ -204,9 +218,10 @@ public class TabContactsFragment extends Fragment {
                 picture = circleImage[photo];
             }
             else {
-                picture = PhotoZoom.ratio(id);
+                picture = PhotoZoom.getBitmap(id, photo, circleImage);
                 picture = PhotoZoom.createCircleImage(picture, picture.getWidth(), picture.getHeight());
             }
+
             AL.get(i).put("contactPhoto", picture);
 
             // 有10的整数倍个数据的时候就先显示了，23333
@@ -220,69 +235,80 @@ public class TabContactsFragment extends Fragment {
         Message message = handler.obtainMessage();
         message.what = LIST_LOAD_OK;
         handler.sendMessage(message);
+
+
     }
 
 
     //        /**得到手机通讯录联系人信息**/
-    public Vector getPhoneContacts() {
+    public Vector<HashMap<String,Object>> getPhoneContacts() {
 
         ContentResolver resolver1 = mContext.getContentResolver();
         // 获取手机联系人
-        Cursor phoneCursor = resolver1.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, PHONES_PROJECTION, null, null, null);
 
-        if (phoneCursor != null) {
-            while (phoneCursor.moveToNext()) {
-                //得到联系人名称
-                String contactName = phoneCursor.getString(PHONES_DISPLAY_NAME_INDEX);
 
-                //得到联系人ID
-                int contactid = phoneCursor.getInt(PHONES_CONTACT_ID_INDEX);
-                String contactID = phoneCursor.getString(PHONES_CONTACT_ID_INDEX);
-                String contactPhone = phoneCursor.getString(PHONES_NUMBER_INDEX);
 
-                Cursor cursor;
-                String contactSortname = CommonSettingsAndFuncs.convertToPinyin(mContext, contactName);
-                Log.d("hehe", contactName + ", " + contactSortname);
-                cursor = db.query("user",null,"cid="+contactID,null,null,null,null);
-                if(!cursor.moveToFirst()) {
-                    User user = new User();
-                    user.cid=contactid;
-                    user.name=contactName;
-                    user.sortname=contactSortname;
-                    user.mobilephone=contactPhone;
-//                    user.mobilephone=
-//                    user.family=false;
-//                    user.mobilephone
-//                    user.group="UNKNOWN";
-                    Random random = new Random();
-                    user.photo = random.nextInt(31);
-                    dbHelper.insertAUser(user);
+        SharedPreferences pref = mContext.getSharedPreferences(SHARE_NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor  = pref.edit();
+        int first = pref.getInt(The_First_Time, -1);
+        if(first == -1) {
+            Cursor phoneCursor = resolver1.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, PHONES_PROJECTION, null, null, null);
+            if (phoneCursor != null) {
+                while (phoneCursor.moveToNext()) {
+                    //得到联系人名称
+                    String contactName = phoneCursor.getString(PHONES_DISPLAY_NAME_INDEX);
+
+                    //得到联系人ID
+                    int contactid = phoneCursor.getInt(PHONES_CONTACT_ID_INDEX);
+                    String contactID = phoneCursor.getString(PHONES_CONTACT_ID_INDEX);
+                    String contactPhone = phoneCursor.getString(PHONES_NUMBER_INDEX);
+
+                    Cursor cursor;
+                    String contactSortname = CommonSettingsAndFuncs.convertToPinyin(mContext, contactName);
+                    cursor = db.query("user", null, "cid=" + contactID, null, null, null, null);
+                    if (!cursor.moveToFirst()) {
+                        User user = new User();
+                        user.cid = contactid;
+                        user.name = contactName;
+                        user.sortname = contactSortname;
+                        user.mobilephone = contactPhone;
+                        user.groupname = "NO";
+                        Random random = new Random();
+                        user.photo = random.nextInt(31);
+                        dbHelper.insertAUser(user);
+                    }
+                    cursor.close();
                 }
-                cursor.close();
+                phoneCursor.close();
             }
-            phoneCursor.close();
+            editor.putInt(The_First_Time,1);
+            editor.commit();
         }
 
-        Cursor cursor = db.query("user",null,null,null,null,null,null);
-        if (cursor != null)
-        while(cursor.moveToNext()){
-            int contact_id = cursor.getInt(1);
-            int photo_id = cursor.getInt(5);
+        Cursor cursor = db.query("user", null, null, null, null, null, null);
+        if (cursor != null){
+            if(cursor.moveToFirst()) {
+                do {
+                    int contact_id = cursor.getInt(1);
 
-            //familyname
-            String contactName = cursor.getString(2);
-            //group
-            String contactSortname = cursor.getString(3);
+                    int photo_id = cursor.getInt(5);
 
-            HashMap map=new HashMap();
-            map.put("contactName",contactName);
-            map.put("photo",photo_id);
+                    //familyname
+                    String contactName = cursor.getString(2);
+                    //group
+                    String contactSortname = cursor.getString(3);
+                    HashMap map = new HashMap();
+                    map.put("contactName", contactName);
+                    map.put("photo", photo_id);
 //                map.put("contactPhone",phoneNumber);
-            map.put("contactSortname",contactSortname);
-            map.put("contactID", contact_id);
-            map.put("UserID",cursor.getInt(0));
-            contacts.add(map);
+                    map.put("contactSortname", contactSortname);
+                    map.put("contactID", contact_id);
+                    map.put("UserID", cursor.getInt(0));
+                    contacts.add(map);
+                }while (cursor.moveToNext());
+            }
         }
         return contacts;
     }
+
 }
