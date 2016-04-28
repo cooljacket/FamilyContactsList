@@ -199,4 +199,42 @@ public class CommonSettingsAndFuncs {
         PinyinHelper.getInstance(context);
         return PinyinHelper.convertToPinyinString(str, "");
     }
+
+    private static int[] calNext(String pattern) {
+        int j = 0, k = -1, pLen = pattern.length();
+        int[] next = new int[pLen];
+        next[0] = -1;
+
+        while (j < pLen-1) {
+            if (k == -1 || pattern.charAt(k) == pattern.charAt(j))
+                next[++j] = ++k;
+            else
+                k = next[k];
+        }
+
+        return next;
+    }
+
+    public static boolean KMP_match(String text, String pattern) {
+        int[] next = calNext(pattern);
+        int i = 0, j = 0, pLen = pattern.length(), tLen = text.length();
+
+        while (j < pLen && i < tLen) {
+            if (j == -1 || text.charAt(i) == pattern.charAt(j)) {
+                ++i;
+                ++j;
+            }
+            else {
+                j = next[j];
+            }
+        }
+
+        return j == pLen;
+    }
+
+    public static boolean REGX_match(String text, String pattern) {
+        Pattern p = Pattern.compile(pattern);
+        Matcher matcher = p.matcher(text);
+        return matcher.find();
+    }
 }
