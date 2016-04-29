@@ -23,10 +23,10 @@ public class PhoneLocationMaster {
         if (!db.isOpen())
             return false;
 
-        Log.i("locationMaster",data);
+        Log.i("locationMaster-add", data);
 
         ContentValues values = addHelper(phoneNumber, data, state);
-
+        db.update(PhoneLocationDBHelper.TABLE_NAME, values, "phoneNumber=?", new String[]{phoneNumber});
         long result = db.insert(PhoneLocationDBHelper.TABLE_NAME, null, values);
 
         return result != -1;
@@ -86,7 +86,7 @@ public class PhoneLocationMaster {
         String city = cursor.getString(cursor.getColumnIndex("city"));
         String card_type = cursor.getString(cursor.getColumnIndex("card_type"));
         cursor.close();
-        Log.i("chehe", phoneNumber + " " + city + " ");
+        Log.i("geting in PLMaster", phoneNumber + " " + city + " ");
         return new String[]{province, city, card_type};
     }
 }

@@ -28,6 +28,7 @@ import java.util.Vector;
 import hw.happyjacket.com.familycontactlist.extention.XiaoMiAccessory;
 import hw.happyjacket.com.familycontactlist.myphonebook.InitService;
 import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
+import hw.happyjacket.com.familycontactlist.myphonebook.adapter.MainAdapter;
 import hw.happyjacket.com.familycontactlist.myphonebook.factory.DialogFactory;
 import hw.happyjacket.com.familycontactlist.myphonebook.factory.PhoneDialog;
 import hw.happyjacket.com.familycontactlist.myphonebook.show.MainShow;
@@ -66,17 +67,15 @@ public class TabRecordFragment extends Fragment {
 
     @Override
     public void onStart() {
-
         if(mainShow == null) {
             init();
-            MainActivity.phoneElement = mainShow.getPhoneListElementList();
+            MainActivity.phoneElement = mainShow.getPhoneListElementList_backup();
         }
         else {
             mainShow.refresh(new XiaoMiAccessory(), new String[]{PhoneDictionary.DATE});
 
         }
         super.onStart();
-
     }
 
     @Override
@@ -121,7 +120,7 @@ public class TabRecordFragment extends Fragment {
             Dial.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DialogFactory.DiaWheel(getActivity(),R.style.Menu).show();
+                    DialogFactory.DiaWheel(getActivity(),R.style.Menu,mainShow).show();
                 }
             });
             initOption();

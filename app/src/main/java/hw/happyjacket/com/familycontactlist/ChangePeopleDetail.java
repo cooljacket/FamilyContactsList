@@ -91,14 +91,6 @@ public class ChangePeopleDetail extends AppCompatActivity {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
-                case 0:
-                    imagePic = DialogFactory.getImagePicture();
-                    map.put(PhoneDictionary.Photo,DialogFactory.getImagePosition());
-                    break;
-                case 1:
-                    info.get(0)[0] = PhoneDictionary.PhoneCallChoices[msg.arg1];
-                    mPeopleInfoAdapter.notifyDataSetChanged();
-                    break;
                 case 102:
                     StringBuffer stringBuffer = new StringBuffer();
                     Vector<Boolean> t = (Vector<Boolean>)msg.obj;
@@ -118,6 +110,11 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
                     groupName.setText(stringBuffer.toString());
                     break;
+
+                case 100:
+                    imagePic = DialogFactory.getImagePicture();
+                    map.put(PhoneDictionary.Photo, DialogFactory.getImagePosition());
+                    break;
                 case 103:
                     final  String tt = (String)msg.obj;
                     new Thread(new Runnable() {
@@ -128,7 +125,18 @@ public class ChangePeopleDetail extends AppCompatActivity {
                     }).start();
 
                     break;
+
+                case 104:
+                    info.add(new String[]{PhoneDictionary.PhoneCallChoices[msg.arg1],""});
+                    mPeopleInfoAdapter.notifyDataSetChanged();
+
                 default:
+                    int tmp = msg.what;
+                    if(tmp>=0 && tmp < info.size()){
+                        info.get(tmp)[0] = PhoneDictionary.PhoneCallChoices[msg.arg1];
+                        mPeopleInfoAdapter.notifyDataSetChanged();
+                        break;
+                    }
                     break;
             }
             super.handleMessage(msg);
@@ -305,8 +313,10 @@ public class ChangePeopleDetail extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                info.add(new String[]{"",""});
-                mPeopleInfoAdapter.notifyDataSetChanged();
+
+
+                DialogFactory.getRadioDialog(ChangePeopleDetail.this,R.style.Menu,PhoneDictionary.PhoneCallChoices,mHandler,104).show();
+
 
 //                mPeopleInfoAdapter.notifyDataSetChanged();
 //                mPeopleInfoAdapter = new PeopleInfoAdapter(this,R.layout.change_people_detail,info);

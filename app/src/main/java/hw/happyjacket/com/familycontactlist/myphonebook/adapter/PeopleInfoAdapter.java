@@ -31,6 +31,7 @@ public class PeopleInfoAdapter extends ArrayAdapter<String[] > {
 
     private int recourceID;
     private Handler mHandler;
+    private String TAG = this.getClass().toString();
 
     public PeopleInfoAdapter(Context context, int resource) {
         super(context, resource);
@@ -65,7 +66,6 @@ public class PeopleInfoAdapter extends ArrayAdapter<String[] > {
         viewHolder = new MyViewHolder();
         viewHolder.name = (Button) view.findViewById(R.id.people_info_name);
         viewHolder.content = (EditText) view.findViewById(R.id.people_info_content);
-        view.setTag(viewHolder);
         viewHolder.name.setText(phoneElement[0]);
         viewHolder.content.setText(phoneElement[1]);
         viewHolder.content.setHint(phoneElement[0]);
@@ -88,19 +88,14 @@ public class PeopleInfoAdapter extends ArrayAdapter<String[] > {
         viewHolder.name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                switch (position){
-                    case 0:
-                        DialogFactory.getRadioDialog(getContext(),R.style.Menu, PhoneDictionary.PhoneCallChoices,mHandler,position + 1).show();
-                        break;
-                    case 1:
-                        break;
-                    default:
-                        break;
-                }
+                DialogFactory.getRadioDialog(getContext(),R.style.Menu, PhoneDictionary.PhoneCallChoices,mHandler,position).show();
             }
         });
         return view;
     }
+
+
+
 
     class MyViewHolder{
         Button name;

@@ -29,35 +29,39 @@ public class PhoneLocationThread {
         PhoneLocationThread.flag = flag;
     }
 
-    public static void CheckLocation(Handler handler, final Vector<String> phoneNumberList,Context context){
+    public static void CheckLocation(Handler handler, final Vector<String> phoneNumberList, Context context){
         msg_for_location = handler.obtainMessage();
         msg_for_location.what = 1;
         final PhoneLocationMaster PLMaster = new PhoneLocationMaster(context);
         final Vector<HashMap<String, String> > locations = new Vector<>();
         int ACCESS_NETWORK_COUNT = 0;
         int count = 0;
-        for ( int y = 0 ; y < phoneNumberList.size() ; y++) {
+        for (int y = 0 ; y < phoneNumberList.size() ; y++) {
             if(!flag)
                 break;
+
             phoneNumberTmp = phoneNumberList.get(y);
-            phoneNumber = phoneNumberTmp.replace(" ","").replace("+86","").replace("+","");
+            phoneNumber = phoneNumberTmp.replace(" ", "").replace("+86","").replace("+","");
+
             String[] places = PLMaster.get(phoneNumber);
             if (places != null) {
-                HashMap<String,String> tmp = new HashMap<>();
+                HashMap<String, String> tmp = new HashMap<>();
                 if(places[1] != null && places[0].equals(places[1]))
-                    tmp.put(phoneNumberTmp,places[0]);
+                    tmp.put(phoneNumberTmp, places[0]);
                 else
                     tmp.put(phoneNumberTmp, places[0] + places[1]);
                 locations.add(tmp);
-                continue ;
+                continue;
             }
-            Log.i("che",count + "");
+
             String LocationURL = String.format("%s/WebServices/MobileCodeWS.asmx/getMobileCodeInfo?mobileCode=%s&userID=", HostURL, phoneNumber);
+            Log.i("No cached", count + ", " + phoneNumber + " " + LocationURL);
+
             HttpConnectionUtil.get(LocationURL, new HttpConnectionUtil.HttpCallbackListener() {
                 @Override
                 public void onFinish(String response) {
                     response = response.replaceAll("<[^>]+>", "");
-                    Log.d("hehe-response", phoneNumber + " " + response);
+                    Log.d("response", phoneNumber + " " + response);
                     int state = PhoneLocationDBHelper.CACHED;
 
                     // if there is no location for the querying phonenumber
@@ -67,7 +71,8 @@ public class PhoneLocationThread {
                     } else if (response.contains("http")) {
                         state = PhoneLocationDBHelper.ERROR;
                     }
-                    Log.i("locationm",response);
+
+                    Log.d("another response", response + ", eheh");
                     PLMaster.add(phoneNumber, response, state);
                     HashMap<String, String> tmp = new HashMap<>();
                     tmp.put(phoneNumberTmp, PLMaster.get(phoneNumber)[2]);
@@ -85,11 +90,12 @@ public class PhoneLocationThread {
                 continue;
             }
             // 每次限定最多从网络拿15个归属地，因为免费的api服务有限制，也没必要一下子拿太多
-            if (++ACCESS_NETWORK_COUNT > 15)
-            {
+            if (++ACCESS_NETWORK_COUNT > 3) {
                 break;
             }
         }
+
+        Log.d("good", locations.toString());
         msg_for_location.obj = locations;
         Message msg;
         if(handler.obtainMessage(msg_for_location.what, msg_for_location.obj) != null){
@@ -100,6 +106,7 @@ public class PhoneLocationThread {
         }
         else
             handler.sendMessage(msg_for_location);
+        flag = false;
     }
 
     public static void CheckLocation(Handler handler,final String phoneNumber,Context context) {

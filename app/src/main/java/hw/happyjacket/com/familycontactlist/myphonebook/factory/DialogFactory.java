@@ -13,6 +13,7 @@ import android.graphics.PorterDuffColorFilter;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -40,6 +41,8 @@ import java.util.List;
 import java.util.Vector;
 
 import hw.happyjacket.com.familycontactlist.ChangePeopleDetail;
+import hw.happyjacket.com.familycontactlist.CommonSettingsAndFuncs;
+import hw.happyjacket.com.familycontactlist.MainActivity;
 import hw.happyjacket.com.familycontactlist.R;
 import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
 import hw.happyjacket.com.familycontactlist.myphonebook.PhoneDial;
@@ -52,6 +55,7 @@ import hw.happyjacket.com.familycontactlist.myphonebook.option.ContentDialog;
 import hw.happyjacket.com.familycontactlist.myphonebook.option.ContentDialog2;
 import hw.happyjacket.com.familycontactlist.myphonebook.option.DefaultDialog;
 import hw.happyjacket.com.familycontactlist.myphonebook.option.MainDialog;
+import hw.happyjacket.com.familycontactlist.myphonebook.show.MainShow;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 
 /**
@@ -67,6 +71,8 @@ public class DialogFactory {
     private static int ImageP;
 
     private static int ImagePP;
+
+    private static String Number = "";
 
 
 
@@ -339,7 +345,7 @@ public class DialogFactory {
                 ImageP = imagePosition;
                 ImagePP = image[imagePosition];
                 Message message = handler.obtainMessage();
-                message.what = 0;
+                message.what = 100;
                 message.obj = ImagePicture;
                 handler.sendMessage(message);
             }
@@ -370,7 +376,7 @@ public class DialogFactory {
         return builder.create();
     }
 
-    public static PhoneDialog DiaWheel(Activity context,int style){
+    public static PhoneDialog DiaWheel(Activity context,int style, final MainShow mainShow){
 
         Vector<HashMap<String,Object>> imageItem = new Vector<>();
         final PhoneDialog phoneDialog = new DefaultDialog(context,style);
@@ -398,6 +404,7 @@ public class DialogFactory {
                 editText.setText(editText.getText() + PhoneDictionary.PhoneCallNumber[position]);
             }
         });
+
         retrive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -417,7 +424,7 @@ public class DialogFactory {
             public void onClick(View v) {
                 String t;
                 t = editText.getText().toString();
-                if(t.isEmpty())
+                if (t.isEmpty())
                     return;
                 editText.setText(t.substring(0, t.length() - 1));
             }
@@ -429,6 +436,29 @@ public class DialogFactory {
                 return true;
             }
         });
+
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String t = s.toString();
+                if(Number.equals(t))
+                    return;
+                Number = t;
+                Vector<Integer> pos = CommonSettingsAndFuncs.SearchThem(MainActivity.phoneElement, Number);
+                mainShow.notifyDataSetChanged(pos);
+            }
+        });
+        editText.setText(Number);
         phoneDialog.setContentView(view);
         phoneDialog.setCanceledOnTouchOutside(true);
         Window window = phoneDialog.getWindow();

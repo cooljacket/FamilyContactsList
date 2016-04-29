@@ -208,11 +208,53 @@ public class CommonSettingsAndFuncs {
         return PinyinHelper.convertToPinyinString(str, "");
     }
 
-    public static Vector<Integer> SearchThem(Vector<HashMap<String, String> > data, String pattern) {
+
+    private static int[] calNext(String pattern) {
+        if(pattern == null || pattern.equals(""))
+            return null;
+        int j = 0, k = -1, pLen = pattern.length();
+        int[] next = new int[pLen];
+        next[0] = -1;
+
+        while (j < pLen-1) {
+            if (k == -1 || pattern.charAt(k) == pattern.charAt(j))
+                next[++j] = ++k;
+            else
+                k = next[k];
+        }
+
+        return next;
+    }
+
+    public static boolean KMP_match(String text, String pattern) {
+        int[] next = calNext(pattern);
+        int i = 0, j = 0, pLen = pattern.length(), tLen = text.length();
+
+        while (j < pLen && i < tLen) {
+            if (j == -1 || text.charAt(i) == pattern.charAt(j)) {
+                ++i;
+                ++j;
+            }
+            else {
+                j = next[j];
+            }
+        }
+
+        return j == pLen;
+    }
+
+    public static boolean REGX_match(String text, String pattern) {
+        Pattern p = Pattern.compile(pattern);
+        Matcher matcher = p.matcher(text);
+        return matcher.find();
+    }
+
+    public static Vector<Integer> SearchThem(List<HashMap<String, String> > data, String pattern) {
         Vector<Integer> result = new Vector<>();
         for (int i = 0; i < data.size(); ++i) {
             String phoneNumber = data.get(i).get(PhoneDictionary.NUMBER);
-            if ()
+            if (KMP_match(phoneNumber, pattern))
+                result.add(i);
         }
         return result;
     }
