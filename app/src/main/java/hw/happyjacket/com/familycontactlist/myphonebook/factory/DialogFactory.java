@@ -13,7 +13,9 @@ import android.graphics.PorterDuffColorFilter;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
@@ -34,6 +36,7 @@ import android.widget.SimpleAdapter;
 import android.widget.ViewSwitcher;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 import hw.happyjacket.com.familycontactlist.ChangePeopleDetail;
@@ -56,6 +59,7 @@ import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
  */
 public class DialogFactory {
 
+
     private static int imagePosition = -1;
 
     private static Bitmap ImagePicture;
@@ -63,6 +67,8 @@ public class DialogFactory {
     private static int ImageP;
 
     private static int ImagePP;
+
+
 
 
     public static int getImagePosition() {
@@ -96,6 +102,7 @@ public class DialogFactory {
     public static void setImagePP(int imagePP) {
         ImagePP = imagePP;
     }
+
 
     public static PhoneDialog getPhoneDialog(Context context, int layout, int id,int style, final int index, String content[], int status){
         View viewForOption = LayoutInflater.from(context).inflate(layout,null);
@@ -146,6 +153,8 @@ public class DialogFactory {
         defaultDialog.setContentView(view);
         Button positive = (Button) view.findViewById(R.id.dialog_option_positive);
         Button negative = (Button) view.findViewById(R.id.dialog_option_negative);
+        Button other = (Button) view.findViewById(R.id.new_dialog_option);
+        other.setVisibility(View.INVISIBLE);
         positive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -167,9 +176,9 @@ public class DialogFactory {
         return defaultDialog;
     }
 
-    public static PhoneDialog getCheckBoxDialog(Context context, int style, String content[], final Handler handler){
+    public static PhoneDialog getCheckBoxDialog(final Activity context, int style, final List<String> content, String []  have,final Handler handler,final int index,final int change){
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_option,null);
-        final CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(context,R.layout.dialog_checkbox,content);
+        final CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(context,R.layout.dialog_checkbox,content,have);
         ListView listView = (ListView) view.findViewById(R.id.dialog_option_listview);
         listView.setAdapter(checkBoxAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -183,11 +192,34 @@ public class DialogFactory {
         defaultDialog.setContentView(view);
         Button positive = (Button) view.findViewById(R.id.dialog_option_positive);
         Button negative = (Button) view.findViewById(R.id.dialog_option_negative);
+        Button addNewOption = (Button) view.findViewById(R.id.new_dialog_option);
+        addNewOption.setText("新建群组");
+        final Handler sHandler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what){
+                    case 0:
+                        content.add((String) msg.obj);
+                        checkBoxAdapter.addCheck();
+                        checkBoxAdapter.notifyDataSetChanged();
+                        Message msg1 = handler.obtainMessage();
+                        msg1.what = change;
+                        msg1.obj = msg.obj;
+                        handler.sendMessage(msg1);
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
+
+
         positive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Message message = handler.obtainMessage();
-                message.what = PhoneDictionary.CHECKBOX_OPTION;
+                message.what = index;
                 message.obj = checkBoxAdapter.getIsChecked();
                 handler.sendMessage(message);
                 defaultDialog.dismiss();
@@ -200,8 +232,43 @@ public class DialogFactory {
                 defaultDialog.dismiss();
             }
         });
+
+
+        addNewOption.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InputDialog(context,"请输入组名",sHandler,0).show();
+            }
+        });
+
+
         return defaultDialog;
 
+    }
+
+    public static AlertDialog InputDialog(final Activity context,String title, final Handler handler, final int index){
+        final EditText editText = new EditText(context);
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(title);
+        builder.setIcon(android.R.drawable.ic_dialog_info);
+        builder.setView(editText);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Message msg = handler.obtainMessage();
+                msg.what = index;
+                msg.obj = editText.getText().toString();
+                handler.sendMessage(msg);
+                dialog.dismiss();
+            }
+        });
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        return builder.create();
     }
 
     public static AlertDialog WarningDialog(final Activity context,String positive, String warn){

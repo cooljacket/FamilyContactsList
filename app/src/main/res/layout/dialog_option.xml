@@ -12,10 +12,18 @@
 
     </ListView>
 
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/new_dialog_option"
+        android:layout_below="@id/dialog_option_listview"
+        />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/dialog_option_listview"
+        android:layout_below="@+id/new_dialog_option"
         android:orientation="horizontal">
 
         <Button

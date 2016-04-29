@@ -21,12 +21,14 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 import jpinyin.stuxuhai.github.com.PinyinHelper;
 
 /**
@@ -204,5 +206,14 @@ public class CommonSettingsAndFuncs {
     public static String convertToPinyin(Context context, String str) {
         PinyinHelper.getInstance(context);
         return PinyinHelper.convertToPinyinString(str, "");
+    }
+
+    public static Vector<Integer> SearchThem(Vector<HashMap<String, String> > data, String pattern) {
+        Vector<Integer> result = new Vector<>();
+        for (int i = 0; i < data.size(); ++i) {
+            String phoneNumber = data.get(i).get(PhoneDictionary.NUMBER);
+            if ()
+        }
+        return result;
     }
 }

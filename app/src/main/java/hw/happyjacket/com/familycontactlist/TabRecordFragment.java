@@ -11,6 +11,7 @@ import android.os.Message;
 import android.provider.CallLog;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 import hw.happyjacket.com.familycontactlist.extention.XiaoMiAccessory;
@@ -67,9 +69,11 @@ public class TabRecordFragment extends Fragment {
 
         if(mainShow == null) {
             init();
+            MainActivity.phoneElement = mainShow.getPhoneListElementList();
         }
         else {
             mainShow.refresh(new XiaoMiAccessory(), new String[]{PhoneDictionary.DATE});
+
         }
         super.onStart();
 
@@ -82,6 +86,10 @@ public class TabRecordFragment extends Fragment {
         mainShow.destroy();
         PhoneRegister.unRegister(mainShow.getIndex());
         super.onDestroy();
+    }
+
+    public List<HashMap<String,String>> phoneElements(){
+        return mainShow.getPhoneListElementList();
     }
 
     public void init()

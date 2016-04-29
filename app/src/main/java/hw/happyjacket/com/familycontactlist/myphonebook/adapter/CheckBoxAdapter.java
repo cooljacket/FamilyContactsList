@@ -1,6 +1,7 @@
 package hw.happyjacket.com.familycontactlist.myphonebook.adapter;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import java.util.List;
 import java.util.Vector;
 
 import hw.happyjacket.com.familycontactlist.R;
@@ -42,6 +44,37 @@ public class CheckBoxAdapter extends ArrayAdapter<String> {
     }
 
 
+
+    public CheckBoxAdapter(Context context, int resource, List<String> objects) {
+        super(context, resource, objects);
+        recourceID = resource;
+        check = new Vector<Boolean>(objects.size());
+        for (int i = 0 ; i < objects.size() ; ++i)
+            check.add(false);
+    }
+
+    public CheckBoxAdapter(Context context, int resource, List<String> objects,@Nullable String [] have) {
+        super(context, resource, objects);
+        recourceID = resource;
+        check = new Vector<Boolean>(objects.size());
+        if(have != null){
+
+            for (int i = 0 ,count = 0 ; i < objects.size() ; ++i){
+                if(count >= have.length || !have[count].equals(objects.get(i))) {
+                    check.add(false);
+                    continue;
+                }
+                check.add(true);
+                count++;
+            }
+        }
+        else {
+            for (int i = 0; i < objects.size(); ++i)
+                check.add(false);
+        }
+    }
+
+
     public Vector<Boolean> getIsChecked() {
         return check;
     }
@@ -51,6 +84,10 @@ public class CheckBoxAdapter extends ArrayAdapter<String> {
             return;
         check.set(position,!check.get(position));
 
+    }
+
+    public void addCheck(){
+        check.add(false);
     }
 
     @Override

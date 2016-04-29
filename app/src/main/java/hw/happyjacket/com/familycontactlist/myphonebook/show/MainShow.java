@@ -175,6 +175,7 @@ public class MainShow extends PhoneShow {
                     Vector<HashMap<String, String> > t = (Vector<HashMap<String, String> >) msg.obj;
                     for(HashMap<String,String> i : t){
                         for(Map.Entry<String,String> j : i.entrySet()) {
+                            Log.i(TAG,j.getKey() + " " + nmapp.get(j.getKey()));
                             int indexs = nmapp.get(j.getKey());
                             if("".equals(j.getValue()) || j.getValue() == null ){
                                 mPhoneListElementList.get(indexs).put(PhoneDictionary.LOCATION,  "");

@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private TabSettingFragment mSettingTab;
     private List<Fragment> mTabs;
     private FragmentPagerAdapter mPagerAdapter;
+    public static List<HashMap<String,String>> phoneElement;
     private static final int FILE_SELECT_CODE = 0;
 
     @Override
@@ -53,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
         CommonSettingsAndFuncs.FileHeader = getExternalFilesDir(null) + File.separator;
 //        InitTabSizes();
         InitFragments();
+
 
 
         mPager = (ViewPager) findViewById(R.id.pager);
@@ -251,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
         // 处理动作按钮的点击事件
         switch (item.getItemId()) {
             case R.id.action_search:
-                // do search...
+
                 Toast.makeText(MainActivity.this, CommonSettingsAndFuncs.convertToPinyin(MainActivity.this, "郭庆潼"), Toast.LENGTH_LONG).show();
                 return true;
             case R.id.action_export:

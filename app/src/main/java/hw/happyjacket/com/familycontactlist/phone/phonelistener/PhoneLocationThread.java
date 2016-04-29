@@ -20,7 +20,7 @@ public class PhoneLocationThread {
     private static boolean errorOfGetingLocation = false;
     private static boolean flag = true;
     private static Message msg_for_location ;
-    private static String phoneNumber;
+    private static String phoneNumber,phoneNumberTmp;
     private static String result;
     final static String HostURL = "http://webservice.webxml.com.cn";
 
@@ -29,7 +29,7 @@ public class PhoneLocationThread {
         PhoneLocationThread.flag = flag;
     }
 
-    public static void CheckLocation(Handler handler,Vector<String> phoneNumberList,Context context){
+    public static void CheckLocation(Handler handler, final Vector<String> phoneNumberList,Context context){
         msg_for_location = handler.obtainMessage();
         msg_for_location.what = 1;
         final PhoneLocationMaster PLMaster = new PhoneLocationMaster(context);
@@ -39,14 +39,15 @@ public class PhoneLocationThread {
         for ( int y = 0 ; y < phoneNumberList.size() ; y++) {
             if(!flag)
                 break;
-            phoneNumber = phoneNumberList.get(y).replace(" ","").replace("+86","").replace("+","");
+            phoneNumberTmp = phoneNumberList.get(y);
+            phoneNumber = phoneNumberTmp.replace(" ","").replace("+86","").replace("+","");
             String[] places = PLMaster.get(phoneNumber);
             if (places != null) {
                 HashMap<String,String> tmp = new HashMap<>();
                 if(places[1] != null && places[0].equals(places[1]))
-                    tmp.put(phoneNumber,places[0]);
+                    tmp.put(phoneNumberTmp,places[0]);
                 else
-                    tmp.put(phoneNumber, places[0] + places[1]);
+                    tmp.put(phoneNumberTmp, places[0] + places[1]);
                 locations.add(tmp);
                 continue ;
             }
@@ -69,7 +70,7 @@ public class PhoneLocationThread {
                     Log.i("locationm",response);
                     PLMaster.add(phoneNumber, response, state);
                     HashMap<String, String> tmp = new HashMap<>();
-                    tmp.put(phoneNumber, PLMaster.get(phoneNumber)[2]);
+                    tmp.put(phoneNumberTmp, PLMaster.get(phoneNumber)[2]);
                     locations.add(tmp);
                 }
 

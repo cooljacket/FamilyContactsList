@@ -15,17 +15,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:layout_centerVertical="true"
             android:layout_alignParentLeft="true"
-            android:textColor="#000000"
-            android:background="#00000000"
             android:textSize="17dp"
+            android:background="@drawable/button_selector"
             android:id="@+id/people_info_name"
-            android:drawableRight="@drawable/button_down"
-
             >
         </Button>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

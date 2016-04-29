@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Vector;
 
+import hw.happyjacket.com.familycontactlist.BlackListMaster;
 import hw.happyjacket.com.familycontactlist.CommonSettingsAndFuncs;
 import hw.happyjacket.com.familycontactlist.HttpConnectionUtil;
 import hw.happyjacket.com.familycontactlist.PhoneLocationMaster;
@@ -65,11 +66,6 @@ public class ContactShow extends PhoneShow {
     }
 
 
-
-
-
-
-
     public String getDefaultNumber() {
         return defaultNumber;
     }
@@ -92,11 +88,24 @@ public class ContactShow extends PhoneShow {
         return number;
     }
 
+    public boolean isInBlackList() {
+        return inBlackList;
+    }
+
+    public void setInBlackList(boolean inBlackList) {
+        this.inBlackList = inBlackList;
+    }
+
     public void setNumber(String number) {
         this.number = number;
     }
 
     public void notifyDataSetChanged(){
+        if(inBlackList)
+            defaultList[2] = BlackOption[1];
+        else
+            defaultList[2] = BlackOption[0];
+        mPhoneListElementList.get(3).put(PhoneDictionary.DATE,defaultList[2]);
         sPhoneAdapter.notifyDataSetChanged();
     }
 
@@ -142,7 +151,7 @@ public class ContactShow extends PhoneShow {
         phoneList.connectDataBase();
         number = phoneList.getPhoneList().get(0).get("mobilephone");
         number = number.replace(" ", "").replace("+86", "").replace("+", "");
-        inBlackList = Operation.isBlackList(number);
+        inBlackList = new BlackListMaster(context).isInBlackList(number);
         mPhoneListElementList = getDefaultData();
         sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index);
         mThread = new Thread(new Runnable() {

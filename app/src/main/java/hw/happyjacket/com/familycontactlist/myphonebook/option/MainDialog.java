@@ -6,6 +6,7 @@ import android.widget.AdapterView;
 
 import java.util.HashMap;
 
+import hw.happyjacket.com.familycontactlist.BlackListMaster;
 import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
 import hw.happyjacket.com.familycontactlist.myphonebook.factory.PhoneDialog;
 import hw.happyjacket.com.familycontactlist.myphonebook.show.PhoneRegister;
@@ -43,9 +44,9 @@ public class MainDialog extends PhoneDialog {
                 Operation.delete(true,data.get(PhoneDictionary.ID),data.get(PhoneDictionary.NUMBER));
                 break;
             case 2:
-                Operation.addBlackList(data.get(PhoneDictionary.NUMBER));
+                new BlackListMaster(getContext()).add(data.get(PhoneDictionary.NUMBER));
             case 3:
-                Operation.deleteBlackList(data.get(PhoneDictionary.NUMBER));
+                new BlackListMaster(getContext()).delete(data.get(PhoneDictionary.NUMBER));
             default:
                 break;
         }

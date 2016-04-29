@@ -55,33 +55,13 @@ public class ContactActivity extends AppCompatActivity{
     private HashMap<String,Object> data;
     private int uid;
     private Bitmap picture;
-
-
-
-
-
-
     private android.support.v7.widget.Toolbar mToolbar;
-    String contactHome= new String();
-    String contactWork= new String();
-    String contactRemark= new String();
-    String contactEmail= new String();
-    String contactPhone = new String();
 
 
     @Override
     public void onCreate(Bundle bundle){
         super.onCreate(bundle);
         setContentView(R.layout.contact_main);
-        /*returns = (TextView) findViewById(R.id.button_return);
-        returns.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });*/
-
-
         ContactListView = (ScrollListView) findViewById(R.id.contact_number_and_detail);
         head = (CollapsingToolbarLayout) findViewById(R.id.contact_toolbar_layout);
         final Intent intent = getIntent();
@@ -129,7 +109,13 @@ public class ContactActivity extends AppCompatActivity{
                         startActivityForResult(intent1, PhoneDictionary.CONTACT_REQUEST_CODE);
                         break;
                     case 3:
-                        new BlackListMaster(ContactActivity.this).add(mContactShow.getNumber());
+                        BlackListMaster blackListMaster = new BlackListMaster(ContactActivity.this);
+                        if(mContactShow.isInBlackList())
+                            blackListMaster.delete(mContactShow.getNumber());
+                        else
+                            blackListMaster.add(mContactShow.getNumber());
+                        mContactShow.setInBlackList(!mContactShow.isInBlackList());
+                        mContactShow.notifyDataSetChanged();
                         break;
                     case 4:
                         new BlackListMaster(ContactActivity.this).delete(mContactShow.getNumber());
@@ -187,13 +173,6 @@ public class ContactActivity extends AppCompatActivity{
                         data.put(i.getKey(),tmp);
                     }
                 }
-
-//                imagePic = (int) map.get("contactPhoto");
-//                isfamily=(boolean)map.get("contactFamily");
-
-//                flag=true;
-/*                showDetail();*/
-
                 break;
 
             default:

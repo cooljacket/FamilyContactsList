@@ -43,11 +43,11 @@
         android:background="@drawable/diawheel_call_selector"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/dia_wheel_table"
-        android:layout_marginTop="1dp"
+        android:layout_marginBottom="2dp"
         android:id="@+id/dia_wheel_call"/>
 
     <Button
-        android:layout_width="28dp"
+        android:layout_width="30dp"
         android:layout_height="20dp"
         android:background="@drawable/backspace"
         android:layout_gravity="right"
