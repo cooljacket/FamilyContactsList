@@ -22,6 +22,7 @@ import android.widget.ListView;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Vector;
 
@@ -90,9 +91,15 @@ public class TabContactsFragment extends Fragment {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                 positionNew = position;
-                                HashMap map = (HashMap) parent.getItemAtPosition(position);
+                                HashMap<String, Object> map = AL.get(position);
                                 // 当requestCode为3的时候表示请求转向CPD这个页面？？
                                 ContactActivity.actionStart(getActivity(), map);
+                            }
+                        });
+                        listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                            @Override
+                            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                                return true;
                             }
                         });
                     }
@@ -194,11 +201,11 @@ public class TabContactsFragment extends Fragment {
         // 使用插入排序，虽然时间复杂度在列表无序时是O(n^2)
         // 但是有利于修改名字时将新的名字插入到已经有序的列表中，时间复杂度为O(n)
         for (int i = 1; i < AL.size(); ++i) {
-            HashMap copy = (HashMap) AL.get(i);
+            HashMap<String,Object> copy =  AL.get(i);
             String now = (String) copy.get("contactSortname");
             int cut_in = i;
             while (--cut_in >= 0) {
-                String pre = (String) ((HashMap)AL.get(cut_in)).get("contactSortname");
+                String pre = (String) (AL.get(cut_in)).get("contactSortname");
                 if (now.compareToIgnoreCase(pre) >= 0)
                     break;
                 AL.setElementAt(AL.get(cut_in), cut_in+1);
@@ -245,9 +252,6 @@ public class TabContactsFragment extends Fragment {
 
         ContentResolver resolver1 = mContext.getContentResolver();
         // 获取手机联系人
-
-
-
         SharedPreferences pref = mContext.getSharedPreferences(SHARE_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor  = pref.edit();
         int first = pref.getInt(The_First_Time, -1);
@@ -265,14 +269,15 @@ public class TabContactsFragment extends Fragment {
 
                     Cursor cursor;
                     String contactSortname = CommonSettingsAndFuncs.convertToPinyin(mContext, contactName);
-                    cursor = db.query("user", null, "cid=" + contactID, null, null, null, null);
+                    cursor = db.query("user", null, "cid = " + contactID, null, null, null, null);
                     if (!cursor.moveToFirst()) {
                         User user = new User();
                         user.cid = contactid;
                         user.name = contactName;
                         user.sortname = contactSortname;
                         user.mobilephone = contactPhone;
-                        user.groupname = "NO";
+                        user.groupname = "无";
+                        user.nickname = "";
                         Random random = new Random();
                         user.photo = random.nextInt(31);
                         dbHelper.insertAUser(user);
@@ -290,9 +295,7 @@ public class TabContactsFragment extends Fragment {
             if(cursor.moveToFirst()) {
                 do {
                     int contact_id = cursor.getInt(1);
-
                     int photo_id = cursor.getInt(5);
-
                     //familyname
                     String contactName = cursor.getString(2);
                     //group
@@ -300,7 +303,6 @@ public class TabContactsFragment extends Fragment {
                     HashMap map = new HashMap();
                     map.put("contactName", contactName);
                     map.put("photo", photo_id);
-//                map.put("contactPhone",phoneNumber);
                     map.put("contactSortname", contactSortname);
                     map.put("contactID", contact_id);
                     map.put("UserID", cursor.getInt(0));

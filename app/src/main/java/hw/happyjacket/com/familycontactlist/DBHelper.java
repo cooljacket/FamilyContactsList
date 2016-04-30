@@ -60,12 +60,12 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put("photo", user.photo);
         values.put("groupname", user.groupname);
         values.put("info", user.info);
-
+        values.put("nickname",user.nickname);
         return values;
     }
 
     public boolean isInList(String phoneNumber) {
-        Cursor cursor = db.query(DB_TABLENAME, null, "mobilephone=?", new String[]{phoneNumber}, null, null, null, null);
+        Cursor cursor = db.query(DB_TABLENAME, null, "mobilephone = ?", new String[]{phoneNumber}, null, null, null, null);
         if (cursor == null)
             return false;
         boolean result = cursor.moveToFirst();
@@ -162,8 +162,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 .append("sortname text ,")//3
                 .append("mobilephone text default '0',")//4
                 .append("photo integer,")//头像编号5
-                .append("groupname text default 'NO',")//群组，默认no6
-                .append("info text);");//7
+                .append("groupname text default '无',")//群组，默认no6
+                .append("info text,")//7
+                .append("nickname text);");//8
         db.execSQL(tableCreate.toString());
 
         StringBuffer tableCreate2 = new StringBuffer();

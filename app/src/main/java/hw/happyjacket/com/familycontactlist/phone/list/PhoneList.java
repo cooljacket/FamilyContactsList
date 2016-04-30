@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.provider.CallLog;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import hw.happyjacket.com.familycontactlist.phone.database.DataBase;
@@ -193,6 +194,18 @@ public abstract class PhoneList {
         }
     }
 
+    public void connectContentResolver(Uri uri,@Nullable String [] projection,@Nullable String selection,@Nullable String [] argument,@Nullable String orderby){
+        try {
+            if(this.cursor != null)
+                this.cursor.close();
+            this.cursor = contentResolver.query(uri,projection,selection,argument,orderby);
+        }
+        catch (SecurityException e)
+        {
+            Log.i(TAG,"Read permission denied");
+        }
+    }
+
 
     public void connectDataBase()
     {
@@ -205,6 +218,20 @@ public abstract class PhoneList {
         }
         catch (SecurityException e) {
             Log.i(TAG,"DataBase permission denied");
+        }
+    }
+
+    public void connectDataBase(String table,@Nullable String [] projection,@Nullable String selection,@Nullable String [] argument,@Nullable String orderby){
+        DataBase dataBase = new DataBase(context,db,null,version);
+        SQLiteDatabase sqLiteDatabase = dataBase.getReadableDatabase();
+        try {
+            if(this.cursor != null)
+                this.cursor.close();
+            this.cursor = sqLiteDatabase.query(table,projection,selection,argument,null,null,orderby,null);
+        }
+        catch (SecurityException e)
+        {
+            Log.i(TAG,"Read permission denied");
         }
     }
 
@@ -226,7 +253,6 @@ public abstract class PhoneList {
                 result.add(pair);
             } while (cursor.moveToNext());
         }
-     /*   Log.i(TAG,result.toString());*/
         return result;
     }
 

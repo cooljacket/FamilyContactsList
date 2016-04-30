@@ -226,7 +226,7 @@ public class CommonSettingsAndFuncs {
         return next;
     }
 
-    public static boolean KMP_match(String text, String pattern) {
+    public static int KMP_match(String text, String pattern) {
         int[] next = calNext(pattern);
         int i = 0, j = 0, pLen = pattern.length(), tLen = text.length();
 
@@ -240,7 +240,7 @@ public class CommonSettingsAndFuncs {
             }
         }
 
-        return j == pLen;
+        return j == pLen ? i : -1;
     }
 
     public static boolean REGX_match(String text, String pattern) {
@@ -251,10 +251,26 @@ public class CommonSettingsAndFuncs {
 
     public static Vector<Integer> SearchThem(List<HashMap<String, String> > data, String pattern) {
         Vector<Integer> result = new Vector<>();
+        Vector<Integer> sorts = new Vector<>();
+        int t;
+        boolean pass;
         for (int i = 0; i < data.size(); ++i) {
             String phoneNumber = data.get(i).get(PhoneDictionary.NUMBER);
-            if (KMP_match(phoneNumber, pattern))
-                result.add(i);
+            if ((t = KMP_match(phoneNumber, pattern))!=-1) {
+                pass = false;
+                for(int j = 0 ; j < sorts.size(); ++j) {
+                   if(t < sorts.get(j)){
+                       result.insertElementAt(i,j);
+                       sorts.insertElementAt(t,j);
+                       pass = true;
+                       break;
+                   }
+                }
+                if(!pass) {
+                    result.add(i);
+                    sorts.add(t);
+                }
+            }
         }
         return result;
     }

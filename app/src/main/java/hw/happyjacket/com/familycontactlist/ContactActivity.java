@@ -71,7 +71,6 @@ public class ContactActivity extends AppCompatActivity{
     }
 
     private void showDetail(){
-//        getOtherDetail();
         name = (String)data.get("contactName");
         contactID = (int)data.get("contactID");
         mToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.contact_toolbar);
@@ -85,8 +84,6 @@ public class ContactActivity extends AppCompatActivity{
         });
 
         head.setTitle(name);
-
-        DBHelper dbHelper = new DBHelper(this);
         uid = (int) data.get("UserID");
 
         mContactShow = new ContactShow(this,R.layout.call_log_list);

@@ -6,6 +6,7 @@ import android.util.Log;
 import hw.happyjacket.com.familycontactlist.extention.Accessory;
 import hw.happyjacket.com.familycontactlist.extention.Decorate;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.PhoneAdapter;
+import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 import hw.happyjacket.com.familycontactlist.phone.list.PhoneList;
 import hw.happyjacket.com.familycontactlist.phone.list.RecordList;
 import hw.happyjacket.com.familycontactlist.phone.phonelistener.PhoneLocationThread;
@@ -98,9 +99,13 @@ public abstract class PhoneShow {
 
 
     public void refresh(Accessory accerssory,String pro[]){
+        Integer t;
         for(int i = 0 ; i < mPhoneListElementList.size() ; i++){
             for (int j = 0; j < pro.length; j++) {
-             mPhoneListElementList.get(i).put(pro[j], accerssory.decorate(pro[j], mPhoneListElementList_backup.get(i).get(pro[j])));
+                if(nmapp != null && ((t = nmapp.get(mPhoneListElementList.get(i).get(PhoneDictionary.NUMBER))) != null))
+                    mPhoneListElementList.get(i).put(pro[j], accerssory.decorate(pro[j], mPhoneListElementList_backup.get(t).get(pro[j])));
+                else
+                    mPhoneListElementList.get(i).put(pro[j], accerssory.decorate(pro[j], mPhoneListElementList_backup.get(j).get(pro[j])));
             }
         }
         sPhoneAdapter.notifyDataSetChanged();

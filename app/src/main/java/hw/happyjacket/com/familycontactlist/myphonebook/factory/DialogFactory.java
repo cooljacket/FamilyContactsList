@@ -50,6 +50,7 @@ import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.CheckBoxAdapter;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.ImageAdapter;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.RadioAdapter;
+import hw.happyjacket.com.familycontactlist.myphonebook.listview.ScrollListView;
 import hw.happyjacket.com.familycontactlist.myphonebook.option.CallLogDialog;
 import hw.happyjacket.com.familycontactlist.myphonebook.option.ContentDialog;
 import hw.happyjacket.com.familycontactlist.myphonebook.option.ContentDialog2;
@@ -74,8 +75,13 @@ public class DialogFactory {
 
     private static String Number = "";
 
+    public static String getNumber() {
+        return Number;
+    }
 
-
+    public static void setNumber(String number) {
+        Number = number;
+    }
 
     public static int getImagePosition() {
         return imagePosition;
@@ -146,7 +152,7 @@ public class DialogFactory {
 
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_option,null);
         final RadioAdapter radioAdapter = new RadioAdapter(context,R.layout.dialog_radio,content);
-        ListView listView = (ListView) view.findViewById(R.id.dialog_option_listview);
+        ScrollListView listView = (ScrollListView) view.findViewById(R.id.dialog_option_listview);
         listView.setAdapter(radioAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -185,7 +191,7 @@ public class DialogFactory {
     public static PhoneDialog getCheckBoxDialog(final Activity context, int style, final List<String> content, String []  have,final Handler handler,final int index,final int change){
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_option,null);
         final CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(context,R.layout.dialog_checkbox,content,have);
-        ListView listView = (ListView) view.findViewById(R.id.dialog_option_listview);
+        ScrollListView listView = (ScrollListView) view.findViewById(R.id.dialog_option_listview);
         listView.setAdapter(checkBoxAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

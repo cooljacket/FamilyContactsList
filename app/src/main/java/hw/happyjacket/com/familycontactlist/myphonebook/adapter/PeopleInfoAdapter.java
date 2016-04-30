@@ -88,7 +88,8 @@ public class PeopleInfoAdapter extends ArrayAdapter<String[] > {
         viewHolder.name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFactory.getRadioDialog(getContext(),R.style.Menu, PhoneDictionary.PhoneCallChoices,mHandler,position).show();
+                if(position > 0)
+                    DialogFactory.getRadioDialog(getContext(),R.style.Menu, PhoneDictionary.PhoneCallChoices,mHandler,position).show();
             }
         });
         return view;

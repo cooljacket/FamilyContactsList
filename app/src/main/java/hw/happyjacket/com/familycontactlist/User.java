@@ -12,4 +12,5 @@ public class User {
     public int photo ;
     public String groupname ;
     public String info;
+    public String nickname;
 }
