@@ -283,12 +283,23 @@ public class DialogFactory {
         return builder.create();
     }
 
-    public static AlertDialog WarningDialog(final Activity context,String positive, String warn){
+
+
+    public static AlertDialog WarningDialog(final Activity context, String warn){
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//        builder.setMessage(msg);
         builder.setTitle(warn);
-        builder.setPositiveButton(positive, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+
                 dialog.dismiss();
             }
         });

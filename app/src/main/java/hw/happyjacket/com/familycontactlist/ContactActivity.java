@@ -1,10 +1,13 @@
 package hw.happyjacket.com.familycontactlist;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -114,8 +117,44 @@ public class ContactActivity extends AppCompatActivity{
                         mContactShow.setInBlackList(!mContactShow.isInBlackList());
                         mContactShow.notifyDataSetChanged();
                         break;
-                    case 4:
-                        new BlackListMaster(ContactActivity.this).delete(mContactShow.getNumber());
+                    case 4://删除联系人
+//                        new BlackListMaster(ContactActivity.this).delete(mContactShow.getNumber());
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ContactActivity.this);
+//        builder.setMessage(msg);
+                        builder.setTitle("是否删除联系人 "+name);
+                        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //dialog.dismiss();
+                            }
+                        });
+                        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                int Userid = (int) data.get("UserID");
+                                DBHelper helper =new DBHelper(ContactActivity.this.getApplicationContext());
+                                User user =new User();
+                                user.uid=Userid;
+                                helper.deleteUser(user);//数据库里删除
+
+                                Intent datas = new Intent();
+                                HashMap<String,Object> newdata = new HashMap<String,Object>();
+                                newdata.put("delete",1);
+                                newdata.put("contactName", "321");
+                                newdata.put("contactPhoto", picture);
+                                newdata.put("contactSortname", data.get("contactSortname"));
+                                newdata.put(PhoneDictionary.Photo,data.get(PhoneDictionary.Photo));
+                                datas.putExtra(PhoneDictionary.OTHER, newdata);
+                                setResult(PhoneDictionary.CONTAT_ACTION_START, datas);//不管有没修改都要更新数据
+
+                                Toast.makeText(ContactActivity.this,"remove "+10, Toast.LENGTH_SHORT).show();
+                                finish();
+
+                            }
+                        });
+                        AlertDialog ad = builder.create();
+                        ad.show();
+
                         break;
                     case 5:
                         break;
@@ -132,7 +171,8 @@ public class ContactActivity extends AppCompatActivity{
         Intent datas = new Intent();
 //        this.data = getChanged();
         HashMap<String,Object> newdata = new HashMap<String,Object>();
-        newdata.put("contactName", name);
+        newdata.put("delete",0);
+        newdata.put("contactName", "123");
         newdata.put("contactPhoto", picture);
         newdata.put("contactSortname", this.data.get("contactSortname"));
         newdata.put(PhoneDictionary.Photo,data.get(PhoneDictionary.Photo));

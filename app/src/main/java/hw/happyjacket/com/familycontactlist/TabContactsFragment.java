@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -134,11 +135,20 @@ public class TabContactsFragment extends Fragment {
 
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {//useless
         switch (requestCode){
             case PhoneDictionary.CONTAT_ACTION_START:
+                Toast.makeText(this.getContext(),"debug "+10, Toast.LENGTH_SHORT).show();
+                Log.d("ddd","debug");
                 HashMap newmap = (HashMap)data.getSerializableExtra("newdata");
-                AL.set(positionNew, newmap);
+                newmap.put(NAME,"aaaaaaaa");
+                int deleted = (int)newmap.get("delete");
+                Toast.makeText(this.getContext(),"debug d "+deleted, Toast.LENGTH_SHORT).show();
+                if(deleted==1){
+                    AL.removeElementAt(positionNew);
+                }else{
+                    AL.set(positionNew, newmap);
+                }
                 adapter.notifyDataSetChanged();
                 break;
             default:
@@ -159,11 +169,13 @@ public class TabContactsFragment extends Fragment {
                 db = dbHelper.openDatabase();
                 getCircles();
                 AL = getPhoneContacts();
+                Log.d("ddd","liebiao");
                 sortList();
                 dbHelper.close();
                 loadList();
             }
         }).start();
+
     }
 
     @Override
@@ -212,6 +224,7 @@ public class TabContactsFragment extends Fragment {
             }
             AL.setElementAt(copy, cut_in+1);
         }
+        Log.d("ddd","sort");
     }
 
 

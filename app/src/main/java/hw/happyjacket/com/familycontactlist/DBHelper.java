@@ -107,7 +107,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void deleteUser(User user){
-        ContentValues values = new ContentValues();
+//        ContentValues values = new ContentValues();
         int uid = user.uid;
         db.delete("user", "uid = " + uid, null);
     }
