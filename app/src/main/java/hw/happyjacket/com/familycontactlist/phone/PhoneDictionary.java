@@ -52,6 +52,7 @@ public class PhoneDictionary {
     public static final int RESULT_REQUEST_CODE = 2;
     public static final int CONTACT_REQUEST_CODE  = 1;
     public static final int CONTAT_ACTION_START = 2;
+    public static final int CONTACT_DELETE  = 3;
 
 
 

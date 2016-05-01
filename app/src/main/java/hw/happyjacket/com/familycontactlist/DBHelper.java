@@ -73,6 +73,11 @@ public class DBHelper extends SQLiteOpenHelper {
         return result;
     }
 
+
+    public Cursor getUser(String [] projection,String selection, String[] argument,String orderby){
+        return db.query(DB_TABLENAME,projection,selection,argument,null,null,null,null);
+    }
+
     public User insertFromStrings(String[] data) {
         if (isInList(data[2])) {
             return null;

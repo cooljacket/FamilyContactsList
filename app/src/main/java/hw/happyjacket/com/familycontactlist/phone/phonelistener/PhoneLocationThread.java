@@ -23,19 +23,21 @@ public class PhoneLocationThread {
     private static String phoneNumber,phoneNumberTmp;
     private static String result;
     final static String HostURL = "http://webservice.webxml.com.cn";
+    private static int what = 0;
 
     //set the flag to ensure that the thread will close if the main thread has closed
     public static void setFlag(boolean flag) {
         PhoneLocationThread.flag = flag;
     }
 
-    public static void CheckLocation(Handler handler, final Vector<String> phoneNumberList, Context context){
+    public static void CheckLocation(final Handler handler, final Vector<String> phoneNumberList, Context context){
         msg_for_location = handler.obtainMessage();
         msg_for_location.what = 1;
         final PhoneLocationMaster PLMaster = new PhoneLocationMaster(context);
         final Vector<HashMap<String, String> > locations = new Vector<>();
         int ACCESS_NETWORK_COUNT = 0;
         int count = 0;
+
         for (int y = 0 ; y < phoneNumberList.size() ; y++) {
             if(!flag)
                 break;
@@ -50,18 +52,22 @@ public class PhoneLocationThread {
                     tmp.put(phoneNumberTmp, places[0]);
                 else
                     tmp.put(phoneNumberTmp, places[0] + places[1]);
-                locations.add(tmp);
+//                locations.add(tmp);
+                Message msg = new Message();
+                msg.what = ++what;
+                msg.obj = tmp;
+                handler.sendMessage(msg);
                 continue;
             }
 
             String LocationURL = String.format("%s/WebServices/MobileCodeWS.asmx/getMobileCodeInfo?mobileCode=%s&userID=", HostURL, phoneNumber);
             Log.i("No cached", count + ", " + phoneNumber + " " + LocationURL);
 
-            HttpConnectionUtil.get(LocationURL, new HttpConnectionUtil.HttpCallbackListener() {
+            HttpConnectionUtil.get(LocationURL, new String[]{phoneNumberTmp}, new HttpConnectionUtil.HttpCallbackListener() {
                 @Override
-                public void onFinish(String response) {
+                public void onFinish(String response, String number) {
                     response = response.replaceAll("<[^>]+>", "");
-                    Log.d("response", phoneNumber + " " + response);
+                    Log.d("response", number + " " + response);
                     int state = PhoneLocationDBHelper.CACHED;
 
                     // if there is no location for the querying phonenumber
@@ -73,10 +79,18 @@ public class PhoneLocationThread {
                     }
 
                     Log.d("another response", response + ", eheh");
-                    PLMaster.add(phoneNumber, response, state);
+                    PLMaster.add(number, response, state);
                     HashMap<String, String> tmp = new HashMap<>();
-                    tmp.put(phoneNumberTmp, PLMaster.get(phoneNumber)[2]);
-                    locations.add(tmp);
+                    String[] places = PLMaster.get(number);
+                    if(places[1] != null && places[0].equals(places[1]))
+                        tmp.put(number, places[0]);
+                    else
+                        tmp.put(number, places[0] + places[1]);
+                    //locations.add(tmp);
+                    Message msg = new Message();
+                    msg.what = ++what;
+                    msg.obj = tmp;
+                    handler.sendMessage(msg);
                 }
 
                 @Override
@@ -95,21 +109,21 @@ public class PhoneLocationThread {
             }
         }
 
-        Log.d("good", locations.toString());
-        msg_for_location.obj = locations;
-        Message msg;
-        if(handler.obtainMessage(msg_for_location.what, msg_for_location.obj) != null){
-             msg = new Message();
-             msg.what = msg_for_location.what;
-             msg.obj= msg_for_location.obj;
-             handler.sendMessage(msg);
-        }
-        else
-            handler.sendMessage(msg_for_location);
+//        Log.d("good", locations.toString());
+//        msg_for_location.obj = locations;
+//        Message msg;
+//        if(handler.obtainMessage(msg_for_location.what, msg_for_location.obj) != null){
+//             msg = new Message();
+//             msg.what = msg_for_location.what;
+//             msg.obj= msg_for_location.obj;
+//             handler.sendMessage(msg);
+//        }
+//        else
+//            handler.sendMessage(msg_for_location);
         flag = false;
     }
 
-    public static void CheckLocation(Handler handler,final String phoneNumber,Context context) {
+    public static void CheckLocation(final Handler handler, final String phoneNumber,Context context) {
         errorOfGetingLocation = false;
         msg_for_location = handler.obtainMessage();
         msg_for_location.what = 0;
@@ -126,9 +140,9 @@ public class PhoneLocationThread {
         }
 
         String LocationURL = String.format("%s/WebServices/MobileCodeWS.asmx/getMobileCodeInfo?mobileCode=%s&userID=", HostURL, phoneNumber);
-        HttpConnectionUtil.get(LocationURL, new HttpConnectionUtil.HttpCallbackListener() {
+        HttpConnectionUtil.get(LocationURL, new String[]{phoneNumber}, new HttpConnectionUtil.HttpCallbackListener() {
             @Override
-            public void onFinish(String response) {
+            public void onFinish(String response, String number) {
                 response = response.replaceAll("<[^>]+>", "");
                 int state = PhoneLocationDBHelper.CACHED;
                 if (response.contains("手机号码错误") || response.contains("没有此号码记录")) {
@@ -137,8 +151,10 @@ public class PhoneLocationThread {
                 } else if (response.contains("http")) {
                     state = PhoneLocationDBHelper.ERROR;
                 }
-                PLMaster.add(phoneNumber, response, state);
-                result = PLMaster.get(phoneNumber)[1];
+                PLMaster.add(number, response, state);
+                result = PLMaster.get(number)[1];
+                msg_for_location.obj = result;
+                handler.sendMessage(msg_for_location);
             }
 
             @Override

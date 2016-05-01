@@ -130,6 +130,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+
         if (resultCode == RESULT_OK) {
             switch (requestCode){
                 case MainActivity.FILE_SELECT_CODE:
@@ -145,6 +147,11 @@ public class MainActivity extends AppCompatActivity {
                 default:
                     break;
             }
+        }
+
+        else if(resultCode == PhoneDictionary.CONTACT_DELETE){
+            int pos = data.getIntExtra(TabContactsFragment.POS,-1);
+            mContactTab.delete(pos);
         }
 
         else{
@@ -187,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             case R.id.action_settings:
                 // do some settings...
-                Toast.makeText(MainActivity.this, "some settings...", Toast.LENGTH_SHORT).show();
+                Toast.makeText(MainActivity.this, "" + mRecordTab.getTimeStamp("18819461579"), Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

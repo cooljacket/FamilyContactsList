@@ -1,10 +1,12 @@
 package hw.happyjacket.com.familycontactlist.MyDirPicker;
 
 import android.content.Context;
+import android.graphics.LightingColorFilter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
@@ -31,6 +33,7 @@ public class DirAdapter extends ArrayAdapter<DirDescriptor> {
             view = LayoutInflater.from(getContext()).inflate(resourceId, null);
             viewHolder = new ViewHolder();
             viewHolder.dir_name = (TextView) view.findViewById(R.id.dir_name);
+            viewHolder.arrow = (ImageView) view.findViewById(R.id.dir_arrow);
             view.setTag(viewHolder);
         } else {
             view = convertView;
@@ -39,11 +42,13 @@ public class DirAdapter extends ArrayAdapter<DirDescriptor> {
 
         DirDescriptor descriptor = getItem(position);
         viewHolder.dir_name.setText(descriptor.getDirName());
+        viewHolder.arrow.setColorFilter(new LightingColorFilter(0, 0xaaaaaa));
 
         return view;
     }
 
     class ViewHolder {
         TextView dir_name;
+        ImageView arrow;
     }
 }

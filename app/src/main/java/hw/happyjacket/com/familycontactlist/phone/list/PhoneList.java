@@ -146,6 +146,58 @@ public abstract class PhoneList {
     }
 
 
+    public void insert(ContentValues contentValues){
+        DataBase dataBase = null;
+        SQLiteDatabase sqLiteDatabase = null;
+        try{
+            dataBase = new DataBase(context,db,null,version);
+            sqLiteDatabase  = dataBase.getWritableDatabase();
+            sqLiteDatabase.insert(table, null, contentValues);
+            sqLiteDatabase.close();
+            dataBase.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    public void update(ContentValues contentValues){
+        DataBase dataBase = null;
+        SQLiteDatabase sqLiteDatabase = null;
+        try{
+            dataBase = new DataBase(context,db,null,version);
+            sqLiteDatabase  = dataBase.getWritableDatabase();
+            sqLiteDatabase.update(table, contentValues, selection, argument);
+            sqLiteDatabase.close();
+            dataBase.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public void update(ContentValues contentValues,String selection,String [] argument){
+        DataBase dataBase = null;
+        SQLiteDatabase sqLiteDatabase = null;
+        try{
+            dataBase = new DataBase(context,db,null,version);
+            sqLiteDatabase  = dataBase.getWritableDatabase();
+            sqLiteDatabase.update(table,contentValues,selection,argument);
+            sqLiteDatabase.close();
+            dataBase.close();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+
+
     public void delete(String condriton,String [] argument){
         DataBase dataBase = null;
         SQLiteDatabase sqLiteDatabase = null;

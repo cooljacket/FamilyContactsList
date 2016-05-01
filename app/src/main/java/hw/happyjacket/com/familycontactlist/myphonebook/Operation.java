@@ -88,7 +88,7 @@ public class Operation {
 
     public static String getLocation(String number){
         String t[];
-        return ((t = sPhoneLocationMaster.get(number)) == null || t.length < 2)? null:t[0] + t[1];
+        return ((t = sPhoneLocationMaster.get(number)) == null || t.length < 2)? null:t[0].equals(t[1]) ? t[1] : t[0] + t[1];
     }
 
 }

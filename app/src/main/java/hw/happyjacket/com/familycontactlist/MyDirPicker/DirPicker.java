@@ -99,7 +99,7 @@ public class DirPicker extends AppCompatActivity {
             });
 
             for (File f : files) {
-                if (f.isDirectory())
+                if (f.isDirectory() && f.getName().charAt(0) != '.')
                     data.add(new DirDescriptor(f));
             }
         }

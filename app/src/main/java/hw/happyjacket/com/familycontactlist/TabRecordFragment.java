@@ -1,5 +1,6 @@
 package hw.happyjacket.com.familycontactlist;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -47,7 +48,7 @@ public class TabRecordFragment extends Fragment {
     private MainShow mainShow;
     private ListView listView;
     private ListView OptionListView;
-    private Context mContext;
+    private Activity mContext;
     private PhoneDialog option;
     private Button Dial;
     private Handler mHandler;
@@ -120,7 +121,7 @@ public class TabRecordFragment extends Fragment {
             Dial.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DialogFactory.DiaWheel(getActivity(),R.style.Menu,mainShow).show();
+                    DialogFactory.DiaWheel(mContext,R.style.Menu,mainShow).show();
                 }
             });
             initOption();
@@ -136,6 +137,14 @@ public class TabRecordFragment extends Fragment {
 
     }
 
+
+    public long getTimeStamp(String number){
+        Log.i(TAG,mainShow + "");
+        Log.i(TAG,mainShow.getNmapp() + "");
+        Integer id = mainShow.getNmapp().get(number);
+        return id == null ? -1 : Long.parseLong(mainShow.getPhoneListElementList_backup().get(id).get(PhoneDictionary.DATE));
+    }
+
     public void initOption()
     {
         option = DialogFactory.getPhoneDialog(mContext,R.layout.main_option,R.id.main_list,R.style.Menu,mainShow.getIndex(),PhoneDictionary.MainItems,PhoneDictionary.MAIN_OPTIONS);
@@ -148,9 +157,8 @@ public class TabRecordFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                new PhoneOperation(mContext).call(mainShow.getPhoneListElementList().get(position).get(PhoneDictionary.NUMBER));
+               new PhoneOperation(mContext).call(mainShow.getPhoneListElementList().get(position).get(PhoneDictionary.NUMBER));
                // DialogFactory.getCheckBoxDialog(getContext(), R.style.Menu, PhoneDictionary.MainItems, mHandler).show();
-
             }
         });
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {

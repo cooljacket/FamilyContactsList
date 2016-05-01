@@ -37,7 +37,7 @@ import jpinyin.stuxuhai.github.com.PinyinHelper;
 public class CommonSettingsAndFuncs {
     public final static String HostURL = "http://webservice.webxml.com.cn";
     public final static String GetWeatherURLFormat = "/WebServices/WeatherWS.asmx/getWeather?theCityCode=%s&theUserID=";
-    public final static String Spliter = "&&";
+    public final static String Spliter = "||||";
     public static String FileHeader;
 
     // 将字符串转换成指定的字符集格式（这里用到的是utf8）
@@ -76,7 +76,7 @@ public class CommonSettingsAndFuncs {
         return contents;
     }
 
-    public static String ParseWeatherXML(InputStream xml) throws XmlPullParserException, IOException {
+    public static String[] ParseWeatherXML(InputStream xml) throws XmlPullParserException, IOException {
         try {
             ArrayList<String> weather = ParseXMLHelper(xml);
             for (int i = 0; i < weather.size(); ++i)
@@ -95,7 +95,19 @@ public class CommonSettingsAndFuncs {
             for (int i = 1; i <= m.groupCount(); ++i)
                 Log.d("index " + i, m.group(i));
 
-            return String.format("%s，今天%s%s，气温%s，%s%s。注意好身体，爱你们。", location, wea, temperature, sun, content).replaceAll("您", "");
+            Log.d("hehe", location + " ");
+            Log.d("hehe", wea + " ");
+            Log.d("hehe", temperature + " ");
+            Log.d("hehe", sun + " ");
+            Log.d("hehe", content + " ");
+            Log.d("hehe", location + " ");
+
+            String[] result = new String[] {
+                    String.format("%%s，今天%s%s，气温%s，%s%s。注意好身体，爱你们。", location, wea, temperature, sun, content).replaceAll("您", ""),
+                    location, wea, temperature, sun, content
+            };
+
+            return result;
         }
         catch (Exception e){
             e.printStackTrace();
@@ -205,7 +217,8 @@ public class CommonSettingsAndFuncs {
 
     public static String convertToPinyin(Context context, String str) {
         PinyinHelper.getInstance(context);
-        return PinyinHelper.convertToPinyinString(str, "");
+        Log.d("name", str + ", " + PinyinHelper.getShortPinyin(str));
+        return PinyinHelper.getShortPinyin(str);
     }
 
 

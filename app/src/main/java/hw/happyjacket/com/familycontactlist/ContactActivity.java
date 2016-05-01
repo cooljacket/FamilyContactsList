@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -20,7 +21,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import android.widget.Toolbar;
+import android.support.v7.widget.Toolbar;
 
 //import android.support.v7.widget.Toolbar;
 
@@ -55,6 +56,7 @@ public class ContactActivity extends AppCompatActivity{
     private HashMap<String,Object> data;
     private int uid;
     private Bitmap picture;
+    private DBHelper mDBHelper;
     private android.support.v7.widget.Toolbar mToolbar;
 
 
@@ -66,6 +68,7 @@ public class ContactActivity extends AppCompatActivity{
         head = (CollapsingToolbarLayout) findViewById(R.id.contact_toolbar_layout);
         final Intent intent = getIntent();
         data = (HashMap)intent.getSerializableExtra("data");
+        mDBHelper = new DBHelper(this);
         showDetail();
 
     }
@@ -73,8 +76,11 @@ public class ContactActivity extends AppCompatActivity{
     private void showDetail(){
         name = (String)data.get("contactName");
         contactID = (int)data.get("contactID");
-        mToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.contact_toolbar);
+        Bitmap bitmap = (Bitmap) data.get("contactPhoto");
+        mToolbar = (Toolbar) findViewById(R.id.contact_toolbar);
         setSupportActionBar(mToolbar);
+
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,7 +92,7 @@ public class ContactActivity extends AppCompatActivity{
         head.setTitle(name);
         uid = (int) data.get("UserID");
 
-        mContactShow = new ContactShow(this,R.layout.call_log_list);
+        mContactShow = new ContactShow(this, R.layout.call_log_list, name);
         mContactShow.getPhoneList().setDb("contact");
         mContactShow.getPhoneList().setTable("user");
         mContactShow.InitAdapter(new XiaoMiAccessory(), new String[]{"mobilephone"}, "uid" + " = ? ", new String[]{"" + uid}, null);
@@ -115,9 +121,17 @@ public class ContactActivity extends AppCompatActivity{
                         mContactShow.notifyDataSetChanged();
                         break;
                     case 4:
-                        new BlackListMaster(ContactActivity.this).delete(mContactShow.getNumber());
+                        User user = new User();
+                        user.uid = uid;
+                        mDBHelper.deleteUser(user);
+                        Intent intent = new Intent();
+                        intent.putExtra(TabContactsFragment.DELETE,true);
+                        intent.putExtra(TabContactsFragment.POS,(int)data.get(TabContactsFragment.POS));
+                        setResult(PhoneDictionary.CONTACT_DELETE, intent);//不管有没修改都要更新数据
+                        finish();
                         break;
                     case 5:
+
                         break;
                     default:
                         break;
@@ -130,7 +144,6 @@ public class ContactActivity extends AppCompatActivity{
     public void onBackPressed() {
 
         Intent datas = new Intent();
-//        this.data = getChanged();
         HashMap<String,Object> newdata = new HashMap<String,Object>();
         newdata.put("contactName", name);
         newdata.put("contactPhoto", picture);
@@ -143,6 +156,8 @@ public class ContactActivity extends AppCompatActivity{
 
     @Override
     protected void onDestroy() {
+
+
 
         mContactShow.destroy();
         PhoneRegister.unRegister(mContactShow.getIndex());

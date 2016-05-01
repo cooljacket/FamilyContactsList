@@ -89,7 +89,7 @@ public final class PinyinHelper {
             if (ChineseHelper.isChinese(c)) {
                 String[] pinyinArray = convertToPinyinArray(str.charAt(i));
                 if (pinyinArray != null) {
-                    sb.append(pinyinArray[0].charAt(0));
+                    sb.append(pinyinArray[0]);
                 } else {
                     sb.append(str.charAt(i));
                 }
