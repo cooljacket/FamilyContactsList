@@ -286,7 +286,7 @@ public class CreatePeopleDetail extends AppCompatActivity {
             infoTmp.append(tt[0]).append("&&").append(tt[1]);
         }
         mUser.info = infoTmp.toString();
-        mUser.sortname = CommonSettingsAndFuncs.convertToPinyin(CreatePeopleDetail.this, mUser.name);
+        mUser.sortname = CommonSettingsAndFuncs.convertToShortPinyin(CreatePeopleDetail.this, mUser.name);
         mUser.groupname = groupName.getText().toString();
     }
 

@@ -33,17 +33,18 @@ import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 /**
  * Created by jacket on 2016/3/30.
  */
-public class TabContactsFragment extends Fragment {
+public class TabContactsFragment extends PhoneFragment {
     public static final int LIST_LOAD_SOME = 0, LIST_LOAD_OK = 1;
     public static String NAME = "contactName";
     public static String PHOTO = "contactPhoto";
     public static String SORTNAME = "contactSortname";
     public static String DELETE = "contactDelete";
     public static String POS = "contactPos";
+    public static String CARGO = "cargo";
     public static final String DataBaseLock = "lock";
     private Context mContext;
     private ListView listview;
-    private Vector<HashMap<String, Object> > AL;
+    private Vector<TabContactUser> AL;
     private int positionNew;
     private DBHelper dbHelper = null;
     private SQLiteDatabase db = null;
@@ -93,9 +94,9 @@ public class TabContactsFragment extends Fragment {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                 positionNew = position;
-                                HashMap<String, Object> map = AL.get(position);
+                                TabContactUser user = AL.get(position);
                                 // 当requestCode为3的时候表示请求转向CPD这个页面？？
-                                ContactActivity.actionStart(getActivity(), map);
+                                ContactActivity.actionStart(getActivity(), user, user.pos);
                             }
                         });
                         listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -121,16 +122,12 @@ public class TabContactsFragment extends Fragment {
 
 
 
-    public void notifyDataSetChanged(HashMap<String,Object> data){
-        if(data.get(PHOTO) == null)
+    public void notifyDataSetChanged(User data, Bitmap newPicture){
+        if(newPicture == null)
             return;
-        HashMap<String,Object> t = AL.get(positionNew);
-        Object tmp;
-        for(Map.Entry<String,Object> i : t.entrySet()){
-            if((tmp = data.get(i.getKey())) != null){
-                t.put(i.getKey(),tmp);
-            }
-        }
+        TabContactUser t = AL.get(positionNew);
+        t.update(data);
+        t.picture = newPicture;
         adapter.notifyDataSetChanged();
     }
 
@@ -139,7 +136,7 @@ public class TabContactsFragment extends Fragment {
             AL.remove(pos);
         }
         for(int i = 0 ; i < AL.size(); ++i)
-            AL.get(i).put(POS,i);
+            AL.get(i).pos = i;
         adapter.notifyDataSetChanged();
     }
 
@@ -149,17 +146,12 @@ public class TabContactsFragment extends Fragment {
         switch (requestCode){
             case PhoneDictionary.CONTAT_ACTION_START:
                 Toast.makeText(this.getContext(),"debug "+10, Toast.LENGTH_SHORT).show();
-                Log.d("ddd","debug");
-                HashMap newmap = (HashMap)data.getSerializableExtra("newdata");
-                newmap.put(NAME,"aaaaaaaa");
-                int deleted = (int)newmap.get("delete");
+                boolean deleted = data.getBooleanExtra(TabContactsFragment.DELETE, false);
                 Toast.makeText(this.getContext(),"debug d "+deleted, Toast.LENGTH_SHORT).show();
-                if(deleted==1){
-                    AL.removeElementAt(positionNew);
-                }else{
-                    AL.set(positionNew, newmap);
+                if(deleted){
+                    delete(positionNew);
+                    adapter.notifyDataSetChanged();
                 }
-                adapter.notifyDataSetChanged();
                 break;
             default:
                 break;
@@ -178,18 +170,14 @@ public class TabContactsFragment extends Fragment {
             public void run() {
                 dbHelper = new DBHelper(mContext);
                 db = dbHelper.openDatabase();
-<<<<<<< HEAD
-=======
                 Group group = new Group();
                 group.groupname="家庭";
                 group.groupnum=0;
                 dbHelper.initGroup(group);
                 getCircles();
->>>>>>> e7d95f3b9b25a36936c02caebcd04290b9d26115
                 TheFirstTimeInit();
                 getCircles();
-                AL = getPhoneContacts();
-//                Log.d("ddd","liebiao");
+                getPhoneContacts();
                 sortList();
                 dbHelper.close();
                 loadList();
@@ -215,40 +203,36 @@ public class TabContactsFragment extends Fragment {
         // 使用插入排序，虽然时间复杂度在列表无序时是O(n^2)
         // 但是有利于修改名字时将新的名字插入到已经有序的列表中，时间复杂度为O(n)
         for (int i = 1; i < AL.size(); ++i) {
-            HashMap<String,Object> copy =  AL.get(i);
-            String now = (String) copy.get("contactSortname");
+            TabContactUser  copy =  AL.get(i);
+            String now = copy.sortname;
             int cut_in = i;
             while (--cut_in >= 0) {
-                String pre = (String) (AL.get(cut_in)).get("contactSortname");
+                String pre = (AL.get(cut_in)).sortname;
                 if (now.compareToIgnoreCase(pre) >= 0)
                     break;
                 AL.setElementAt(AL.get(cut_in), cut_in+1);
             }
             AL.setElementAt(copy, cut_in+1);
         }
-//<<<<<<< HEAD
-//        Log.d("ddd","sort");
-//=======
         for (int i = 0 ; i < AL.size(); ++i){
-            AL.get(i).put(POS,i);
+            AL.get(i).pos = i;
         }
-//>>>>>>> 736707cd64d60cbe186bd744017b192e9c3072c5
     }
 
     private void loadList() {
         for(int i = 0 ; i < AL.size() ; ++i) {
-            HashMap now = AL.get(i);
-            int photo = (int) now.get("photo");
-            int id = (int) now.get("contactID");
+            User now = AL.get(i);
+            int photo = now.photo;
+            String number = now.mobilephone;
             if(photo != -1) {
                 picture = circleImage[photo];
             }
             else {
-                picture = PhotoZoom.getBitmap(id, photo, circleImage);
+                picture = PhotoZoom.getBitmap(number, photo, circleImage);
                 picture = PhotoZoom.createCircleImage(picture, picture.getWidth(), picture.getHeight());
             }
 
-            AL.get(i).put("contactPhoto", picture);
+            AL.get(i).picture = picture;
 
             // 有10的整数倍个数据的时候就先显示了，23333
             if (i > 0 && i % 10 == 0) {
@@ -314,36 +298,42 @@ public class TabContactsFragment extends Fragment {
     }
 
     // 得到手机通讯录联系人信息
-    public Vector<HashMap<String,Object>> getPhoneContacts() {
+    public void getPhoneContacts() {
         ContentResolver resolver1 = mContext.getContentResolver();
         // 获取手机联系人
 
-        Cursor cursor = db.query("user", null, null, null, null, null, null);
+        Cursor cursor = db.query("user", new String[]{DBHelper.NAME,DBHelper.SORTNAME,DBHelper.NUMBER,DBHelper.PHOTO,DBHelper.ID}, null, null, null, null, null);
         if (cursor != null){
             if(cursor.moveToFirst()) {
                 do {
-                    int contact_id = cursor.getInt(1);
-                    int photo_id = cursor.getInt(5);
+                    TabContactUser user = new TabContactUser();
+
                     //familyname
-                    String contactName = cursor.getString(2);
+                    user.name = cursor.getString(0);
                     //group
-                    String contactSortname = cursor.getString(3);
-                    HashMap map = new HashMap();
-                    map.put("contactName", contactName);
-                    map.put("photo", photo_id);
-                    map.put("contactSortname", contactSortname);
-                    map.put("contactID", contact_id);
-                    map.put("UserID", cursor.getInt(0));
-                    contacts.add(map);
+                    user.sortname = cursor.getString(1);
+                    user.mobilephone = cursor.getString(2);
+                    user.photo = cursor.getInt(3);
+                    user.uid = cursor.getInt(4);
+                    AL.add(user);
                 }while (cursor.moveToNext());
             }
         }
-        return contacts;
     }
 
     // 追加新插入的用户到AL的尾部，然后插入排序，最后notify一下adapter
     public void AddNewUser(Vector<User> newUsers) {
         sortList();
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void changePeopleDetail(User user, Bitmap picture) {
+
+    }
+
+    @Override
+    public void createPeopleDetail(User user, Bitmap picture) {
+
     }
 }

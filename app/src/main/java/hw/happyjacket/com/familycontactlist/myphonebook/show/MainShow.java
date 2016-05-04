@@ -124,11 +124,8 @@ public class MainShow extends PhoneShow {
         if(pos == null || pos.size() == 0)
             return;
         mPhoneListElementList.removeAllElements();
-        for(int i = 0, j = 0 ; i < mPhoneListElementList_backup.size(); ++i){
-            if(j < pos.size() && pos.get(j).equals(i)){
-                mPhoneListElementList.add(new HashMap<>(mPhoneListElementList_backup.get(i)));
-                ++j;
-            }
+        for(int i = 0 ; i < pos.size(); ++i){
+                mPhoneListElementList.add(new HashMap<>(mPhoneListElementList_backup.get(pos.get(i))));
         }
         mDecorate.decorate(mPhoneListElementList);
         sPhoneAdapter.notifyDataSetChanged();

@@ -44,7 +44,6 @@ public class PhoneThreadCheck implements Runnable {
             synchronized (TabContactsFragment.DataBaseLock) {
             try {
                 for (HashMap<String, String> i : data) {
-<<<<<<< HEAD
                     realNumber = i.get(PhoneDictionary.NUMBER).replace(" ","").replace("+86","").replace("+","");
                     t = mDBHelper.getUser(new String[]{"name"}, "mobilephone = ?", new String[]{realNumber}, "limit 1");
                     if (t.moveToFirst()) {
@@ -60,17 +59,6 @@ public class PhoneThreadCheck implements Runnable {
                         if(i.get(name) != null) {
                             i.remove(name);
                             mRecordList.delete(number + " = ? ", new String[]{realNumber});
-=======
-                    if (i.get(name) == null) {
-                        realNumber = i.get(PhoneDictionary.NUMBER).replace(" ","").replace("+86","").replace("+","");
-                        t = mDBHelper.getUser(new String[]{"name"}, "mobilephone = ?", new String[]{realNumber}, null);
-                        if (t.moveToFirst()) {
-                            contentValues.clear();
-                            contentValues.put(name, (realName = t.getString(0)));
-                            mRecordList.update(contentValues, number + " = ?", new String[]{realNumber});
-                            i.put(name, realName);
-
->>>>>>> e7d95f3b9b25a36936c02caebcd04290b9d26115
                         }
                     }
                 }

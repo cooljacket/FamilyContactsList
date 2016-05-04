@@ -1,5 +1,5 @@
 package hw.happyjacket.com.familycontactlist;
-//<<<<<<< HEAD
+
 import java.util.HashMap;
 import java.util.Vector;
 import android.content.Context;
@@ -25,6 +25,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.ViewSwitcher;
 
 
+import hw.happyjacket.com.familycontactlist.myphonebook.DefaultPicture;
 import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.PeopleInfoAdapter;
 import hw.happyjacket.com.familycontactlist.myphonebook.factory.DialogFactory;
@@ -39,7 +40,7 @@ import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 public class ChangePeopleDetail extends AppCompatActivity {
 
     ImageButton btn_img;
-    public static HashMap<String,Object> map;
+    private User user;
     int imagePosition;
     EditText et_familyName;
     EditText et_name;
@@ -86,7 +87,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
                 case 100:
                     imagePic = DefaultPicture.ImagePicture;
-                    map.put(PhoneDictionary.Photo, DefaultPicture.ImagePosition);
+                    user.photo = DefaultPicture.ImagePosition;
                     break;
                 case 103:
                     final  String tt = (String)msg.obj;
@@ -134,12 +135,11 @@ public class ChangePeopleDetail extends AppCompatActivity {
                     imagePic = PhotoZoom.createCircleImage(imagePic, imagePic.getWidth(), imagePic.getHeight());
                     DefaultPicture.ImageP = DefaultPicture.ImagePosition = -1;
                     btn_img.setImageBitmap(imagePic);
-                    map.put(PhoneDictionary.Photo,-1);
+                    user.photo = -1;
                 }
                 break;
             default:
                 Toast.makeText(getApplicationContext(), requestCode, Toast.LENGTH_SHORT).show();
-                map = new HashMap<String,Object>();
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -163,7 +163,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.edit_people_detail);
         final Intent intent = getIntent();
-        map = (HashMap<String,Object>)intent.getSerializableExtra("data");
+        user = (User)intent.getSerializableExtra(TabContactsFragment.CARGO);
         mDBHelper = new DBHelper(this);
         group = (RelativeLayout) findViewById(R.id.edit_group);
         AllGroup = mDBHelper.getGroup();
@@ -177,7 +177,8 @@ public class ChangePeopleDetail extends AppCompatActivity {
         add_info = (Button)findViewById(R.id.add_info);
         btn_return=(Button)findViewById(R.id.btn_return);
         btn_save=(Button)findViewById(R.id.btn_save);
-        DefaultPicture.ImageP = (int) map.get("photo");
+        info = new Vector<>();
+        DefaultPicture.ImageP = user.photo;
         DefaultPicture.ImagePosition = DefaultPicture.ImageP;
 
 
@@ -212,7 +213,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
 
         mListView.setAdapter(mPeopleInfoAdapter);
-        DefaultPicture.ImagePicture = (imagePic = PhotoZoom.getBitmap((int) map.get("contactID"), (int) map.get(PhoneDictionary.Photo), TabContactsFragment.circleImage));
+        DefaultPicture.ImagePicture = (imagePic = PhotoZoom.getBitmap(user.mobilephone, user.photo, TabContactsFragment.circleImage));
         btn_img.setImageBitmap(imagePic);
         btn_img.setOnClickListener(new OnClickListener() {
             @Override
@@ -221,7 +222,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
             }
         });
 
-        et_name.setText((String) map.get("contactName"));
+        et_name.setText(user.name);
 
 //        family = (boolean)map.get("contactFamily");
 //        if(family){
@@ -286,20 +287,12 @@ public class ChangePeopleDetail extends AppCompatActivity {
 //                Toast.makeText(getApplicationContext(),"image1  "+imageP
 //                        +"image2  "+imagePosition, Toast.LENGTH_SHORT).show();
 //                imagePic= btn_img.();
-                updateUser(getChanged());
-
+                Changed();
+                MainActivity.changePeopleDetail(user,imagePic);
                /* map = getChanged();*/
-                Intent intent = new Intent();
-                int tmp;
-                HashMap<String,Object> t = new HashMap<String, Object>();
-                t.put(PhoneDictionary.NAME, et_name.getText().toString());
-                t.put(PhoneDictionary.NUMBER, mPeopleInfoAdapter.getItem(0)[1]);
-                t.put(PhoneDictionary.Photo,tmp = (int)map.get(PhoneDictionary.Photo));
-                t.put(PhoneDictionary.Picture, imagePic);
-                intent.putExtra(PhoneDictionary.OTHER, t);
-                setResult(PhoneDictionary.CONTACT_REQUEST_CODE, intent);
+                int tmp = user.photo;
                 if(tmp == -1)
-                    PhotoZoom.saveBitmap((int) map.get("contactID"), imagePic);
+                    PhotoZoom.saveBitmap(user.mobilephone, imagePic);
                 finish();
 
             }
@@ -407,25 +400,18 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
 
     private void getUser(){
-        info = new Vector<>();
         DBHelper helper =new DBHelper(ChangePeopleDetail.this.getApplicationContext());
         SQLiteDatabase db =helper.openDatabase();
-        int Userid = (int) map.get("UserID");
-        Cursor cursor = db.query("user",null,"uid = "+Userid,null,null,null,null);
-        int photo=0;
-        String infos="";
-        String groupname=null,mobile="";
-        String nickName = null;
+        Cursor cursor = db.query(DBHelper.DB_TABLENAME,new String[]{DBHelper.GROUPNAME,DBHelper.INFO,DBHelper.NICKNAME},DBHelper.ID + " = "+user.uid,null,null,null,null,"limit 1");
 //        Toast.makeText(getApplicationContext(),"get"+Userid, Toast.LENGTH_SHORT).show();
+        String groupname = null,infos = null,nickName = null;
         if(cursor.moveToFirst()){
-            infos = cursor.getString(7);
-            groupname = cursor.getString(6);
-            photo = cursor.getInt(3);//头像int
-            mobile = cursor.getString(4);
-            nickName = cursor.getString(8);
+            groupname = user.groupname = cursor.getString(0);
+            infos = user.info = cursor.getString(1);
+            nickName = user.nickname = cursor.getString(2);
         }
         cursor.close();
-        info.add(new String[]{"手机", mobile});
+        info.add(new String[]{"手机", user.mobilephone});
         String pname="",parameter = "";
         if(infos!=null && !infos.equals("")){
             String [] infoTmp = infos.split("&&");
@@ -527,14 +513,11 @@ public class ChangePeopleDetail extends AppCompatActivity {
 //    }
 //
 
-    private HashMap<String,Object> getChanged(){
-        HashMap<String,Object> newmap=new HashMap<String,Object>();
-        newmap.put("contactName", et_name.getText().toString());
-        newmap.put("UserID",map.get("UserID"));
-        newmap.put("contactID", map.get("contactID"));
-        newmap.put("photo", DefaultPicture.ImagePosition);
-        newmap.put("phoneNumber",info.get(0)[1]);
-        newmap.put("nickName",et_familyName.getText().toString());
+    private void Changed(){
+        user.name =  et_name.getText().toString();
+        user.photo  = DefaultPicture.ImagePosition;
+        user.mobilephone = info.get(0)[1];
+        user.nickname = et_familyName.getText().toString();
         StringBuffer infoTmp = new StringBuffer();
         String[] tt;
         for(int i = 1 ; i < info.size(); ++i){
@@ -545,8 +528,10 @@ public class ChangePeopleDetail extends AppCompatActivity {
                 infoTmp.append("&&");
             infoTmp.append(tt[0]).append("&&").append(tt[1]);
         }
-        newmap.put("info",infoTmp.toString());
-        return newmap;
+        user.info = infoTmp.toString();
+        DBHelper dbHelper = new DBHelper(this);
+        dbHelper.changeUser(user);
+        dbHelper.close();
     }
 
 

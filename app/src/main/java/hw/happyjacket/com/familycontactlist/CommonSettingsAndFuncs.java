@@ -263,14 +263,12 @@ public class CommonSettingsAndFuncs {
 
     public static Vector<Integer> SearchAmongRecords(List<HashMap<String, String>> data, String pattern) {
         Vector<Integer> result = new Vector<>();
-
         for (int i = 0; i < data.size(); ++i) {
             String phoneNumber = data.get(i).get(PhoneDictionary.NUMBER);
-            if (KMP_match(phoneNumber, pattern)) {
+            if ((KMP_match(phoneNumber, pattern))) {
                 result.add(i);
             }
         }
-
         return result;
     }
 

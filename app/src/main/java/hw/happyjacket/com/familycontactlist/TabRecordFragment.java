@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -41,7 +42,7 @@ import hw.happyjacket.com.familycontactlist.phone.database.DataBaseDictionary;
 /**
  * Created by jacket on 2016/3/30.
  */
-public class TabRecordFragment extends Fragment {
+public class TabRecordFragment extends PhoneFragment {
 
     private static final String TAG = TabRecordFragment.class.toString();
     private View recordView;
@@ -191,7 +192,13 @@ public class TabRecordFragment extends Fragment {
     }
 
 
+    @Override
+    public void changePeopleDetail(User user, Bitmap picture) {
 
+    }
 
+    @Override
+    public void createPeopleDetail(User user, Bitmap picture) {
 
+    }
 }

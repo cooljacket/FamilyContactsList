@@ -118,6 +118,19 @@ public class PhotoZoom {
         }
     }
 
+    public static Bitmap getBitmap(String number,int photo,Bitmap [] picutres) {
+        if(photo < 0) {
+            File d = new File(Environment.getExternalStorageDirectory(), "image");
+            File filename = new File(d, number + ".jpg");
+            Bitmap bitmap1 = BitmapFactory.decodeFile(filename.getPath());
+            bitmap1 = createCircleImage(bitmap1,bitmap1.getWidth(),bitmap1.getHeight());
+            return bitmap1;
+        }
+        else{
+            return picutres[photo];
+        }
+    }
+
     public static void saveBitmap(int id,Bitmap image){
         String path;
         File d = new File(Environment.getExternalStorageDirectory(),"image");
@@ -169,6 +182,28 @@ public class PhotoZoom {
         Bitmap bitmap = null;
         File f = new File(Environment.getExternalStorageDirectory(),"image");
         File inputStream = new File(f,id + ".jpg");
+        path = inputStream.getPath();
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path,options);
+        options.inJustDecodeBounds = false;
+        int sampleSize = 1;
+        while(options.outHeight * options.outWidth / sampleSize >= width * height) sampleSize *= 2;
+        options.inSampleSize = sampleSize;
+        try{
+            bitmap = BitmapFactory.decodeFile(path,options);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
+
+    public static Bitmap getBitmap(String  number,int width,int height){
+        String path;
+        Bitmap bitmap = null;
+        File f = new File(Environment.getExternalStorageDirectory(),"image");
+        File inputStream = new File(f,number + ".jpg");
         path = inputStream.getPath();
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;

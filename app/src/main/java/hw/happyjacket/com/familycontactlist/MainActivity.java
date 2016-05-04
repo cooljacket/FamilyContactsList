@@ -1,6 +1,7 @@
 package hw.happyjacket.com.familycontactlist;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -31,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     private RadioButton tab_record, tab_contacts;
     private TabRecordFragment mRecordTab;
     private TabContactsFragment mContactTab;
-    private List<Fragment> mTabs;
+    private static List<PhoneFragment> mTabs;
     private FragmentPagerAdapter mPagerAdapter;
     public static List<HashMap<String,String>> phoneElement;
     private static final int FILE_SELECT_CODE = 0;
@@ -71,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
     private void InitFragments() {
         mRecordTab = new TabRecordFragment();
         mContactTab = new TabContactsFragment();
-        mTabs = new ArrayList<Fragment>();
+        mTabs = new ArrayList<PhoneFragment>();
         mTabs.add(mRecordTab);
         mTabs.add(mContactTab);
 
@@ -153,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
             switch (requestCode) {
                 case PhoneDictionary.CONTAT_ACTION_START:
                     if (data != null && data.getSerializableExtra(PhoneDictionary.OTHER) != null)
-                        mContactTab.notifyDataSetChanged((HashMap<String, Object>) data.getSerializableExtra(PhoneDictionary.OTHER));
+                        mContactTab.notifyDataSetChanged((User) data.getSerializableExtra(PhoneDictionary.OTHER),(Bitmap)data.getParcelableExtra(PhoneDictionary.Picture));
                     break;
                 default:
                     break;
@@ -208,5 +209,16 @@ public class MainActivity extends AppCompatActivity {
         } catch (android.content.ActivityNotFoundException ex) {
             Toast.makeText(this, "亲，木有文件管理器啊啊啊啊-_-!!", Toast.LENGTH_SHORT).show();
         }
+    }
+
+
+    public static void changePeopleDetail(User user, Bitmap picture){
+        for (PhoneFragment i : mTabs)
+            i.changePeopleDetail(user, picture);
+    }
+
+    public static void createPeopleDetail(User user, Bitmap picture){
+        for (PhoneFragment i : mTabs)
+            i.createPeopleDetail(user, picture);
     }
 }

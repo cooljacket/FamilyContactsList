@@ -17,4 +17,30 @@ public class User implements Serializable{
     public String groupname ;
     public String info;
     public String nickname;
+
+    public User() {
+        uid = photo = -2;
+    }
+
+    public void update(User users){
+        uid = users.uid == -1 ? uid : users.uid;
+        photo = users.photo == -1 ? photo : users.photo;
+        name = users.name == null ? name : users.name;
+        sortname = users.sortname == null ? sortname : users.sortname;
+        mobilephone = users.mobilephone ==  null ? mobilephone : users.mobilephone;
+        groupname = users.groupname == null ? groupname : users.groupname;
+        info = users.info == null ? info : users.info;
+        nickname = users.name == null ? nickname : users.nickname;
+    }
+
+    public User(int uid, int photo, String name, String sortname, String mobilephone, String groupname, String info, String nickname) {
+        this.uid = uid;
+        this.photo = photo;
+        this.name = name;
+        this.sortname = sortname;
+        this.mobilephone = mobilephone;
+        this.groupname = groupname;
+        this.info = info;
+        this.nickname = nickname;
+    }
 }

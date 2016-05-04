@@ -52,11 +52,12 @@ public class ContactActivity extends AppCompatActivity{
 
     private String name;
     private String number;
+    private Intent mIntent;
     private int contactID;
     private ScrollListView ContactListView;
     private ContactShow mContactShow;
     private CollapsingToolbarLayout head;
-    private HashMap<String,Object> data;
+    private User data;
     private int uid;
     private Bitmap picture;
     private DBHelper mDBHelper;
@@ -69,17 +70,15 @@ public class ContactActivity extends AppCompatActivity{
         setContentView(R.layout.contact_main);
         ContactListView = (ScrollListView) findViewById(R.id.contact_number_and_detail);
         head = (CollapsingToolbarLayout) findViewById(R.id.contact_toolbar_layout);
-        final Intent intent = getIntent();
-        data = (HashMap)intent.getSerializableExtra("data");
+        mIntent = getIntent();
+        data = (User) mIntent.getSerializableExtra(PhoneDictionary.OTHER);
         mDBHelper = new DBHelper(this);
         showDetail();
 
     }
 
     private void showDetail(){
-        name = (String)data.get("contactName");
-        contactID = (int)data.get("contactID");
-        Bitmap bitmap = (Bitmap) data.get("contactPhoto");
+        name = data.name;
         mToolbar = (Toolbar) findViewById(R.id.contact_toolbar);
         setSupportActionBar(mToolbar);
 
@@ -93,7 +92,7 @@ public class ContactActivity extends AppCompatActivity{
         });
 
         head.setTitle(name);
-        uid = (int) data.get("UserID");
+        uid = data.uid;
 
         mContactShow = new ContactShow(this, R.layout.call_log_list, name);
         mContactShow.getPhoneList().setDb("contact");
@@ -181,7 +180,6 @@ public class ContactActivity extends AppCompatActivity{
                                 mDBHelper.deleteUser(user);
                                 Intent intent = new Intent();
                                 intent.putExtra(TabContactsFragment.DELETE, true);
-                                intent.putExtra(TabContactsFragment.POS, (int) data.get(TabContactsFragment.POS));
                                 setResult(PhoneDictionary.CONTACT_DELETE, intent);//不管有没修改都要更新数据
                                 finish();
 //
@@ -204,13 +202,7 @@ public class ContactActivity extends AppCompatActivity{
     public void onBackPressed() {
 
         Intent datas = new Intent();
-        HashMap<String,Object> newdata = new HashMap<String,Object>();
-        newdata.put("delete",0);
-        newdata.put("contactName", name);
-        newdata.put("contactPhoto", picture);
-        newdata.put("contactSortname", this.data.get("contactSortname"));
-        newdata.put(PhoneDictionary.Photo,data.get(PhoneDictionary.Photo));
-        datas.putExtra(PhoneDictionary.OTHER, newdata);
+        datas.putExtra(PhoneDictionary.OTHER, data);
         setResult(PhoneDictionary.CONTAT_ACTION_START, datas);//不管有没修改都要更新数据
         super.onBackPressed();
     }
@@ -230,22 +222,16 @@ public class ContactActivity extends AppCompatActivity{
 
         switch (resultCode){//处理结果码
             case PhoneDictionary.CONTACT_REQUEST_CODE://有修改
-                HashMap<String,Object> t = (HashMap<String,Object>) datas.getSerializableExtra(PhoneDictionary.OTHER);
-                name = (String) t.get(PhoneDictionary.NAME);
+                User t = (User) datas.getSerializableExtra(PhoneDictionary.OTHER);
+                name = t.name;
                 head.setTitle(name);
-                mContactShow.setNumber(number = (String) t.get(PhoneDictionary.NUMBER));
+                mContactShow.setNumber(number = t.mobilephone);
                 HashMap<String,String> theFirstLine = mContactShow.getPhoneListElementList().get(0);
                 theFirstLine.put(PhoneDictionary.DATE, number);
                 theFirstLine.put(PhoneDictionary.NUMBER, mContactShow.getPhoneListElementList().get(0).get(PhoneDictionary.NUMBER));
                 mContactShow.getPhoneListElementList().set(0, theFirstLine);
                 mContactShow.notifyDataSetChanged();
-                picture = (Bitmap) t.get(PhoneDictionary.Picture);
-                Object tmp;
-                for(Map.Entry<String,Object> i : data.entrySet()){
-                    if((tmp = t.get(i.getKey()))!= null){
-                        data.put(i.getKey(),tmp);
-                    }
-                }
+                data.update(t);
                 break;
 
             default:
@@ -254,9 +240,10 @@ public class ContactActivity extends AppCompatActivity{
         super.onActivityResult(requestCode, resultCode, datas);
     }
 
-    public static void actionStart(Activity context,HashMap<String,Object> map){
+    public static void actionStart(Activity context,User user,int pos){
         Intent intent = new Intent(context,ContactActivity.class);
-        intent.putExtra("data",map);
+        intent.putExtra(TabContactsFragment.CARGO,user);
+        intent.putExtra(TabContactsFragment.POS,pos);
         context.startActivityForResult(intent, PhoneDictionary.CONTAT_ACTION_START);
     }
 

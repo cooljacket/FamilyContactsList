@@ -13,13 +13,20 @@ import java.util.Vector;
  * Created by leo on 2016/4/10.
  */
 public class DBHelper extends SQLiteOpenHelper {
-    public static final   String DB_NAME="contact";
+    public static final String DB_NAME="contact";
     public final static int VERSION = 1;
-    public static final   String DB_TABLENAME="user";
+    public static final String DB_TABLENAME="user";
     public static final String GROUPTABLE = "grouptable";
     public static final String GROUPNAME = "groupname";
     public static final String GROUPID = "gid";
     public static final String GROUPNUM = "groupnum";
+    public static final String ID = "uid";
+    public static final String NAME = "name";
+    public static final String SORTNAME = "sortname";
+    public static final String NUMBER = "mobilephone";
+    public static final String PHOTO = "photo";
+    public static final String INFO = "info";
+    public static final String NICKNAME = "nickname";
 
     public SQLiteDatabase db;
     private Context context;
