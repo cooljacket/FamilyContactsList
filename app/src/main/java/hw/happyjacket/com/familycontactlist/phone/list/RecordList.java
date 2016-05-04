@@ -154,7 +154,7 @@ public class RecordList extends PhoneList {
             if(t.moveToFirst()) {
                 number_id = t.getColumnIndex(PhoneDictionary.NUMBER);
                 do{
-                    phoneNumber = t.getString(number_id).replace(" ", "");
+                    phoneNumber = t.getString(number_id).replace(" ", "").replace("+86","").replace("+","");
                     if(container.containsKey(phoneNumber))
                         continue;
                     container.put(phoneNumber, (Boolean.TRUE));
@@ -162,6 +162,7 @@ public class RecordList extends PhoneList {
                     for (int i = 0 ; i < pro.length ; i++) {
                         tmp.put(pro[i],t.getString(i));
                     }
+                    tmp.put(PhoneDictionary.NUMBER, phoneNumber);
                     result.add(tmp);
                 } while (t.moveToNext());
             }

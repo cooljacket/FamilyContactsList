@@ -21,9 +21,8 @@
         android1:title="@string/action_import"
         android:showAsAction="never" />
 
-    <!-- 设置, 在溢出菜单中展示 -->
     <item
         android1:id="@+id/action_settings"
-        android1:title="@string/action_settings"
+        android1:title="@string/action_family_money"
         android:showAsAction="never" />
 </menu>

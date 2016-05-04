@@ -631,3 +631,243 @@ public class TabContactsFragment extends Fragment {
 
 
 
+
+===========================
+// 测试kmp算法和java的正则库的效率：
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.Random;
+
+
+public class Test {
+    private static final int size = 100000;
+    private static String[] all;
+
+    public static void main(String[] args) {
+        all = new String[size];
+        Random rand = new Random();
+        String pattern = randomStr(rand, 10);
+
+        for (int i = 0; i < size; ++i) {
+            int len = rand.nextInt(50) + 1;
+            all[i] = randomStr(rand, len);
+        }
+
+        String kmp = doIt(pattern, 1, "KMP_match");
+        String regx = doIt(pattern, 2, "REGX_match");
+
+        if (kmp.equals(regx))
+            System.out.println("KMP_match is good with " + size + " samples");
+        else
+            System.out.println("KMP_match is bad with " + size + " samples");
+    }
+
+    public static String randomStr(Random random, int len) {
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < len; ++i)
+            buffer.append((char)('0' + random.nextInt(10)));
+        return buffer.toString();
+    }
+
+    public static String doIt(String pattern, int kind, String tips) {
+        long startMili = System.currentTimeMillis();// 当前时间对应的毫秒数
+        StringBuffer buf = new StringBuffer();
+        for (int i = 0; i < size; ++i) {
+            boolean result = false;
+            if (kind == 1)
+                result = KMP_match(all[i], pattern);
+            else
+                result = REGX_match(all[i], pattern);
+
+            if (result)
+                buf.append("1");
+            else
+                buf.append("0");
+        }
+
+        long endMili = System.currentTimeMillis();// 当前时间对应的毫秒数
+        System.out.println(tips + " cost time: " + (endMili - startMili) + "\n");
+
+        return buf.toString();
+    }
+
+    private static int[] calNext(String pattern) {
+        int j = 0, k = -1, pLen = pattern.length();
+        int[] next = new int[pLen];
+        next[0] = -1;
+
+        while (j < pLen-1) {
+            if (k == -1 || pattern.charAt(k) == pattern.charAt(j))
+                next[++j] = ++k;
+            else
+                k = next[k];
+        }
+
+        return next;
+    }
+
+    public static boolean KMP_match(String text, String pattern) {
+        if (text.length() < pattern.length())
+            return false;
+
+        int[] next = calNext(pattern);
+        int i = 0, j = 0, pLen = pattern.length(), tLen = text.length();
+
+        while (j < pLen && i < tLen) {
+            if (j == -1 || text.charAt(i) == pattern.charAt(j)) {
+                ++i;
+                ++j;
+            }
+            else {
+                j = next[j];
+            }
+        }
+
+        return j == pLen;
+    }
+
+    public static boolean REGX_match(String text, String pattern) {
+        Pattern p = Pattern.compile(pattern);
+        Matcher matcher = p.matcher(text);
+        return matcher.find();
+    }
+}
+
+
+
+=====
+腿哥的不知道什么鬼的代码
+public static Vector<Integer> SearchAmongRecords(List<HashMap<String, String>> data, String pattern) {
+        Vector<Integer> result = new Vector<>();
+        Vector<Integer> sorts = new Vector<>();
+        int t;
+        boolean pass;
+        for (int i = 0; i < data.size(); ++i) {
+            String phoneNumber = data.get(i).get(PhoneDictionary.NUMBER);
+            if ((t = KMP_match(phoneNumber, pattern)) >= 0) {
+                pass = false;
+                for(int j = 0 ; j < sorts.size(); ++j) {
+                   if(t < sorts.get(j)){
+                       result.insertElementAt(i,j);
+                       sorts.insertElementAt(t,j);
+                       pass = true;
+                       break;
+                   }
+                }
+                if(!pass) {
+                    result.add(i);
+                    sorts.add(t);
+                }
+            }
+        }
+        return result;
+    }
+
+
+=====
+导出联系人
+    public static void ExportContacts(Context context, String dirName) {
+//        DBHelper dbHelper = new DBHelper(context);
+//        SQLiteDatabase db = dbHelper.getReadableDatabase();
+//        if (!db.isOpen())
+//            return ;
+//
+//        Cursor cursor = db.query(DBHelper.DB_TABLENAME, null, null, null, null, null, null);
+//        int name_idx = cursor.getColumnIndex("name");
+//        int sortname_idx = cursor.getColumnIndex("sortname");
+//        int mobilephone_idx = cursor.getColumnIndex("mobilephone");
+//        int photo_idx = cursor.getColumnIndex("photo");
+//        int groupname_idx = cursor.getColumnIndex("groupname");
+//        int info_idx = cursor.getColumnIndex("info");
+//
+//
+//        FileOutputStream out = null;
+//        BufferedWriter writer = null;
+//        SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+//        String date  = sDateFormat.format(new java.util.Date());
+//        String fileName = dirName + File.separator + date + randomString(6) + ".txt";
+//        Log.d("hehe", fileName);
+//
+//        try {
+//            out = new FileOutputStream(fileName);
+//            writer = new BufferedWriter(new OutputStreamWriter(out));
+//
+//            while (cursor.moveToNext()) {
+//                List<String> data = new ArrayList<>();
+//                data.add(cursor.getString(name_idx));
+//                data.add(cursor.getString(sortname_idx));
+//                data.add(cursor.getString(mobilephone_idx));
+//                data.add("" + cursor.getInt(photo_idx));
+//                data.add(cursor.getString(groupname_idx));
+//                data.add(cursor.getString(info_idx));
+//                writer.write(joinStrs(data, CommonSettingsAndFuncs.Spliter));
+//            }
+//
+//            writer.flush();
+//            writer.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            db.close();
+//            dbHelper.close();
+//        }
+    }
+
+
+====
+导入联系人
+
+public static Vector<User> ImportContacts(Context context, String fileName) {
+        DBHelper dbHelper = new DBHelper(context);
+        FileInputStream input = null;
+        BufferedReader reader = null;
+        Vector<User> newUsers = new Vector<>();
+
+        try {
+            input = new FileInputStream(fileName);
+            reader = new BufferedReader(new InputStreamReader(input));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(CommonSettingsAndFuncs.Spliter);
+                for (int i = 0; i < data.length; ++i)
+                    if (data[i].equals("null"))
+                        data[i] = "";
+                User user = dbHelper.insertFromStrings(data);
+                if (user != null)
+                    newUsers.add(user);
+            }
+
+            if (reader != null)
+                reader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            dbHelper.close();
+        }
+
+        return newUsers;
+    }
+
+
+
+=====
+public User insertFromStrings(String[] data) {
+        if (isInList(data[2])) {
+            return null;
+        }
+
+        // 0: name, 1: sortname, 2: mobilephone, 3: photo, 4: groupname, 5: info
+        User user = new User();
+        user.name = data[0];
+        user.sortname = data[1];
+        user.mobilephone = data[2];
+        user.photo = Integer.parseInt(data[3]);
+        user.groupname = data[4];
+        user.info = data[5];
+        insertAUser(user);
+
+        return user;
+    }
+
+
+=======

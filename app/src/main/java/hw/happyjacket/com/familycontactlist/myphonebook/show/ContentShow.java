@@ -1,5 +1,6 @@
 package hw.happyjacket.com.familycontactlist.myphonebook.show;
 
+import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
@@ -22,11 +23,11 @@ public class ContentShow extends PhoneShow {
     final int bound = 5;
     private String defaultList = "通话记录";
     private String defaultNumber = "电话";
-    public ContentShow(Context context, int table) {
+    public ContentShow(Activity context, int table) {
         super(context, table);
     }
 
-    public ContentShow(Context context, int table, String number) {
+    public ContentShow(Activity context, int table, String number) {
         super(context, table);
         this.number = number;
     }
@@ -62,7 +63,8 @@ public class ContentShow extends PhoneShow {
 
     @Override
     public void DeletePhoneElement(Boolean first,String id,String number) {
-        refresh();
+        if(!refresh())
+            context.finish();
         sPhoneAdapter.notifyDataSetChanged();
     }
 

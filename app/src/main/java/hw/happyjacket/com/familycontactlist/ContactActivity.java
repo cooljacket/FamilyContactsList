@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -23,7 +24,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import android.widget.Toolbar;
+import android.support.v7.widget.Toolbar;
 
 //import android.support.v7.widget.Toolbar;
 
@@ -58,6 +59,7 @@ public class ContactActivity extends AppCompatActivity{
     private HashMap<String,Object> data;
     private int uid;
     private Bitmap picture;
+    private DBHelper mDBHelper;
     private android.support.v7.widget.Toolbar mToolbar;
 
 
@@ -69,6 +71,7 @@ public class ContactActivity extends AppCompatActivity{
         head = (CollapsingToolbarLayout) findViewById(R.id.contact_toolbar_layout);
         final Intent intent = getIntent();
         data = (HashMap)intent.getSerializableExtra("data");
+        mDBHelper = new DBHelper(this);
         showDetail();
 
     }
@@ -76,8 +79,11 @@ public class ContactActivity extends AppCompatActivity{
     private void showDetail(){
         name = (String)data.get("contactName");
         contactID = (int)data.get("contactID");
-        mToolbar = (android.support.v7.widget.Toolbar) findViewById(R.id.contact_toolbar);
+        Bitmap bitmap = (Bitmap) data.get("contactPhoto");
+        mToolbar = (Toolbar) findViewById(R.id.contact_toolbar);
         setSupportActionBar(mToolbar);
+
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,7 +95,7 @@ public class ContactActivity extends AppCompatActivity{
         head.setTitle(name);
         uid = (int) data.get("UserID");
 
-        mContactShow = new ContactShow(this,R.layout.call_log_list);
+        mContactShow = new ContactShow(this, R.layout.call_log_list, name);
         mContactShow.getPhoneList().setDb("contact");
         mContactShow.getPhoneList().setTable("user");
         mContactShow.InitAdapter(new XiaoMiAccessory(), new String[]{"mobilephone"}, "uid" + " = ? ", new String[]{"" + uid}, null);
@@ -117,46 +123,75 @@ public class ContactActivity extends AppCompatActivity{
                         mContactShow.setInBlackList(!mContactShow.isInBlackList());
                         mContactShow.notifyDataSetChanged();
                         break;
-                    case 4://删除联系人
-//                        new BlackListMaster(ContactActivity.this).delete(mContactShow.getNumber());
-                        AlertDialog.Builder builder = new AlertDialog.Builder(ContactActivity.this);
-//        builder.setMessage(msg);
-                        builder.setTitle("是否删除联系人 "+name);
-                        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                //dialog.dismiss();
-                            }
-                        });
-                        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                int Userid = (int) data.get("UserID");
-                                DBHelper helper =new DBHelper(ContactActivity.this.getApplicationContext());
-                                User user =new User();
-                                user.uid=Userid;
-                                helper.deleteUser(user);//数据库里删除
-
-                                Intent datas = new Intent();
-                                HashMap<String,Object> newdata = new HashMap<String,Object>();
-                                newdata.put("delete",1);
-                                newdata.put("contactName", "321");
-                                newdata.put("contactPhoto", picture);
-                                newdata.put("contactSortname", data.get("contactSortname"));
-                                newdata.put(PhoneDictionary.Photo,data.get(PhoneDictionary.Photo));
-                                datas.putExtra(PhoneDictionary.OTHER, newdata);
-                                setResult(PhoneDictionary.CONTAT_ACTION_START, datas);//不管有没修改都要更新数据
-
-                                Toast.makeText(ContactActivity.this,"remove "+10, Toast.LENGTH_SHORT).show();
+//<<<<<<< HEAD
+//                    case 4://删除联系人
+////                        new BlackListMaster(ContactActivity.this).delete(mContactShow.getNumber());
+//                        AlertDialog.Builder builder = new AlertDialog.Builder(ContactActivity.this);
+////        builder.setMessage(msg);
+//                        builder.setTitle("是否删除联系人 "+name);
+//                        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                //dialog.dismiss();
+//                            }
+//                        });
+//                        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                int Userid = (int) data.get("UserID");
+//                                DBHelper helper =new DBHelper(ContactActivity.this.getApplicationContext());
+//                                User user =new User();
+//                                user.uid=Userid;
+//                                helper.deleteUser(user);//数据库里删除
+//
+//                                Intent datas = new Intent();
+//                                HashMap<String,Object> newdata = new HashMap<String,Object>();
+//                                newdata.put("delete",1);
+//                                newdata.put("contactName", "321");
+//                                newdata.put("contactPhoto", picture);
+//                                newdata.put("contactSortname", data.get("contactSortname"));
+//                                newdata.put(PhoneDictionary.Photo,data.get(PhoneDictionary.Photo));
+//                                datas.putExtra(PhoneDictionary.OTHER, newdata);
+//                                setResult(PhoneDictionary.CONTAT_ACTION_START, datas);//不管有没修改都要更新数据
+//
+//                                Toast.makeText(ContactActivity.this,"remove "+10, Toast.LENGTH_SHORT).show();
+//                                finish();
+//
+//                            }
+//                        });
+//                        AlertDialog ad = builder.create();
+//                        ad.show();
+//
+//=======
+                    case 4:
+//                        AlertDialog.Builder builder = new AlertDialog.Builder(ContactActivity.this);
+////        builder.setMessage(msg);
+//                        builder.setTitle("是否删除联系人 "+name);
+//                        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                //dialog.dismiss();
+//                            }
+//                        });
+//                        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+                                User user = new User();
+                                user.uid = uid;
+                                mDBHelper.deleteUser(user);
+                                Intent intent = new Intent();
+                                intent.putExtra(TabContactsFragment.DELETE, true);
+                                intent.putExtra(TabContactsFragment.POS, (int) data.get(TabContactsFragment.POS));
+                                setResult(PhoneDictionary.CONTACT_DELETE, intent);//不管有没修改都要更新数据
                                 finish();
+//
+//                            }
+//                        });
 
-                            }
-                        });
-                        AlertDialog ad = builder.create();
-                        ad.show();
-
+//>>>>>>> 736707cd64d60cbe186bd744017b192e9c3072c5
                         break;
                     case 5:
+
                         break;
                     default:
                         break;
@@ -169,10 +204,9 @@ public class ContactActivity extends AppCompatActivity{
     public void onBackPressed() {
 
         Intent datas = new Intent();
-//        this.data = getChanged();
         HashMap<String,Object> newdata = new HashMap<String,Object>();
         newdata.put("delete",0);
-        newdata.put("contactName", "123");
+        newdata.put("contactName", name);
         newdata.put("contactPhoto", picture);
         newdata.put("contactSortname", this.data.get("contactSortname"));
         newdata.put(PhoneDictionary.Photo,data.get(PhoneDictionary.Photo));
@@ -183,6 +217,8 @@ public class ContactActivity extends AppCompatActivity{
 
     @Override
     protected void onDestroy() {
+
+
 
         mContactShow.destroy();
         PhoneRegister.unRegister(mContactShow.getIndex());

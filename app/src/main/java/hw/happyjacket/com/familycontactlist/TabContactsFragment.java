@@ -23,11 +23,9 @@ import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 import java.util.Vector;
 
-import hw.happyjacket.com.familycontactlist.extention.ChineseWord;
 import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.TabContactAdapter;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
@@ -40,9 +38,12 @@ public class TabContactsFragment extends Fragment {
     public static String NAME = "contactName";
     public static String PHOTO = "contactPhoto";
     public static String SORTNAME = "contactSortname";
+    public static String DELETE = "contactDelete";
+    public static String POS = "contactPos";
+    public static final String DataBaseLock = "lock";
     private Context mContext;
     private ListView listview;
-    private Vector<HashMap<String,Object> > AL;
+    private Vector<HashMap<String, Object> > AL;
     private int positionNew;
     private DBHelper dbHelper = null;
     private SQLiteDatabase db = null;
@@ -133,6 +134,15 @@ public class TabContactsFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    public void delete(int pos){
+        if(0 <= pos && pos < AL.size()){
+            AL.remove(pos);
+        }
+        for(int i = 0 ; i < AL.size(); ++i)
+            AL.get(i).put(POS,i);
+        adapter.notifyDataSetChanged();
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {//useless
@@ -162,14 +172,20 @@ public class TabContactsFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mContext = getContext();
 
+
         new Thread(new Runnable() {
             @Override
             public void run() {
                 dbHelper = new DBHelper(mContext);
                 db = dbHelper.openDatabase();
+                Group group = new Group();
+                group.groupname="家庭";
+                group.groupnum=0;
+                dbHelper.initGroup(group);
                 getCircles();
+                TheFirstTimeInit();
                 AL = getPhoneContacts();
-                Log.d("ddd","liebiao");
+//                Log.d("ddd","liebiao");
                 sortList();
                 dbHelper.close();
                 loadList();
@@ -183,7 +199,6 @@ public class TabContactsFragment extends Fragment {
         super.onStart();
     }
 
-
     private void getCircles() {
         Bitmap a;
         for(int i=0; i<31; i++){
@@ -192,24 +207,7 @@ public class TabContactsFragment extends Fragment {
         }
     }
 
-
     private void sortList(){
-        // 选择排序——bad
-//        for(int i=0;i<AL.size();i++){
-//            String smallest =(String) ((HashMap)AL.get(i)).get("contactSortname");
-//            int key_idx = i;
-//            for(int j=i+1;j<AL.size();j++){
-//                String now =(String) ((HashMap)AL.get(j)).get("contactSortname");
-//                if (smallest.compareToIgnoreCase(now) > 0) {
-//                    smallest = now;
-//                    key_idx = j;
-//                }
-//            }
-//
-//            HashMap tmp = AL.get(i);
-//            AL.setElementAt(AL.get(key_idx), i);
-//            AL.setElementAt(tmp, key_idx);
-//        }
         // 使用插入排序，虽然时间复杂度在列表无序时是O(n^2)
         // 但是有利于修改名字时将新的名字插入到已经有序的列表中，时间复杂度为O(n)
         for (int i = 1; i < AL.size(); ++i) {
@@ -224,10 +222,14 @@ public class TabContactsFragment extends Fragment {
             }
             AL.setElementAt(copy, cut_in+1);
         }
-        Log.d("ddd","sort");
+//<<<<<<< HEAD
+//        Log.d("ddd","sort");
+//=======
+        for (int i = 0 ; i < AL.size(); ++i){
+            AL.get(i).put(POS,i);
+        }
+//>>>>>>> 736707cd64d60cbe186bd744017b192e9c3072c5
     }
-
-
 
     private void loadList() {
         for(int i = 0 ; i < AL.size() ; ++i) {
@@ -259,49 +261,58 @@ public class TabContactsFragment extends Fragment {
 
     }
 
+    public void TheFirstTimeInit(){
+        synchronized (DataBaseLock) {
+            ContentResolver resolver1 = mContext.getContentResolver();
+            SharedPreferences pref = mContext.getSharedPreferences(SHARE_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = pref.edit();
+            String contactName;
+            int contactid;
+            String contactID;
+            String contactPhone;
+            Cursor cursor;
+            String contactSortname;
+            int first = pref.getInt(The_First_Time, -1);
+            if (first == -1) {
+                Cursor phoneCursor = resolver1.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, PHONES_PROJECTION, null, null, null);
+                if (phoneCursor != null) {
+                    while (phoneCursor.moveToNext()) {
+                        //得到联系人名称
+                        contactName = phoneCursor.getString(PHONES_DISPLAY_NAME_INDEX);
 
-    //        /**得到手机通讯录联系人信息**/
+                        //得到联系人ID
+                        contactid = phoneCursor.getInt(PHONES_CONTACT_ID_INDEX);
+                        contactID = phoneCursor.getString(PHONES_CONTACT_ID_INDEX);
+                        contactPhone = phoneCursor.getString(PHONES_NUMBER_INDEX);
+                        contactSortname = CommonSettingsAndFuncs.convertToShortPinyin(mContext, contactName);
+                        cursor = db.query("user", null, "cid = " + contactID, null, null, null, null);
+                        if (!cursor.moveToFirst()) {
+                            User user = new User();
+                            user.cid = contactid;
+                            user.name = contactName;
+                            user.sortname = contactSortname;
+                            user.mobilephone = contactPhone.replace(" ","").replace("+86","").replace("+","");
+                            user.groupname = "无";
+                            user.nickname = "";
+                            Random random = new Random();
+                            user.photo = random.nextInt(31);
+                            dbHelper.insertAUser(user);
+                        }
+                        cursor.close();
+                    }
+                    phoneCursor.close();
+                }
+                editor.putInt(The_First_Time, 1);
+                editor.commit();
+            }
+        }
+
+    }
+
+    // 得到手机通讯录联系人信息
     public Vector<HashMap<String,Object>> getPhoneContacts() {
-
         ContentResolver resolver1 = mContext.getContentResolver();
         // 获取手机联系人
-        SharedPreferences pref = mContext.getSharedPreferences(SHARE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor  = pref.edit();
-        int first = pref.getInt(The_First_Time, -1);
-        if(first == -1) {
-            Cursor phoneCursor = resolver1.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, PHONES_PROJECTION, null, null, null);
-            if (phoneCursor != null) {
-                while (phoneCursor.moveToNext()) {
-                    //得到联系人名称
-                    String contactName = phoneCursor.getString(PHONES_DISPLAY_NAME_INDEX);
-
-                    //得到联系人ID
-                    int contactid = phoneCursor.getInt(PHONES_CONTACT_ID_INDEX);
-                    String contactID = phoneCursor.getString(PHONES_CONTACT_ID_INDEX);
-                    String contactPhone = phoneCursor.getString(PHONES_NUMBER_INDEX);
-
-                    Cursor cursor;
-                    String contactSortname = CommonSettingsAndFuncs.convertToPinyin(mContext, contactName);
-                    cursor = db.query("user", null, "cid = " + contactID, null, null, null, null);
-                    if (!cursor.moveToFirst()) {
-                        User user = new User();
-                        user.cid = contactid;
-                        user.name = contactName;
-                        user.sortname = contactSortname;
-                        user.mobilephone = contactPhone;
-                        user.groupname = "无";
-                        user.nickname = "";
-                        Random random = new Random();
-                        user.photo = random.nextInt(31);
-                        dbHelper.insertAUser(user);
-                    }
-                    cursor.close();
-                }
-                phoneCursor.close();
-            }
-            editor.putInt(The_First_Time,1);
-            editor.commit();
-        }
 
         Cursor cursor = db.query("user", null, null, null, null, null, null);
         if (cursor != null){
@@ -326,4 +337,9 @@ public class TabContactsFragment extends Fragment {
         return contacts;
     }
 
+    // 追加新插入的用户到AL的尾部，然后插入排序，最后notify一下adapter
+    public void AddNewUser(Vector<User> newUsers) {
+        sortList();
+        adapter.notifyDataSetChanged();
+    }
 }

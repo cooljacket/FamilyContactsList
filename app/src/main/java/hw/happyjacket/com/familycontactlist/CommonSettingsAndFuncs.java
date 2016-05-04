@@ -6,6 +6,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.util.Xml;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -29,6 +32,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
+import jpinyin.stuxuhai.github.com.ChineseHelper;
 import jpinyin.stuxuhai.github.com.PinyinHelper;
 
 /**
@@ -37,8 +41,9 @@ import jpinyin.stuxuhai.github.com.PinyinHelper;
 public class CommonSettingsAndFuncs {
     public final static String HostURL = "http://webservice.webxml.com.cn";
     public final static String GetWeatherURLFormat = "/WebServices/WeatherWS.asmx/getWeather?theCityCode=%s&theUserID=";
-    public final static String Spliter = "&&";
+    public final static String Spliter = "||||";
     public static String FileHeader;
+    public static final int NUMBER_INPUT = 0, CHINESE_INPUT = 1, EN_INPUT = 2, UNKNOWN = -1;
 
     // 将字符串转换成指定的字符集格式（这里用到的是utf8）
     public static String changeCharset(String str, String newCharset) {
@@ -48,7 +53,6 @@ public class CommonSettingsAndFuncs {
                 String newStr = "";
                 for (int i = 0; i < bytes.length; ++i)
                     newStr += String.format("%%%X", bytes[i]);
-                Log.d("response newStr", newStr);
                 return newStr;
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
@@ -76,11 +80,9 @@ public class CommonSettingsAndFuncs {
         return contents;
     }
 
-    public static String ParseWeatherXML(InputStream xml) throws XmlPullParserException, IOException {
+    public static String[] ParseWeatherXML(InputStream xml) throws XmlPullParserException, IOException {
         try {
             ArrayList<String> weather = ParseXMLHelper(xml);
-            for (int i = 0; i < weather.size(); ++i)
-                Log.d("index " + i, weather.get(i));
             String location = weather.get(1);
             String wea = weather.get(7).split(" ")[1];
             String temperature = weather.get(8);
@@ -92,10 +94,12 @@ public class CommonSettingsAndFuncs {
             if (m.find())
                 content = m.group(2) + "；" + m.group(4) + "；" + m.group(7);
 
-            for (int i = 1; i <= m.groupCount(); ++i)
-                Log.d("index " + i, m.group(i));
+            String[] result = new String[] {
+                    String.format("%%s，今天%s%s，气温%s，%s%s。注意好身体，爱你们。", location, wea, temperature, sun, content).replaceAll("您", ""),
+                    location, wea, temperature, sun, content
+            };
 
-            return String.format("%s，今天%s%s，气温%s，%s%s。注意好身体，爱你们。", location, wea, temperature, sun, content).replaceAll("您", "");
+            return result;
         }
         catch (Exception e){
             e.printStackTrace();
@@ -103,12 +107,11 @@ public class CommonSettingsAndFuncs {
         return null;
     }
 
-
-    public static String ExportContacts(Context context, String dirName) {
+    public static void ExportContacts(Context context, String dirName) {
         DBHelper dbHelper = new DBHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         if (!db.isOpen())
-            return null;
+            return ;
 
         Cursor cursor = db.query(DBHelper.DB_TABLENAME, null, null, null, null, null, null);
         int name_idx = cursor.getColumnIndex("name");
@@ -118,29 +121,30 @@ public class CommonSettingsAndFuncs {
         int groupname_idx = cursor.getColumnIndex("groupname");
         int info_idx = cursor.getColumnIndex("info");
 
-
         FileOutputStream out = null;
         BufferedWriter writer = null;
         SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        String date  = sDateFormat.format(new java.util.Date());
+        String date = sDateFormat.format(new java.util.Date());
         String fileName = dirName + File.separator + date + randomString(6) + ".txt";
-        Log.d("hehe", fileName);
+        JSONObject AllContacts = new JSONObject();
+        JSONArray data = new JSONArray();
 
         try {
             out = new FileOutputStream(fileName);
             writer = new BufferedWriter(new OutputStreamWriter(out));
 
             while (cursor.moveToNext()) {
-                List<String> data = new ArrayList<>();
-                data.add(cursor.getString(name_idx));
-                data.add(cursor.getString(sortname_idx));
-                data.add(cursor.getString(mobilephone_idx));
-                data.add("" + cursor.getInt(photo_idx));
-                data.add(cursor.getString(groupname_idx));
-                data.add(cursor.getString(info_idx));
-                writer.write(joinStrs(data, CommonSettingsAndFuncs.Spliter));
+                JSONObject one = new JSONObject();
+                one.put("name", cursor.getString(name_idx));
+                one.put("sortname", cursor.getString(sortname_idx));
+                one.put("mobilephone", cursor.getString(mobilephone_idx));
+                one.put("photo", cursor.getInt(photo_idx));
+                one.put("groupname", cursor.getString(groupname_idx));
+                one.put("info", cursor.getString(info_idx));
+                data.put(one);
             }
 
+            writer.write(data.toString());
             writer.flush();
             writer.close();
         } catch (Exception e) {
@@ -149,8 +153,6 @@ public class CommonSettingsAndFuncs {
             db.close();
             dbHelper.close();
         }
-
-        return fileName;
     }
 
     public static Vector<User> ImportContacts(Context context, String fileName) {
@@ -162,15 +164,32 @@ public class CommonSettingsAndFuncs {
         try {
             input = new FileInputStream(fileName);
             reader = new BufferedReader(new InputStreamReader(input));
+            StringBuffer buf = new StringBuffer();
             String line;
+
             while ((line = reader.readLine()) != null) {
-                String[] data = line.split(CommonSettingsAndFuncs.Spliter);
-                for (int i = 0; i < data.length; ++i)
-                    if (data[i].equals("null"))
-                        data[i] = "";
-                User user = dbHelper.insertFromStrings(data);
-                if (user != null)
+                buf.append(line);
+            }
+
+            JSONTokener jsonParser = new JSONTokener(buf.toString());
+            JSONArray data = (JSONArray) jsonParser.nextValue();
+            User user = new User();
+
+            for (int i = 0; i < data.length(); ++i) {
+                JSONObject one = (JSONObject) data.get(i);
+                user.name = one.getString("name");
+                user.sortname = one.getString("sortname");
+                user.mobilephone = one.getString("mobilephone");
+                user.photo = one.getInt("photo");
+                user.groupname = one.getString("groupname");
+                if (one.has("info"))
+                    user.info = one.getString("info");
+
+                // 不知道为什么，10086删除后，还在？
+                if (dbHelper.insertAUser(user)) {
                     newUsers.add(user);
+                    Log.d("haha-new", user.name + ", " + user.mobilephone);
+                }
             }
 
             if (reader != null)
@@ -203,11 +222,10 @@ public class CommonSettingsAndFuncs {
         return buffer.toString();
     }
 
-    public static String convertToPinyin(Context context, String str) {
+    public static String convertToShortPinyin(Context context, String str) {
         PinyinHelper.getInstance(context);
-        return PinyinHelper.convertToPinyinString(str, "");
+        return PinyinHelper.getShortPinyin(str);
     }
-
 
     private static int[] calNext(String pattern) {
         if(pattern == null || pattern.equals(""))
@@ -226,7 +244,7 @@ public class CommonSettingsAndFuncs {
         return next;
     }
 
-    public static int KMP_match(String text, String pattern) {
+    public static boolean KMP_match(String text, String pattern) {
         int[] next = calNext(pattern);
         int i = 0, j = 0, pLen = pattern.length(), tLen = text.length();
 
@@ -240,38 +258,62 @@ public class CommonSettingsAndFuncs {
             }
         }
 
-        return j == pLen ? i : -1;
+        return j == pLen;
     }
 
-    public static boolean REGX_match(String text, String pattern) {
-        Pattern p = Pattern.compile(pattern);
-        Matcher matcher = p.matcher(text);
-        return matcher.find();
-    }
-
-    public static Vector<Integer> SearchThem(List<HashMap<String, String> > data, String pattern) {
+    public static Vector<Integer> SearchAmongRecords(List<HashMap<String, String>> data, String pattern) {
         Vector<Integer> result = new Vector<>();
-        Vector<Integer> sorts = new Vector<>();
-        int t;
-        boolean pass;
+
         for (int i = 0; i < data.size(); ++i) {
             String phoneNumber = data.get(i).get(PhoneDictionary.NUMBER);
-            if ((t = KMP_match(phoneNumber, pattern))!=-1) {
-                pass = false;
-                for(int j = 0 ; j < sorts.size(); ++j) {
-                   if(t < sorts.get(j)){
-                       result.insertElementAt(i,j);
-                       sorts.insertElementAt(t,j);
-                       pass = true;
-                       break;
-                   }
-                }
-                if(!pass) {
-                    result.add(i);
-                    sorts.add(t);
-                }
+            if (KMP_match(phoneNumber, pattern)) {
+                result.add(i);
             }
+        }
+
+        return result;
+    }
+
+    public static Vector<Integer> SearchAmongContacts(List<User> data, String pattern) {
+        Vector<Integer> result = new Vector<>();
+        int input_type = JudgePatternType(pattern);
+        if (input_type == EN_INPUT)
+            pattern = pattern.toLowerCase();
+
+        for (int i = 0; i < data.size(); ++i) {
+            User user = data.get(i);
+            switch (input_type) {
+                case NUMBER_INPUT:
+                    if (KMP_match(user.mobilephone, pattern))
+                        result.add(i);
+                    break;
+                case CHINESE_INPUT:
+                    if (KMP_match(user.name, pattern))
+                        result.add(i);
+                    break;
+                case EN_INPUT:
+                    if (KMP_match(user.sortname, pattern))
+                        result.add(i);
+                    break;
+                default:
+                    break;
+            }
+
         }
         return result;
     }
+
+    public static int JudgePatternType(String pattern) {
+        if (pattern == null)
+            return UNKNOWN;
+
+        char ch = pattern.charAt(0);
+        if (ch >= '0' && ch <= '9')
+            return NUMBER_INPUT;
+        if (ChineseHelper.isChinese(ch))
+            return CHINESE_INPUT;
+        return EN_INPUT;
+    }
+
+
 }

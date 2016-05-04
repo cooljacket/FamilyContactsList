@@ -1,7 +1,11 @@
 package hw.happyjacket.com.familycontactlist.myphonebook.show;
 
+import android.app.Activity;
 import android.content.Context;
-import android.util.Log;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 
 import hw.happyjacket.com.familycontactlist.extention.Accessory;
 import hw.happyjacket.com.familycontactlist.extention.Decorate;
@@ -11,10 +15,6 @@ import hw.happyjacket.com.familycontactlist.phone.list.PhoneList;
 import hw.happyjacket.com.familycontactlist.phone.list.RecordList;
 import hw.happyjacket.com.familycontactlist.phone.phonelistener.PhoneLocationThread;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Vector;
-
 /**
  * Created by root on 16-3-27.
  */
@@ -22,7 +22,7 @@ import java.util.Vector;
 //connect the data between listview and phonelist
 public abstract class PhoneShow {
 
-    final Context context;
+    final Activity context;
     final int index;
     final static int CACHE_SIZE = 200;
     final static String TAG = PhoneShow.class.toString();
@@ -34,7 +34,7 @@ public abstract class PhoneShow {
     protected Decorate mDecorate;
     protected HashMap<String,Integer> nmapp = new HashMap<>(); //the map between number and position
 
-    public PhoneShow(Context context,int table){
+    public PhoneShow(Activity context,int table){
         this.context = context;
         this.table = table;
         phoneList = new RecordList(context);
