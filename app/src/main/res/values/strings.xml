@@ -10,4 +10,5 @@
     <string name="action_push_to_cloud">导出到云端</string>
     <string name="action_pull_from_cloud">从云端导入</string>
     <string name="action_family_money">亲情余额</string>
+    <string name="action_add_contact">添加联系人</string>
 </resources>

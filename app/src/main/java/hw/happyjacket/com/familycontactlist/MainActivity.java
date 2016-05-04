@@ -194,6 +194,9 @@ public class MainActivity extends AppCompatActivity {
                 // do some settings...
                 Toast.makeText(MainActivity.this, "" + mRecordTab.getTimeStamp("18819461579"), Toast.LENGTH_SHORT).show();
                 return true;
+            case R.id.action_add_contact:
+                Toast.makeText(MainActivity.this, "添加联系人", Toast.LENGTH_SHORT).show();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
