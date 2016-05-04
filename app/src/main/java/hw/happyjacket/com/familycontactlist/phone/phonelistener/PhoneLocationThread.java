@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -35,7 +34,7 @@ public class PhoneLocationThread {
         final PhoneLocationMaster PLMaster = new PhoneLocationMaster(context);
         final Vector<HashMap<String, String> > locations = new Vector<>();
         int ACCESS_NETWORK_COUNT = 0;
-        int count = 0;
+
         for ( int y = 0 ; y < phoneNumberList.size() ; y++) {
             if(!flag)
                 break;
@@ -50,13 +49,12 @@ public class PhoneLocationThread {
                 locations.add(tmp);
                 continue ;
             }
-            Log.i("che",count + "");
+
             String LocationURL = String.format("%s/WebServices/MobileCodeWS.asmx/getMobileCodeInfo?mobileCode=%s&userID=", HostURL, phoneNumber);
             HttpConnectionUtil.get(LocationURL, new HttpConnectionUtil.HttpCallbackListener() {
                 @Override
                 public void onFinish(String response) {
                     response = response.replaceAll("<[^>]+>", "");
-                    Log.d("hehe-response", phoneNumber + " " + response);
                     int state = PhoneLocationDBHelper.CACHED;
 
                     // if there is no location for the querying phonenumber
@@ -66,10 +64,13 @@ public class PhoneLocationThread {
                     } else if (response.contains("http")) {
                         state = PhoneLocationDBHelper.ERROR;
                     }
-                    Log.i("locationm",response);
+                    Log.i("locationm", response);
                     PLMaster.add(phoneNumber, response, state);
+                    String[] cache = PLMaster.get(phoneNumber);
+                    if (cache == null || cache.length < 3)
+                        return ;
                     HashMap<String, String> tmp = new HashMap<>();
-                    tmp.put(phoneNumber, PLMaster.get(phoneNumber)[2]);
+                    tmp.put(phoneNumber, cache[2]);
                     locations.add(tmp);
                 }
 

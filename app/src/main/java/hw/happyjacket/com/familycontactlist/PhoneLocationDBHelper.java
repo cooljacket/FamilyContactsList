@@ -3,7 +3,6 @@ package hw.happyjacket.com.familycontactlist;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 /**
  * Created by jacket on 2016/4/11.
@@ -34,7 +33,6 @@ public class PhoneLocationDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_LOCATION);
-        Log.d("db-create", CREATE_LOCATION);
     }
 
     @Override

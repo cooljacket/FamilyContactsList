@@ -3,6 +3,7 @@ package hw.happyjacket.com.familycontactlist;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -17,17 +18,22 @@ public class PhoneLocationMaster {
         mOpenHelper = PhoneLocationDBHelper.getInstance(context);
     }
 
-    // a string like "18819461579：广东 广州 广东移动全球通卡"
+    // data is a string like "18819461579：广东 广州 广东移动全球通卡"
     public boolean add(String phoneNumber, String data, int state) {
+        if (state == PhoneLocationDBHelper.ERROR)
+            return false;
         SQLiteDatabase db = mOpenHelper.getWritableDatabase();
         if (!db.isOpen())
             return false;
 
-        Log.i("locationMaster",data);
-
         ContentValues values = addHelper(phoneNumber, data, state);
-
-        long result = db.insert(PhoneLocationDBHelper.TABLE_NAME, null, values);
+        long result = 0;
+        try {
+            result = db.insert(PhoneLocationDBHelper.TABLE_NAME, null, values);
+        } catch (SQLiteConstraintException e) {
+//            e.printStackTrace();
+            Log.d("hehe", "SQLiteConstriant error");
+        }
 
         return result != -1;
     }
@@ -68,6 +74,7 @@ public class PhoneLocationMaster {
 //        return_btn result;
 //    }
 
+
     public String[] get(String phoneNumber) {
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
 
@@ -86,7 +93,6 @@ public class PhoneLocationMaster {
         String city = cursor.getString(cursor.getColumnIndex("city"));
         String card_type = cursor.getString(cursor.getColumnIndex("card_type"));
         cursor.close();
-        Log.i("chehe", phoneNumber + " " + city + " ");
         return new String[]{province, city, card_type};
     }
 }

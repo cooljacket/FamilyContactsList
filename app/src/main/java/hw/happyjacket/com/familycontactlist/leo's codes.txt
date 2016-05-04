@@ -631,3 +631,107 @@ public class TabContactsFragment extends Fragment {
 
 
 
+
+===========================
+// 测试kmp算法和java的正则库的效率：
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.Random;
+
+
+public class Test {
+    private static final int size = 100000;
+    private static String[] all;
+
+    public static void main(String[] args) {
+        all = new String[size];
+        Random rand = new Random();
+        String pattern = randomStr(rand, 10);
+
+        for (int i = 0; i < size; ++i) {
+            int len = rand.nextInt(50) + 1;
+            all[i] = randomStr(rand, len);
+        }
+
+        String kmp = doIt(pattern, 1, "KMP_match");
+        String regx = doIt(pattern, 2, "REGX_match");
+
+        if (kmp.equals(regx))
+            System.out.println("KMP_match is good with " + size + " samples");
+        else
+            System.out.println("KMP_match is bad with " + size + " samples");
+    }
+
+    public static String randomStr(Random random, int len) {
+        StringBuffer buffer = new StringBuffer();
+        for (int i = 0; i < len; ++i)
+            buffer.append((char)('0' + random.nextInt(10)));
+        return buffer.toString();
+    }
+
+    public static String doIt(String pattern, int kind, String tips) {
+        long startMili = System.currentTimeMillis();// 当前时间对应的毫秒数
+        StringBuffer buf = new StringBuffer();
+        for (int i = 0; i < size; ++i) {
+            boolean result = false;
+            if (kind == 1)
+                result = KMP_match(all[i], pattern);
+            else
+                result = REGX_match(all[i], pattern);
+
+            if (result)
+                buf.append("1");
+            else
+                buf.append("0");
+        }
+
+        long endMili = System.currentTimeMillis();// 当前时间对应的毫秒数
+        System.out.println(tips + " cost time: " + (endMili - startMili) + "\n");
+
+        return buf.toString();
+    }
+
+    private static int[] calNext(String pattern) {
+        int j = 0, k = -1, pLen = pattern.length();
+        int[] next = new int[pLen];
+        next[0] = -1;
+
+        while (j < pLen-1) {
+            if (k == -1 || pattern.charAt(k) == pattern.charAt(j))
+                next[++j] = ++k;
+            else
+                k = next[k];
+        }
+
+        return next;
+    }
+
+    public static boolean KMP_match(String text, String pattern) {
+        if (text.length() < pattern.length())
+            return false;
+
+        int[] next = calNext(pattern);
+        int i = 0, j = 0, pLen = pattern.length(), tLen = text.length();
+
+        while (j < pLen && i < tLen) {
+            if (j == -1 || text.charAt(i) == pattern.charAt(j)) {
+                ++i;
+                ++j;
+            }
+            else {
+                j = next[j];
+            }
+        }
+
+        return j == pLen;
+    }
+
+    public static boolean REGX_match(String text, String pattern) {
+        Pattern p = Pattern.compile(pattern);
+        Matcher matcher = p.matcher(text);
+        return matcher.find();
+    }
+}
+
+
+
