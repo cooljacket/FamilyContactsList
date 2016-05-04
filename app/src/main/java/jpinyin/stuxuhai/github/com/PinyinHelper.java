@@ -1,6 +1,7 @@
 package jpinyin.stuxuhai.github.com;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.util.LinkedHashSet;
 import java.util.Map;

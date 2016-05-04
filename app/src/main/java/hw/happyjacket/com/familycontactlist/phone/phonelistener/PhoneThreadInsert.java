@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 import hw.happyjacket.com.familycontactlist.phone.database.DataBase;
 
 import java.util.HashMap;
@@ -42,8 +43,8 @@ public class PhoneThreadInsert implements Runnable {
             for(HashMap<String,String> i : data) {
                 contentValues.clear();
                 for(Map.Entry<String,String> j : i.entrySet())
-                    contentValues.put(j.getKey(),j.getValue());
-                sqLiteDatabase.insert(table,null,contentValues);
+                    contentValues.put(j.getKey(), j.getValue());
+                sqLiteDatabase.insert(table, null, contentValues);
             }
             sqLiteDatabase.close();
             dataBase.close();

@@ -21,9 +21,10 @@ import hw.happyjacket.com.familycontactlist.myphonebook.show.PhoneRegister;
 import hw.happyjacket.com.familycontactlist.myphonebook.show.PhoneShow;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 
-/**
+/*
  * Created by root on 16-4-8.
- */
+*/
+
 public class InitService extends Service {
 
     private PhoneLocationMaster PLMaster = new PhoneLocationMaster(this);
@@ -58,9 +59,9 @@ public class InitService extends Service {
                         }
                         final String HostURL = "http://webservice.webxml.com.cn";
                         String LocationURL = String.format("%s/WebServices/MobileCodeWS.asmx/getMobileCodeInfo?mobileCode=%s&userID=", HostURL, phoneNumber);
-                        HttpConnectionUtil.get(LocationURL, new HttpConnectionUtil.HttpCallbackListener() {
+                        HttpConnectionUtil.get(LocationURL, null, new HttpConnectionUtil.HttpCallbackListener() {
                             @Override
-                            public void onFinish(String response) {
+                            public void onFinish(String response, String arg) {
                                 response = response.replaceAll("<[^>]+>", "");
                                 int state = PhoneLocationDBHelper.CACHED;
 

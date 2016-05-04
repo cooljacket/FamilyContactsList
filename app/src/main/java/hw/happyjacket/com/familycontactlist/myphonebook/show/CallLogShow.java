@@ -1,5 +1,6 @@
 package hw.happyjacket.com.familycontactlist.myphonebook.show;
 
+import android.app.Activity;
 import android.content.Context;
 
 import hw.happyjacket.com.familycontactlist.extention.Accessory;
@@ -15,7 +16,7 @@ import java.util.HashMap;
  */
 public class CallLogShow extends PhoneShow {
 
-    public CallLogShow(Context context, int table) {
+    public CallLogShow(Activity context, int table) {
         super(context,table);
     }
 

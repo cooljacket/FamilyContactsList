@@ -13,22 +13,24 @@ import java.net.URL;
  * Created by jacket on 2016/4/11.
  */
 public class HttpConnectionUtil {
+    private static String arg;
+
     public interface HttpCallbackListener {
-        void onFinish(String response);
+        void onFinish(String response, String number);
         void onError(Exception e);
     }
 
-    public static void get(final String address, final HttpCallbackListener listener) {
+    public static void get(final String address, final String[] args, final HttpCallbackListener listener) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                getIt(address, listener);
+                getIt(address, args, listener);
             }
 
         }).start();
     }
 
-    public static void getIt(final String address, final HttpCallbackListener listener) {
+    public static void getIt(final String address, final String[] args, final HttpCallbackListener listener) {
         HttpURLConnection conn = null;
         try {
             URL url = new URL(address);
@@ -46,7 +48,10 @@ public class HttpConnectionUtil {
                 while ((line = reader.readLine()) != null)
                     response.append(line);
                 if (listener != null) {
-                    listener.onFinish(response.toString());
+                    if (args == null)
+                        listener.onFinish(response.toString(), "");
+                    else
+                        listener.onFinish(response.toString(), args[0]);
                 }
             } else {
                 throw new NetworkErrorException("response status is " + responseCode);

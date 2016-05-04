@@ -59,7 +59,8 @@
 
 
         <activity android:name=".ChangePeopleDetail"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/AppTop">
             <intent-filter>
                 <action android:name="android.intent.action.CPD" />
                 <category android:name="android.intent.category.DEFAULT" />

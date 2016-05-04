@@ -1,5 +1,6 @@
 package hw.happyjacket.com.familycontactlist.myphonebook.show;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;
@@ -14,11 +15,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Vector;
 
+import hw.happyjacket.com.familycontactlist.BlackListMaster;
 import hw.happyjacket.com.familycontactlist.CommonSettingsAndFuncs;
 import hw.happyjacket.com.familycontactlist.HttpConnectionUtil;
 import hw.happyjacket.com.familycontactlist.PhoneLocationMaster;
 import hw.happyjacket.com.familycontactlist.extention.Accessory;
 import hw.happyjacket.com.familycontactlist.extention.Decorate;
+import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.CallLogAdapter;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 import hw.happyjacket.com.familycontactlist.phone.phonelistener.PhoneLocationThread;
@@ -30,9 +33,12 @@ public class ContactShow extends PhoneShow {
 
 
     private String number;
-    private String [] defaultList = new String[]{"查找中...","编辑联系人","加入黑名单","从黑名单中移除","删除联系人"};
+    private String name;
+    private String [] defaultList = new String[]{"查找中...","编辑联系人","加入黑名单","删除联系人"};
+    private String [] BlackOption = new String[]{"加入黑名单","从黑名单中移除"};
     private String defaultNumber = "电话";
     private String location;
+    private boolean inBlackList;
 
     private Thread mThread;
     private Handler mHandler = new Handler(){
@@ -42,29 +48,28 @@ public class ContactShow extends PhoneShow {
             switch (msg.what){
                 case 0:
                     if(msg.obj == null || "".equals((location = (String)msg.obj))) {
-                        mPhoneListElementList.get(1).put(PhoneDictionary.DATE,"无信息");
+                        mPhoneListElementList.get(1).put(PhoneDictionary.DATE, "无信息");
                         sPhoneAdapter.notifyDataSetChanged();
                         break;
                     }
                      location = (String) msg.obj;
-                     Log.i("getWeather",location);
+                     Log.i("getWeather", location);
                      new GetWeather(location).execute();
                     break;
                 default:
                     break;
-
             }
         }
     };
 
-    public ContactShow(Context context, int table) {
+    public ContactShow(Activity context, int table) {
         super(context, table);
     }
 
-
-
-
-
+    public ContactShow(Activity context, int table, String name) {
+        super(context, table);
+        this.name = name;
+    }
 
 
     public String getDefaultNumber() {
@@ -89,11 +94,24 @@ public class ContactShow extends PhoneShow {
         return number;
     }
 
+    public boolean isInBlackList() {
+        return inBlackList;
+    }
+
+    public void setInBlackList(boolean inBlackList) {
+        this.inBlackList = inBlackList;
+    }
+
     public void setNumber(String number) {
         this.number = number;
     }
 
     public void notifyDataSetChanged(){
+        if(inBlackList)
+            defaultList[2] = BlackOption[1];
+        else
+            defaultList[2] = BlackOption[0];
+        mPhoneListElementList.get(3).put(PhoneDictionary.DATE,defaultList[2]);
         sPhoneAdapter.notifyDataSetChanged();
     }
 
@@ -111,6 +129,10 @@ public class ContactShow extends PhoneShow {
 
     public Vector<HashMap<String,String>> getDefaultData()
     {
+        if(inBlackList)
+            defaultList[2] = BlackOption[1];
+        else
+            defaultList[2] = BlackOption[0];
         Vector<HashMap<String,String>> data = new Vector<>(1 + defaultList.length);
         HashMap<String,String> numbers = new HashMap<>();
         numbers.put(PhoneDictionary.DATE, number);
@@ -134,7 +156,8 @@ public class ContactShow extends PhoneShow {
         phoneList.setOrderby(orderby);
         phoneList.connectDataBase();
         number = phoneList.getPhoneList().get(0).get("mobilephone");
-        number = number.replace(" ", "").replace("+86","").replace("+", "");
+        number = number.replace(" ", "").replace("+86", "").replace("+", "");
+        inBlackList = new BlackListMaster(context).isInBlackList(number);
         mPhoneListElementList = getDefaultData();
         sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index);
         mThread = new Thread(new Runnable() {
@@ -148,9 +171,7 @@ public class ContactShow extends PhoneShow {
     }
 
      class GetWeather extends AsyncTask<Void, Void, Void> {
-
         private String weatherInfo, location;
-
         public GetWeather (String loc) {
             location = loc;
         }
@@ -159,10 +180,11 @@ public class ContactShow extends PhoneShow {
         protected Void doInBackground(Void... params) {
             String weatherURL = CommonSettingsAndFuncs.HostURL + String.format(CommonSettingsAndFuncs.GetWeatherURLFormat,
                     CommonSettingsAndFuncs.changeCharset(location, "UTF-8"));
-            HttpConnectionUtil.getIt(weatherURL, new HttpConnectionUtil.HttpCallbackListener() {
+            Log.d("hehehe", weatherURL + ", " + location);
+            HttpConnectionUtil.getIt(weatherURL, null, new HttpConnectionUtil.HttpCallbackListener() {
                 @Override
-                public void onFinish(String response) {
-                    Log.i("weather",response);
+                public void onFinish(String response, String arg) {
+                    Log.i("weather", response);
                     weatherInfo = response;
                 }
 
@@ -179,8 +201,10 @@ public class ContactShow extends PhoneShow {
         protected void onPostExecute(Void aVoid) {
             if(weatherInfo == null)
                 return;
+
             try {
-                weatherInfo = CommonSettingsAndFuncs.ParseWeatherXML(new ByteArrayInputStream(weatherInfo.getBytes()));
+                String[] result = CommonSettingsAndFuncs.ParseWeatherXML(new ByteArrayInputStream(weatherInfo.getBytes()));
+                weatherInfo = String.format(result[0], name);
             } catch (XmlPullParserException e) {
                 weatherInfo = "error";
                 e.printStackTrace();

@@ -1,6 +1,7 @@
 package hw.happyjacket.com.familycontactlist.myphonebook.adapter;
 
 import android.content.Context;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
@@ -18,6 +20,9 @@ import java.util.List;
 import java.util.Vector;
 
 import hw.happyjacket.com.familycontactlist.R;
+import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
+import hw.happyjacket.com.familycontactlist.myphonebook.factory.DialogFactory;
+import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 
 /**
  * Created by root on 16-4-16.
@@ -25,6 +30,8 @@ import hw.happyjacket.com.familycontactlist.R;
 public class PeopleInfoAdapter extends ArrayAdapter<String[] > {
 
     private int recourceID;
+    private Handler mHandler;
+    private String TAG = this.getClass().toString();
 
     public PeopleInfoAdapter(Context context, int resource) {
         super(context, resource);
@@ -40,36 +47,25 @@ public class PeopleInfoAdapter extends ArrayAdapter<String[] > {
         super(context,resource,objects);
         recourceID = resource;
     }
+    public PeopleInfoAdapter(Context context, int resource, List<String[]> objects, Handler handler) {
+        super(context, resource, objects);
+        recourceID = resource;
+        mHandler = handler;
+    }
+
+
 
 
     /*由于重用view导致所有监听器都能够访问任何一个文本的变化，所有每次都新建一个view，每个监听器只访问自己的view*/
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         final String[] phoneElement = getItem(position);
         View view;
         MyViewHolder viewHolder;
-        /*if(convertView == null)
-        {*/
-            view = LayoutInflater.from(getContext()).inflate(recourceID, null);
-            viewHolder = new MyViewHolder();
-            viewHolder.name = (TextView) view.findViewById(R.id.people_info_name);
-            viewHolder.content = (EditText) view.findViewById(R.id.people_info_content);
-            view.setTag(viewHolder);
-        /*}*/
-        /*else
-        {
-            view = convertView;
-            viewHolder = (MyViewHolder) view.getTag();
-        }
-
-
-*/
-//        viewHolder.name.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
+        view = LayoutInflater.from(getContext()).inflate(recourceID, null);
+        viewHolder = new MyViewHolder();
+        viewHolder.name = (Button) view.findViewById(R.id.people_info_name);
+        viewHolder.content = (EditText) view.findViewById(R.id.people_info_content);
         viewHolder.name.setText(phoneElement[0]);
         viewHolder.content.setText(phoneElement[1]);
         viewHolder.content.setHint(phoneElement[0]);
@@ -89,11 +85,22 @@ public class PeopleInfoAdapter extends ArrayAdapter<String[] > {
                 phoneElement[1] = s.toString();
             }
         });
+        viewHolder.name.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(position > 0)
+                    DialogFactory.getRadioDialog(getContext(),R.style.Menu, PhoneDictionary.PhoneCallChoices,mHandler,position).show();
+            }
+        });
         return view;
     }
 
+
+
+
     class MyViewHolder{
-        TextView name;
+        Button name;
         EditText content;
+        ImageButton clear;
     }
 }

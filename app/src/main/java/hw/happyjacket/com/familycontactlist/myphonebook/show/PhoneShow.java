@@ -1,5 +1,6 @@
 package hw.happyjacket.com.familycontactlist.myphonebook.show;
 
+import android.app.Activity;
 import android.content.Context;
 
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.Vector;
 import hw.happyjacket.com.familycontactlist.extention.Accessory;
 import hw.happyjacket.com.familycontactlist.extention.Decorate;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.PhoneAdapter;
+import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 import hw.happyjacket.com.familycontactlist.phone.list.PhoneList;
 import hw.happyjacket.com.familycontactlist.phone.list.RecordList;
 import hw.happyjacket.com.familycontactlist.phone.phonelistener.PhoneLocationThread;
@@ -20,7 +22,7 @@ import hw.happyjacket.com.familycontactlist.phone.phonelistener.PhoneLocationThr
 //connect the data between listview and phonelist
 public abstract class PhoneShow {
 
-    final Context context;
+    final Activity context;
     final int index;
     final static int CACHE_SIZE = 200;
     final static String TAG = PhoneShow.class.toString();
@@ -32,7 +34,7 @@ public abstract class PhoneShow {
     protected Decorate mDecorate;
     protected HashMap<String,Integer> nmapp = new HashMap<>(); //the map between number and position
 
-    public PhoneShow(Context context,int table){
+    public PhoneShow(Activity context,int table){
         this.context = context;
         this.table = table;
         phoneList = new RecordList(context);
@@ -97,9 +99,13 @@ public abstract class PhoneShow {
 
 
     public void refresh(Accessory accerssory,String pro[]){
+        Integer t;
         for(int i = 0 ; i < mPhoneListElementList.size() ; i++){
             for (int j = 0; j < pro.length; j++) {
-             mPhoneListElementList.get(i).put(pro[j], accerssory.decorate(pro[j], mPhoneListElementList_backup.get(i).get(pro[j])));
+                if(nmapp != null && ((t = nmapp.get(mPhoneListElementList.get(i).get(PhoneDictionary.NUMBER))) != null))
+                    mPhoneListElementList.get(i).put(pro[j], accerssory.decorate(pro[j], mPhoneListElementList_backup.get(t).get(pro[j])));
+                else
+                    mPhoneListElementList.get(i).put(pro[j], accerssory.decorate(pro[j], mPhoneListElementList_backup.get(j).get(pro[j])));
             }
         }
         sPhoneAdapter.notifyDataSetChanged();

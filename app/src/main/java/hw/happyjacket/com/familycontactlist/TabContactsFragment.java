@@ -22,6 +22,7 @@ import android.widget.ListView;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Vector;
 
@@ -38,6 +39,9 @@ public class TabContactsFragment extends Fragment {
     public static String NAME = "contactName";
     public static String PHOTO = "contactPhoto";
     public static String SORTNAME = "contactSortname";
+    public static String DELETE = "contactDelete";
+    public static String POS = "contactPos";
+    public static final String DataBaseLock = "lock";
     private Context mContext;
     private ListView listview;
     private Vector<HashMap<String,Object> > AL;
@@ -90,9 +94,15 @@ public class TabContactsFragment extends Fragment {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                 positionNew = position;
-                                HashMap map = (HashMap) parent.getItemAtPosition(position);
+                                HashMap<String, Object> map = AL.get(position);
                                 // 当requestCode为3的时候表示请求转向CPD这个页面？？
                                 ContactActivity.actionStart(getActivity(), map);
+                            }
+                        });
+                        listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+                            @Override
+                            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                                return true;
                             }
                         });
                     }
@@ -125,6 +135,15 @@ public class TabContactsFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
+    public void delete(int pos){
+        if(0 <= pos && pos < AL.size()){
+            AL.remove(pos);
+        }
+        for(int i = 0 ; i < AL.size(); ++i)
+            AL.get(i).put(POS,i);
+        adapter.notifyDataSetChanged();
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -151,6 +170,7 @@ public class TabContactsFragment extends Fragment {
                 dbHelper = new DBHelper(mContext);
                 db = dbHelper.openDatabase();
                 getCircles();
+                TheFirstTimeInit();
                 AL = getPhoneContacts();
                 sortList();
                 dbHelper.close();
@@ -194,16 +214,19 @@ public class TabContactsFragment extends Fragment {
         // 使用插入排序，虽然时间复杂度在列表无序时是O(n^2)
         // 但是有利于修改名字时将新的名字插入到已经有序的列表中，时间复杂度为O(n)
         for (int i = 1; i < AL.size(); ++i) {
-            HashMap copy = (HashMap) AL.get(i);
+            HashMap<String,Object> copy =  AL.get(i);
             String now = (String) copy.get("contactSortname");
             int cut_in = i;
             while (--cut_in >= 0) {
-                String pre = (String) ((HashMap)AL.get(cut_in)).get("contactSortname");
+                String pre = (String) (AL.get(cut_in)).get("contactSortname");
                 if (now.compareToIgnoreCase(pre) >= 0)
                     break;
                 AL.setElementAt(AL.get(cut_in), cut_in+1);
             }
             AL.setElementAt(copy, cut_in+1);
+        }
+        for (int i = 0 ; i < AL.size(); ++i){
+            AL.get(i).put(POS,i);
         }
     }
 
@@ -239,6 +262,55 @@ public class TabContactsFragment extends Fragment {
 
     }
 
+    public void TheFirstTimeInit(){
+
+        synchronized (DataBaseLock) {
+            ContentResolver resolver1 = mContext.getContentResolver();
+            SharedPreferences pref = mContext.getSharedPreferences(SHARE_NAME, Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = pref.edit();
+            String contactName;
+            int contactid;
+            String contactID;
+            String contactPhone;
+            Cursor cursor;
+            String contactSortname;
+            int first = pref.getInt(The_First_Time, -1);
+            if (first == -1) {
+                Cursor phoneCursor = resolver1.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, PHONES_PROJECTION, null, null, null);
+                if (phoneCursor != null) {
+                    while (phoneCursor.moveToNext()) {
+                        //得到联系人名称
+                        contactName = phoneCursor.getString(PHONES_DISPLAY_NAME_INDEX);
+
+                        //得到联系人ID
+                        contactid = phoneCursor.getInt(PHONES_CONTACT_ID_INDEX);
+                        contactID = phoneCursor.getString(PHONES_CONTACT_ID_INDEX);
+                        contactPhone = phoneCursor.getString(PHONES_NUMBER_INDEX);
+                        contactSortname = CommonSettingsAndFuncs.convertToPinyin(mContext, contactName);
+                        cursor = db.query("user", null, "cid = " + contactID, null, null, null, null);
+                        if (!cursor.moveToFirst()) {
+                            User user = new User();
+                            user.cid = contactid;
+                            user.name = contactName;
+                            user.sortname = contactSortname;
+                            user.mobilephone = contactPhone.replace(" ","").replace("+86","").replace("+","");
+                            user.groupname = "无";
+                            user.nickname = "";
+                            Random random = new Random();
+                            user.photo = random.nextInt(31);
+                            dbHelper.insertAUser(user);
+                        }
+                        cursor.close();
+                    }
+                    phoneCursor.close();
+                }
+                editor.putInt(The_First_Time, 1);
+                editor.commit();
+            }
+        }
+
+    }
+
 
     //        /**得到手机通讯录联系人信息**/
     public Vector<HashMap<String,Object>> getPhoneContacts() {
@@ -246,53 +318,12 @@ public class TabContactsFragment extends Fragment {
         ContentResolver resolver1 = mContext.getContentResolver();
         // 获取手机联系人
 
-
-
-        SharedPreferences pref = mContext.getSharedPreferences(SHARE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor  = pref.edit();
-        int first = pref.getInt(The_First_Time, -1);
-        if(first == -1) {
-            Cursor phoneCursor = resolver1.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, PHONES_PROJECTION, null, null, null);
-            if (phoneCursor != null) {
-                while (phoneCursor.moveToNext()) {
-                    //得到联系人名称
-                    String contactName = phoneCursor.getString(PHONES_DISPLAY_NAME_INDEX);
-
-                    //得到联系人ID
-                    int contactid = phoneCursor.getInt(PHONES_CONTACT_ID_INDEX);
-                    String contactID = phoneCursor.getString(PHONES_CONTACT_ID_INDEX);
-                    String contactPhone = phoneCursor.getString(PHONES_NUMBER_INDEX);
-
-                    Cursor cursor;
-                    String contactSortname = CommonSettingsAndFuncs.convertToPinyin(mContext, contactName);
-                    cursor = db.query("user", null, "cid=" + contactID, null, null, null, null);
-                    if (!cursor.moveToFirst()) {
-                        User user = new User();
-                        user.cid = contactid;
-                        user.name = contactName;
-                        user.sortname = contactSortname;
-                        user.mobilephone = contactPhone;
-                        user.groupname = "NO";
-                        Random random = new Random();
-                        user.photo = random.nextInt(31);
-                        dbHelper.insertAUser(user);
-                    }
-                    cursor.close();
-                }
-                phoneCursor.close();
-            }
-            editor.putInt(The_First_Time,1);
-            editor.commit();
-        }
-
         Cursor cursor = db.query("user", null, null, null, null, null, null);
         if (cursor != null){
             if(cursor.moveToFirst()) {
                 do {
                     int contact_id = cursor.getInt(1);
-
                     int photo_id = cursor.getInt(5);
-
                     //familyname
                     String contactName = cursor.getString(2);
                     //group
@@ -300,7 +331,6 @@ public class TabContactsFragment extends Fragment {
                     HashMap map = new HashMap();
                     map.put("contactName", contactName);
                     map.put("photo", photo_id);
-//                map.put("contactPhone",phoneNumber);
                     map.put("contactSortname", contactSortname);
                     map.put("contactID", contact_id);
                     map.put("UserID", cursor.getInt(0));

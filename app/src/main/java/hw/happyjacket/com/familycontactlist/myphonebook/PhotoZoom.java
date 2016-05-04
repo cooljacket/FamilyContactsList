@@ -1,6 +1,7 @@
 package hw.happyjacket.com.familycontactlist.myphonebook;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -93,6 +94,15 @@ public class PhotoZoom {
 //        return compress(bitmap, maxSize); // 这里再进行质量压缩的意义不大，反而耗资源，删除
         return bitmap;
     }
+
+    public static Bitmap ratio(Context context,int imgPath,int w, int h){
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = false;
+
+        return BitmapFactory.decodeResource(context.getResources(),imgPath,options);
+    }
+
+
 
 
     public static Bitmap getBitmap(int id,int photo,Bitmap [] picutres) {

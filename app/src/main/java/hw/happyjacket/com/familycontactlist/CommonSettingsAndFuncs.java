@@ -21,12 +21,14 @@ import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 import jpinyin.stuxuhai.github.com.PinyinHelper;
 
 /**
@@ -35,7 +37,7 @@ import jpinyin.stuxuhai.github.com.PinyinHelper;
 public class CommonSettingsAndFuncs {
     public final static String HostURL = "http://webservice.webxml.com.cn";
     public final static String GetWeatherURLFormat = "/WebServices/WeatherWS.asmx/getWeather?theCityCode=%s&theUserID=";
-    public final static String Spliter = "&&";
+    public final static String Spliter = "||||";
     public static String FileHeader;
 
     // 将字符串转换成指定的字符集格式（这里用到的是utf8）
@@ -74,7 +76,7 @@ public class CommonSettingsAndFuncs {
         return contents;
     }
 
-    public static String ParseWeatherXML(InputStream xml) throws XmlPullParserException, IOException {
+    public static String[] ParseWeatherXML(InputStream xml) throws XmlPullParserException, IOException {
         try {
             ArrayList<String> weather = ParseXMLHelper(xml);
             for (int i = 0; i < weather.size(); ++i)
@@ -93,7 +95,19 @@ public class CommonSettingsAndFuncs {
             for (int i = 1; i <= m.groupCount(); ++i)
                 Log.d("index " + i, m.group(i));
 
-            return String.format("%s，今天%s%s，气温%s，%s%s。注意好身体，爱你们。", location, wea, temperature, sun, content).replaceAll("您", "");
+            Log.d("hehe", location + " ");
+            Log.d("hehe", wea + " ");
+            Log.d("hehe", temperature + " ");
+            Log.d("hehe", sun + " ");
+            Log.d("hehe", content + " ");
+            Log.d("hehe", location + " ");
+
+            String[] result = new String[] {
+                    String.format("%%s，今天%s%s，气温%s，%s%s。注意好身体，爱你们。", location, wea, temperature, sun, content).replaceAll("您", ""),
+                    location, wea, temperature, sun, content
+            };
+
+            return result;
         }
         catch (Exception e){
             e.printStackTrace();
@@ -203,10 +217,14 @@ public class CommonSettingsAndFuncs {
 
     public static String convertToPinyin(Context context, String str) {
         PinyinHelper.getInstance(context);
-        return PinyinHelper.convertToPinyinString(str, "");
+        Log.d("name", str + ", " + PinyinHelper.getShortPinyin(str));
+        return PinyinHelper.getShortPinyin(str);
     }
 
+
     private static int[] calNext(String pattern) {
+        if(pattern == null || pattern.equals(""))
+            return null;
         int j = 0, k = -1, pLen = pattern.length();
         int[] next = new int[pLen];
         next[0] = -1;
@@ -221,7 +239,7 @@ public class CommonSettingsAndFuncs {
         return next;
     }
 
-    public static boolean KMP_match(String text, String pattern) {
+    public static int KMP_match(String text, String pattern) {
         int[] next = calNext(pattern);
         int i = 0, j = 0, pLen = pattern.length(), tLen = text.length();
 
@@ -235,12 +253,38 @@ public class CommonSettingsAndFuncs {
             }
         }
 
-        return j == pLen;
+        return j == pLen ? i : -1;
     }
 
     public static boolean REGX_match(String text, String pattern) {
         Pattern p = Pattern.compile(pattern);
         Matcher matcher = p.matcher(text);
         return matcher.find();
+    }
+
+    public static Vector<Integer> SearchThem(List<HashMap<String, String> > data, String pattern) {
+        Vector<Integer> result = new Vector<>();
+        Vector<Integer> sorts = new Vector<>();
+        int t;
+        boolean pass;
+        for (int i = 0; i < data.size(); ++i) {
+            String phoneNumber = data.get(i).get(PhoneDictionary.NUMBER);
+            if ((t = KMP_match(phoneNumber, pattern))!=-1) {
+                pass = false;
+                for(int j = 0 ; j < sorts.size(); ++j) {
+                   if(t < sorts.get(j)){
+                       result.insertElementAt(i,j);
+                       sorts.insertElementAt(t,j);
+                       pass = true;
+                       break;
+                   }
+                }
+                if(!pass) {
+                    result.add(i);
+                    sorts.add(t);
+                }
+            }
+        }
+        return result;
     }
 }

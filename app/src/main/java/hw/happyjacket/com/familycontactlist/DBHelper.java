@@ -7,6 +7,9 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.List;
+import java.util.Vector;
+
 /**
  * Created by leo on 2016/4/10.
  */
@@ -57,17 +60,22 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put("photo", user.photo);
         values.put("groupname", user.groupname);
         values.put("info", user.info);
-
+        values.put("nickname",user.nickname);
         return values;
     }
 
     public boolean isInList(String phoneNumber) {
-        Cursor cursor = db.query(DB_TABLENAME, null, "mobilephone=?", new String[]{phoneNumber}, null, null, null, null);
+        Cursor cursor = db.query(DB_TABLENAME, null, "mobilephone = ?", new String[]{phoneNumber}, null, null, null, null);
         if (cursor == null)
             return false;
         boolean result = cursor.moveToFirst();
         cursor.close();
         return result;
+    }
+
+
+    public Cursor getUser(String [] projection,String selection, String[] argument,String orderby){
+        return db.query(DB_TABLENAME,projection,selection,argument,null,null,null,null);
     }
 
     public User insertFromStrings(String[] data) {
@@ -106,7 +114,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public void deleteUser(User user){
         ContentValues values = new ContentValues();
         int uid = user.uid;
-        db.delete("user", "uid = "+uid, null);
+        db.delete("user", "uid = " + uid, null);
     }
 
     public void initGroup(Group group){//初始化数据库，或者新建组群
@@ -114,7 +122,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put("groupname",group.groupname);
-        values.put("groupnum",group.groupnum);
+        values.put("groupnum", group.groupnum);
         try{
             db.insert("grouptable", null, values);
         }catch (SQLiteConstraintException e){
@@ -126,13 +134,26 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         String groupname = group.groupname;
         values.put("groupnum",group.groupnum);
-        db.update("grouptable",values,"groupname = "+groupname,null);
+        db.update("grouptable", values, "groupname = " + groupname, null);
     }
 
     public void deleteGroup(Group group){
         ContentValues values = new ContentValues();
         String groupname = group.groupname;
-        db.delete("grouptable","groupname = "+groupname,null);
+        db.delete("grouptable", "groupname = " + groupname, null);
+    }
+
+
+    public Vector<String> getGroup(){
+        Cursor t = db.query(GROUPTABLE, new String[]{GROUPNAME}, null, null, null, null, null, null);
+        Vector<String> result = new Vector<>();
+        if(t.moveToFirst()){
+            do {
+                result.add(t.getString(0));
+            }while (t.moveToNext());
+        }
+        t.close();
+        return result;
     }
 
 
@@ -146,8 +167,9 @@ public class DBHelper extends SQLiteOpenHelper {
                 .append("sortname text ,")//3
                 .append("mobilephone text default '0',")//4
                 .append("photo integer,")//头像编号5
-                .append("groupname text default 'NO',")//群组，默认no6
-                .append("info text);");//7
+                .append("groupname text default '无',")//群组，默认no6
+                .append("info text,")//7
+                .append("nickname text);");//8
         db.execSQL(tableCreate.toString());
 
         StringBuffer tableCreate2 = new StringBuffer();
@@ -155,6 +177,10 @@ public class DBHelper extends SQLiteOpenHelper {
                 .append("groupname text not null,")
                 .append("groupnum int not null);");
         db.execSQL(tableCreate2.toString());
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(GROUPNAME,"家庭");
+        contentValues.put(GROUPNUM,0);
+        db.insert(GROUPTABLE,null,contentValues);
     }
 
     @Override
@@ -172,4 +198,10 @@ public class DBHelper extends SQLiteOpenHelper {
     public synchronized void close() {
         super.close();
     }
+
+
+    public static final String GROUPTABLE = "grouptable";
+    public static final String GROUPNAME = "groupname";
+    public static final String GROUPID = "gid";
+    public static final String GROUPNUM = "groupnum";
 }

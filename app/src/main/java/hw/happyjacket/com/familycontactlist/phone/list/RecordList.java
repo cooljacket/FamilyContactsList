@@ -143,6 +143,7 @@ public class RecordList extends PhoneList {
 
         final int size = 50;
         int number_id;
+        String phoneNumber;
         String pro[] = DataBaseDictionary.CallLog_Projection;
         HashMap<String,Boolean> container = new HashMap<>(size);
         HashMap<String,String> tmp;
@@ -153,13 +154,15 @@ public class RecordList extends PhoneList {
             if(t.moveToFirst()) {
                 number_id = t.getColumnIndex(PhoneDictionary.NUMBER);
                 do{
-                    if(container.containsKey(t.getString(number_id)))
+                    phoneNumber = t.getString(number_id).replace(" ", "").replace("+86","").replace("+","");
+                    if(container.containsKey(phoneNumber))
                         continue;
-                    container.put(t.getString(number_id), (Boolean.TRUE));
+                    container.put(phoneNumber, (Boolean.TRUE));
                     tmp = new HashMap<>();
                     for (int i = 0 ; i < pro.length ; i++) {
                         tmp.put(pro[i],t.getString(i));
                     }
+                    tmp.put(PhoneDictionary.NUMBER, phoneNumber);
                     result.add(tmp);
                 } while (t.moveToNext());
             }

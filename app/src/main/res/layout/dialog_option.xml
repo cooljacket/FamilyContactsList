@@ -4,48 +4,66 @@
               android:layout_height="match_parent"
     android:background="#ffffff">
 
-    <ListView
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/dialog_option_listview"
-        android:layout_alignParentTop="true">
+        android:layout_height="wrap_content">
 
-    </ListView>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/dialog_option_listview"
-        android:orientation="horizontal">
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:id="@+id/dialog_option_positive"
-            android:text="确定"
-            android:background="#ffffff"
-            android:textColor="#111111"
-            android:fadingEdge="horizontal"
-            android:fadingEdgeLength="5dp"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@id/dialog_option_listview"/>
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:id="@+id/dialog_option_negative"
-            android:text="取消"
-            android:background="#ffffff"
-            android:textColor="#111111"
-            android:layout_alignParentRight="true"
-            android:layout_below="@+id/dialog_option_listview"
-            android:fadingEdge="horizontal"
-            android:fadingEdgeLength="5dp"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <hw.happyjacket.com.familycontactlist.myphonebook.listview.ScrollListView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/dialog_option_listview"
+                android:layout_alignParentTop="true">
+            </hw.happyjacket.com.familycontactlist.myphonebook.listview.ScrollListView>
 
 
-    </LinearLayout>
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/new_dialog_option"
+                android:layout_below="@id/dialog_option_listview"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/new_dialog_option"
+                android:orientation="horizontal">
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/dialog_option_positive"
+                    android:text="确定"
+                    android:background="#ffffff"
+                    android:textColor="#111111"
+                    android:fadingEdge="horizontal"
+                    android:fadingEdgeLength="5dp"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@id/dialog_option_listview"/>
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/dialog_option_negative"
+                    android:text="取消"
+                    android:background="#ffffff"
+                    android:textColor="#111111"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/dialog_option_listview"
+                    android:fadingEdge="horizontal"
+                    android:fadingEdgeLength="5dp"/>
+
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
 
 
 

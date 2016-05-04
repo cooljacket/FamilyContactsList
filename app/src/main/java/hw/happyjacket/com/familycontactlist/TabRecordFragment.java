@@ -1,5 +1,6 @@
 package hw.happyjacket.com.familycontactlist;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.os.Message;
 import android.provider.CallLog;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +23,13 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Vector;
 
 import hw.happyjacket.com.familycontactlist.extention.XiaoMiAccessory;
 import hw.happyjacket.com.familycontactlist.myphonebook.InitService;
 import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
+import hw.happyjacket.com.familycontactlist.myphonebook.adapter.MainAdapter;
 import hw.happyjacket.com.familycontactlist.myphonebook.factory.DialogFactory;
 import hw.happyjacket.com.familycontactlist.myphonebook.factory.PhoneDialog;
 import hw.happyjacket.com.familycontactlist.myphonebook.show.MainShow;
@@ -44,7 +48,7 @@ public class TabRecordFragment extends Fragment {
     private MainShow mainShow;
     private ListView listView;
     private ListView OptionListView;
-    private Context mContext;
+    private Activity mContext;
     private PhoneDialog option;
     private Button Dial;
     private Handler mHandler;
@@ -64,15 +68,15 @@ public class TabRecordFragment extends Fragment {
 
     @Override
     public void onStart() {
-
         if(mainShow == null) {
             init();
+            MainActivity.phoneElement = mainShow.getPhoneListElementList_backup();
         }
         else {
             mainShow.refresh(new XiaoMiAccessory(), new String[]{PhoneDictionary.DATE});
+
         }
         super.onStart();
-
     }
 
     @Override
@@ -82,6 +86,10 @@ public class TabRecordFragment extends Fragment {
         mainShow.destroy();
         PhoneRegister.unRegister(mainShow.getIndex());
         super.onDestroy();
+    }
+
+    public List<HashMap<String,String>> phoneElements(){
+        return mainShow.getPhoneListElementList();
     }
 
     public void init()
@@ -113,7 +121,7 @@ public class TabRecordFragment extends Fragment {
             Dial.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DialogFactory.DiaWheel(getActivity(),R.style.Menu).show();
+                    DialogFactory.DiaWheel(mContext,R.style.Menu,mainShow).show();
                 }
             });
             initOption();
@@ -129,6 +137,14 @@ public class TabRecordFragment extends Fragment {
 
     }
 
+
+    public long getTimeStamp(String number){
+        Log.i(TAG,mainShow + "");
+        Log.i(TAG,mainShow.getNmapp() + "");
+        Integer id = mainShow.getNmapp().get(number);
+        return id == null ? -1 : Long.parseLong(mainShow.getPhoneListElementList_backup().get(id).get(PhoneDictionary.DATE));
+    }
+
     public void initOption()
     {
         option = DialogFactory.getPhoneDialog(mContext,R.layout.main_option,R.id.main_list,R.style.Menu,mainShow.getIndex(),PhoneDictionary.MainItems,PhoneDictionary.MAIN_OPTIONS);
@@ -141,9 +157,8 @@ public class TabRecordFragment extends Fragment {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                new PhoneOperation(mContext).call(mainShow.getPhoneListElementList().get(position).get(PhoneDictionary.NUMBER));
+               new PhoneOperation(mContext).call(mainShow.getPhoneListElementList().get(position).get(PhoneDictionary.NUMBER));
                // DialogFactory.getCheckBoxDialog(getContext(), R.style.Menu, PhoneDictionary.MainItems, mHandler).show();
-
             }
         });
         listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {

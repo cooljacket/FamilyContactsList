@@ -73,12 +73,12 @@ public class Operation {
     public static void endCall(String number){sPhoneCallUtis.endCall(number);}
 
     public static boolean isBlackList(String number){
-        Log.e("eeeee","ee");
+        number = number.replace(" ","").replace("+86","").replace("+","");
         return sBlackListMaster.isInBlackList(number);
     }
 
     public static void addBlackList(String number){
-        Log.e("eeeee","add");
+        number = number.replace(" ","").replace("+86","").replace("+","");
         sBlackListMaster.add(number);
     }
 
@@ -88,7 +88,7 @@ public class Operation {
 
     public static String getLocation(String number){
         String t[];
-        return ((t = sPhoneLocationMaster.get(number)) == null || t.length < 2)? null:t[0] + t[1];
+        return ((t = sPhoneLocationMaster.get(number)) == null || t.length < 2)? null:t[0].equals(t[1]) ? t[1] : t[0] + t[1];
     }
 
 }

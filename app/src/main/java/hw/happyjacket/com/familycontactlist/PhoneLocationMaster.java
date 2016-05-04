@@ -3,10 +3,8 @@ package hw.happyjacket.com.familycontactlist;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 /**
  * Created by jacket on 2016/4/11.
@@ -27,13 +25,8 @@ public class PhoneLocationMaster {
             return false;
 
         ContentValues values = addHelper(phoneNumber, data, state);
-        long result = 0;
-        try {
-            result = db.insert(PhoneLocationDBHelper.TABLE_NAME, null, values);
-        } catch (SQLiteConstraintException e) {
-//            e.printStackTrace();
-            Log.d("hehe", "SQLiteConstriant error");
-        }
+        db.update(PhoneLocationDBHelper.TABLE_NAME, values, "phoneNumber=?", new String[]{phoneNumber});
+        long result = db.insert(PhoneLocationDBHelper.TABLE_NAME, null, values);
 
         return result != -1;
     }
@@ -60,20 +53,6 @@ public class PhoneLocationMaster {
 
         return values;
     }
-
-    // 这个函数与get函数重复了，只需要用get函数即可
-//    public boolean isCached(String phoneNumber) {
-//        SQLiteDatabase db = mOpenHelper.getReadableDatabase();
-//        if (!db.isOpen())
-//            return_btn false;
-//
-//        Cursor cursor = db.query(PhoneLocationDBHelper.TABLE_NAME, new String[]{"phoneNumber"}, "phoneNumber=?", new String[]{phoneNumber}, null, null, null);
-//        boolean result = cursor.getCount() > 0;
-//        cursor.close();
-//        db.close();
-//        return_btn result;
-//    }
-
 
     public String[] get(String phoneNumber) {
         SQLiteDatabase db = mOpenHelper.getReadableDatabase();
