@@ -1,38 +1,24 @@
 package hw.happyjacket.com.familycontactlist.myphonebook.show;
 
 import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.os.Handler;
-import android.os.IBinder;
 import android.os.Message;
-import android.provider.CallLog;
-import android.support.annotation.Nullable;
-import android.support.v4.util.Pools;
 import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
-import hw.happyjacket.com.familycontactlist.HttpConnectionUtil;
-import hw.happyjacket.com.familycontactlist.PhoneLocationDBHelper;
 import hw.happyjacket.com.familycontactlist.PhoneLocationMaster;
 import hw.happyjacket.com.familycontactlist.extention.Accessory;
 import hw.happyjacket.com.familycontactlist.extention.Decorate;
-import hw.happyjacket.com.familycontactlist.myphonebook.InitService;
 import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.MainAdapter;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 import hw.happyjacket.com.familycontactlist.phone.database.DataBaseDictionary;
-import hw.happyjacket.com.familycontactlist.phone.list.PhoneList;
-import hw.happyjacket.com.familycontactlist.phone.list.RecordList;
 import hw.happyjacket.com.familycontactlist.phone.phonelistener.PhoneLocationThread;
 import hw.happyjacket.com.familycontactlist.phone.phonelistener.PhoneThreadCheck;
+
 
 /**
  * Created by root on 16-4-1.

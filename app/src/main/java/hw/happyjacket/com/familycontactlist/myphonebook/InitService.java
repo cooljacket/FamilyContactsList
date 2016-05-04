@@ -5,14 +5,10 @@ import android.content.Intent;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.IInterface;
 import android.os.Message;
-import android.os.Parcel;
-import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import java.io.FileDescriptor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -67,9 +63,9 @@ public class InitService extends Service {
                             @Override
                             public void onFinish(String response, String arg) {
                                 response = response.replaceAll("<[^>]+>", "");
-                                Log.d("hehe-response", phoneNumber + " " + response);
                                 int state = PhoneLocationDBHelper.CACHED;
-                                        // if there is no location for the querying phonenumber
+
+                                // if there is no location for the querying phonenumber
                                 if (response.contains("手机号码错误") || response.contains("没有此号码记录")) {
                                     response = null;
                                     state = PhoneLocationDBHelper.NOSUCH;
@@ -78,9 +74,12 @@ public class InitService extends Service {
                                 }
 
                                 PLMaster.add(phoneNumber, response, state);
-                                Log.d("hehe-number", PLMaster.get(phoneNumber)[2] + ", " + state);
+                                String[] result = PLMaster.get(phoneNumber);
+                                if (result == null || result.length < 3)
+                                    return ;
+                                Log.d("init-service", result[0] + ", " + state);
                                 HashMap<String, String> tmp = new HashMap<>();
-                                tmp.put(phoneNumber, PLMaster.get(phoneNumber)[2]);
+                                tmp.put(phoneNumber, result[0] + " " + result[1]);
                                 locations.add(tmp);
                             }
 
@@ -125,13 +124,12 @@ public class InitService extends Service {
         }
     };
 
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return mMyBinder;
     }
-
-
 
 
     public class MyBinder extends Binder{

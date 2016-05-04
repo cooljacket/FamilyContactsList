@@ -5,15 +5,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.LightingColorFilter;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.ContactsContract;
-import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -40,13 +35,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-import hw.happyjacket.com.familycontactlist.ChangePeopleDetail;
 import hw.happyjacket.com.familycontactlist.CommonSettingsAndFuncs;
 import hw.happyjacket.com.familycontactlist.MainActivity;
 import hw.happyjacket.com.familycontactlist.R;
 import hw.happyjacket.com.familycontactlist.myphonebook.DefaultPicture;
 import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
-import hw.happyjacket.com.familycontactlist.myphonebook.PhoneDial;
 import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.CheckBoxAdapter;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.ImageAdapter;
@@ -245,12 +238,23 @@ public class DialogFactory {
         return builder.create();
     }
 
-    public static AlertDialog WarningDialog(final Activity context,String positive, String warn){
+
+
+    public static AlertDialog WarningDialog(final Activity context, String warn){
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//        builder.setMessage(msg);
         builder.setTitle(warn);
-        builder.setPositiveButton(positive, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+
                 dialog.dismiss();
             }
         });
@@ -423,7 +427,7 @@ public class DialogFactory {
                 if(Number.equals(t))
                     return;
                 Number = t;
-                Vector<Integer> pos = CommonSettingsAndFuncs.SearchThem(MainActivity.phoneElement, Number);
+                Vector<Integer> pos = CommonSettingsAndFuncs.SearchAmongRecords(MainActivity.phoneElement, Number);
                 mainShow.notifyDataSetChanged(pos);
             }
         });

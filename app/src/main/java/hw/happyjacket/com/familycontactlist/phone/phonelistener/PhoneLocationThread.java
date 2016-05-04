@@ -3,9 +3,7 @@ package hw.happyjacket.com.familycontactlist.phone.phonelistener;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -36,7 +34,6 @@ public class PhoneLocationThread {
         final PhoneLocationMaster PLMaster = new PhoneLocationMaster(context);
         final Vector<HashMap<String, String> > locations = new Vector<>();
         int ACCESS_NETWORK_COUNT = 0;
-        int count = 0;
 
         for (int y = 0 ; y < phoneNumberList.size() ; y++) {
             if(!flag)
@@ -52,7 +49,6 @@ public class PhoneLocationThread {
                     tmp.put(phoneNumberTmp, places[0]);
                 else
                     tmp.put(phoneNumberTmp, places[0] + places[1]);
-//                locations.add(tmp);
                 Message msg = new Message();
                 msg.what = ++what;
                 msg.obj = tmp;
@@ -61,13 +57,10 @@ public class PhoneLocationThread {
             }
 
             String LocationURL = String.format("%s/WebServices/MobileCodeWS.asmx/getMobileCodeInfo?mobileCode=%s&userID=", HostURL, phoneNumber);
-            Log.i("No cached", count + ", " + phoneNumber + " " + LocationURL);
-
             HttpConnectionUtil.get(LocationURL, new String[]{phoneNumberTmp}, new HttpConnectionUtil.HttpCallbackListener() {
                 @Override
                 public void onFinish(String response, String number) {
                     response = response.replaceAll("<[^>]+>", "");
-                    Log.d("response", number + " " + response);
                     int state = PhoneLocationDBHelper.CACHED;
 
                     // if there is no location for the querying phonenumber
@@ -78,7 +71,6 @@ public class PhoneLocationThread {
                         state = PhoneLocationDBHelper.ERROR;
                     }
 
-                    Log.d("another response", response + ", eheh");
                     PLMaster.add(number, response, state);
                     HashMap<String, String> tmp = new HashMap<>();
                     String[] places = PLMaster.get(number);
@@ -86,7 +78,7 @@ public class PhoneLocationThread {
                         tmp.put(number, places[0]);
                     else
                         tmp.put(number, places[0] + places[1]);
-                    //locations.add(tmp);
+
                     Message msg = new Message();
                     msg.what = ++what;
                     msg.obj = tmp;
@@ -109,17 +101,6 @@ public class PhoneLocationThread {
             }
         }
 
-//        Log.d("good", locations.toString());
-//        msg_for_location.obj = locations;
-//        Message msg;
-//        if(handler.obtainMessage(msg_for_location.what, msg_for_location.obj) != null){
-//             msg = new Message();
-//             msg.what = msg_for_location.what;
-//             msg.obj= msg_for_location.obj;
-//             handler.sendMessage(msg);
-//        }
-//        else
-//            handler.sendMessage(msg_for_location);
         flag = false;
     }
 

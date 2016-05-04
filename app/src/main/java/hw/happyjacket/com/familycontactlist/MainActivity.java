@@ -1,14 +1,12 @@
 package hw.happyjacket.com.familycontactlist;
 
 import android.content.Intent;
-import android.graphics.Point;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,14 +29,12 @@ public class MainActivity extends AppCompatActivity {
     private int selected_tab = 0, base_tab_id = 0;
     private RadioGroup tabs_group;
     private RadioButton tab_record, tab_contacts;
-    private ArrayList<Point> tab_sizes = new ArrayList<>();
     private TabRecordFragment mRecordTab;
     private TabContactsFragment mContactTab;
     private List<Fragment> mTabs;
     private FragmentPagerAdapter mPagerAdapter;
     public static List<HashMap<String,String>> phoneElement;
     private static final int FILE_SELECT_CODE = 0;
-    private static Vector<String> allRecords;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -130,8 +126,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-
         if (resultCode == RESULT_OK) {
             switch (requestCode){
                 case MainActivity.FILE_SELECT_CODE:
@@ -139,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
                     Vector<User> newUsers = CommonSettingsAndFuncs.ImportContacts(MainActivity.this, uri.getPath());
                     // newUsers是导入后新增的用户数据，需要根据这个来更新列表
                     // ps，联系人修改姓名之后，sortname要记得也要同步更新！！！
+                    mContactTab.AddNewUser(newUsers);
                     break;
                 case DirPicker.TO_PICK_A_DIR:
                     CommonSettingsAndFuncs.ExportContacts(MainActivity.this, data.getStringExtra(DirPicker.PATH_KEY));
@@ -182,7 +177,10 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_search:
 
-                Toast.makeText(MainActivity.this, CommonSettingsAndFuncs.convertToPinyin(MainActivity.this, "郭庆潼"), Toast.LENGTH_LONG).show();
+                int number = CommonSettingsAndFuncs.JudgePatternType("123");
+                int chinese = CommonSettingsAndFuncs.JudgePatternType("你好，师姐");
+                int en = CommonSettingsAndFuncs.JudgePatternType("WZQ");
+                Toast.makeText(MainActivity.this, String.format("num=%d(0), chinese=%d(1), en=%d(2)", number, chinese, en), Toast.LENGTH_LONG).show();
                 return true;
             case R.id.action_export:
                 Intent intent = new Intent(DirPicker.ACTION);

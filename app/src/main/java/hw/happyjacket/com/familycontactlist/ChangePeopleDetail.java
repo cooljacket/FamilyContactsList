@@ -1,44 +1,30 @@
 package hw.happyjacket.com.familycontactlist;
 //<<<<<<< HEAD
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.Vector;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutCompat;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.view.accessibility.AccessibilityManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.support.v7.widget.Toolbar;
 import android.widget.ViewSwitcher;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.HashMap;
 
-import hw.happyjacket.com.familycontactlist.myphonebook.DefaultPicture;
 import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.PeopleInfoAdapter;
 import hw.happyjacket.com.familycontactlist.myphonebook.factory.DialogFactory;
@@ -66,6 +52,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
     Toolbar toolbar;
     int imageP;//头像序号
     Bitmap imagePic;//头像Rid
+    String oldGroupName;//旧的群组名
     int imagePP;
     Vector<String[]> info;// = new Vector<>();
     ScrollListView mListView;
@@ -353,13 +340,23 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
         user.name=et_name.getText().toString();
         user.info=(String) map.get("info");
-        user.sortname = CommonSettingsAndFuncs.convertToPinyin(this,user.name);
+        user.sortname = CommonSettingsAndFuncs.convertToShortPinyin(this, user.name);
 
 //        String[] s2 =(String[]) mListView.getItemAtPosition(mListView.getCount()-1);
 //        mPeopleInfoAdapter.notifyDataSetChanged();
 //        String s2 = mPeopleInfoAdapter.getItem(mListView.getCount()-1)[1];
         user.nickname = (String) map.get("nickName");
         user.groupname = groupName.getText().toString();
+        Group group = new Group();
+        group.groupname=user.groupname;
+        group.groupnum = helper.getGroupNum(group);
+        group.groupnum++;
+        helper.changeGroup(group);
+        Group group1 = new Group();
+        group1.groupname=oldGroupName;
+        group1.groupnum=helper.getGroupNum(group1);
+        group1.groupnum--;
+        helper.changeGroup(group1);
 
 //                user.group=mListView.getItemAtPosition(5);
 //                user.family = family;
@@ -375,6 +372,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
         //!!!!这里！！！！
 
         helper.changeUser(user);
+//        helper.changeGroup(group);
 
         /*boolean hadgroup=false;
         for(int i=0;i<AllGroup.size();i++){
@@ -437,6 +435,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
         }
 
         groupName.setText(groupname == null ? "无" : groupname);
+        oldGroupName = groupName.getText().toString();
         et_familyName.setText(nickName == null ? "" : nickName);
 
 //        groupName.setText("aaaaaaaaaa");
