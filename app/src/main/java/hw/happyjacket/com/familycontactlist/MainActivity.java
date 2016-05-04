@@ -133,6 +133,7 @@ public class MainActivity extends AppCompatActivity {
                     Vector<User> newUsers = CommonSettingsAndFuncs.ImportContacts(MainActivity.this, uri.getPath());
                     // newUsers是导入后新增的用户数据，需要根据这个来更新列表
                     // ps，联系人修改姓名之后，sortname要记得也要同步更新！！！
+                    mContactTab.AddNewUser(newUsers);
                     break;
                 case DirPicker.TO_PICK_A_DIR:
                     CommonSettingsAndFuncs.ExportContacts(MainActivity.this, data.getStringExtra(DirPicker.PATH_KEY));
@@ -175,6 +176,7 @@ public class MainActivity extends AppCompatActivity {
         // 处理动作按钮的点击事件
         switch (item.getItemId()) {
             case R.id.action_search:
+
                 int number = CommonSettingsAndFuncs.JudgePatternType("123");
                 int chinese = CommonSettingsAndFuncs.JudgePatternType("你好，师姐");
                 int en = CommonSettingsAndFuncs.JudgePatternType("WZQ");

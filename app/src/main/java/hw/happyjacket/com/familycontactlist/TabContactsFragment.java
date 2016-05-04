@@ -41,7 +41,7 @@ public class TabContactsFragment extends Fragment {
     public static final String DataBaseLock = "lock";
     private Context mContext;
     private ListView listview;
-    private Vector<HashMap<String,Object> > AL;
+    private Vector<HashMap<String, Object> > AL;
     private int positionNew;
     private DBHelper dbHelper = null;
     private SQLiteDatabase db = null;
@@ -181,7 +181,6 @@ public class TabContactsFragment extends Fragment {
         super.onStart();
     }
 
-
     private void getCircles() {
         Bitmap a;
         for(int i=0; i<31; i++){
@@ -190,24 +189,7 @@ public class TabContactsFragment extends Fragment {
         }
     }
 
-
     private void sortList(){
-        // 选择排序——bad
-//        for(int i=0;i<AL.size();i++){
-//            String smallest =(String) ((HashMap)AL.get(i)).get("contactSortname");
-//            int key_idx = i;
-//            for(int j=i+1;j<AL.size();j++){
-//                String now =(String) ((HashMap)AL.get(j)).get("contactSortname");
-//                if (smallest.compareToIgnoreCase(now) > 0) {
-//                    smallest = now;
-//                    key_idx = j;
-//                }
-//            }
-//
-//            HashMap tmp = AL.get(i);
-//            AL.setElementAt(AL.get(key_idx), i);
-//            AL.setElementAt(tmp, key_idx);
-//        }
         // 使用插入排序，虽然时间复杂度在列表无序时是O(n^2)
         // 但是有利于修改名字时将新的名字插入到已经有序的列表中，时间复杂度为O(n)
         for (int i = 1; i < AL.size(); ++i) {
@@ -226,8 +208,6 @@ public class TabContactsFragment extends Fragment {
             AL.get(i).put(POS,i);
         }
     }
-
-
 
     private void loadList() {
         for(int i = 0 ; i < AL.size() ; ++i) {
@@ -260,7 +240,6 @@ public class TabContactsFragment extends Fragment {
     }
 
     public void TheFirstTimeInit(){
-
         synchronized (DataBaseLock) {
             ContentResolver resolver1 = mContext.getContentResolver();
             SharedPreferences pref = mContext.getSharedPreferences(SHARE_NAME, Context.MODE_PRIVATE);
@@ -308,10 +287,8 @@ public class TabContactsFragment extends Fragment {
 
     }
 
-
-    //        /**得到手机通讯录联系人信息**/
+    // 得到手机通讯录联系人信息
     public Vector<HashMap<String,Object>> getPhoneContacts() {
-
         ContentResolver resolver1 = mContext.getContentResolver();
         // 获取手机联系人
 
@@ -338,4 +315,9 @@ public class TabContactsFragment extends Fragment {
         return contacts;
     }
 
+    // 追加新插入的用户到AL的尾部，然后插入排序，最后notify一下adapter
+    public void AddNewUser(Vector<User> newUsers) {
+        sortList();
+        adapter.notifyDataSetChanged();
+    }
 }

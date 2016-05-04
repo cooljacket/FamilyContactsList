@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Vector;
@@ -13,7 +12,6 @@ import java.util.Vector;
 import hw.happyjacket.com.familycontactlist.DBHelper;
 import hw.happyjacket.com.familycontactlist.TabContactsFragment;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
-import hw.happyjacket.com.familycontactlist.phone.list.PhoneList;
 import hw.happyjacket.com.familycontactlist.phone.list.RecordList;
 
 /**
@@ -48,7 +46,6 @@ public class PhoneThreadCheck implements Runnable {
                     if (i.get(name) == null) {
                         realNumber = i.get(PhoneDictionary.NUMBER).replace(" ","").replace("+86","").replace("+","");
                         t = mDBHelper.getUser(new String[]{"name"}, "mobilephone = ?", new String[]{realNumber}, null);
-                        Log.i("suv",realNumber + " " + t.moveToFirst());
                         if (t.moveToFirst()) {
                             contentValues.clear();
                             contentValues.put(name, (realName = t.getString(0)));

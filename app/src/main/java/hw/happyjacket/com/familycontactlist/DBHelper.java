@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import java.util.List;
 import java.util.Vector;
 
 /**
@@ -17,11 +16,14 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final   String DB_NAME="contact";
     public final static int VERSION = 1;
     public static final   String DB_TABLENAME="user";
+    public static final String GROUPTABLE = "grouptable";
+    public static final String GROUPNAME = "groupname";
+    public static final String GROUPID = "gid";
+    public static final String GROUPNUM = "groupnum";
+
     public SQLiteDatabase db;
     private Context context;
-    //    private MyDBHelper
     private static DBHelper instance = null;
-//    private  SQLiteDatabase db;
 
 
 
@@ -60,7 +62,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put("photo", user.photo);
         values.put("groupname", user.groupname);
         values.put("info", user.info);
-        values.put("nickname",user.nickname);
+        values.put("nickname", user.nickname);
         return values;
     }
 
@@ -78,48 +80,36 @@ public class DBHelper extends SQLiteOpenHelper {
         return db.query(DB_TABLENAME,projection,selection,argument,null,null,null,null);
     }
 
-    public User insertFromStrings(String[] data) {
-        if (isInList(data[2])) {
-            return null;
-        }
+    public boolean insertAUser(User user) {//初始化数据库，新建联系人
+        // 不允许多个重复的号码？吗
+        if (isInList(user.mobilephone))
+            return false;
 
-        // 0: name, 1: sortname, 2: mobilephone, 3: photo, 4: groupname, 5: info
-        User user = new User();
-        user.name = data[0];
-        user.sortname = data[1];
-        user.mobilephone = data[2];
-        user.photo = Integer.parseInt(data[3]);
-        user.groupname = data[4];
-        user.info = data[5];
-        insertAUser(user);
-
-        return user;
-    }
-
-    public void insertAUser(User user) {//初始化数据库，新建联系人
         ContentValues values = User2Contents(user);
+        boolean result = true;
         try{
             db.insert("user", null, values);
         }catch (SQLiteConstraintException e){
             e.getStackTrace();
+            result = false;
         }
+
+        return result;
     }
 
-    public void changeUser(User user){
+    public void changeUser(User user) {
         int uid = user.uid;
         ContentValues values = User2Contents(user);
         db.update("user", values, "uid = "+uid, null);
     }
 
-    public void deleteUser(User user){
+    public void deleteUser(User user) {
         ContentValues values = new ContentValues();
         int uid = user.uid;
         db.delete("user", "uid = " + uid, null);
     }
 
     public void initGroup(Group group){//初始化数据库，或者新建组群
-//        openDatabase();
-
         ContentValues values = new ContentValues();
         values.put("groupname",group.groupname);
         values.put("groupnum", group.groupnum);
@@ -130,21 +120,21 @@ public class DBHelper extends SQLiteOpenHelper {
         }
     }
 
-    public void changeGroup(Group group){
+    public void changeGroup(Group group) {
         ContentValues values = new ContentValues();
         String groupname = group.groupname;
         values.put("groupnum",group.groupnum);
         db.update("grouptable", values, "groupname = " + groupname, null);
     }
 
-    public void deleteGroup(Group group){
+    public void deleteGroup(Group group) {
         ContentValues values = new ContentValues();
         String groupname = group.groupname;
         db.delete("grouptable", "groupname = " + groupname, null);
     }
 
 
-    public Vector<String> getGroup(){
+    public Vector<String> getGroup() {
         Cursor t = db.query(GROUPTABLE, new String[]{GROUPNAME}, null, null, null, null, null, null);
         Vector<String> result = new Vector<>();
         if(t.moveToFirst()){
@@ -155,7 +145,6 @@ public class DBHelper extends SQLiteOpenHelper {
         t.close();
         return result;
     }
-
 
 
     @Override
@@ -198,10 +187,4 @@ public class DBHelper extends SQLiteOpenHelper {
     public synchronized void close() {
         super.close();
     }
-
-
-    public static final String GROUPTABLE = "grouptable";
-    public static final String GROUPNAME = "groupname";
-    public static final String GROUPID = "gid";
-    public static final String GROUPNUM = "groupnum";
 }

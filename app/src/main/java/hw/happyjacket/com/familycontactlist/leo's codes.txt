@@ -762,3 +762,112 @@ public static Vector<Integer> SearchAmongRecords(List<HashMap<String, String>> d
         }
         return result;
     }
+
+
+=====
+导出联系人
+    public static void ExportContacts(Context context, String dirName) {
+//        DBHelper dbHelper = new DBHelper(context);
+//        SQLiteDatabase db = dbHelper.getReadableDatabase();
+//        if (!db.isOpen())
+//            return ;
+//
+//        Cursor cursor = db.query(DBHelper.DB_TABLENAME, null, null, null, null, null, null);
+//        int name_idx = cursor.getColumnIndex("name");
+//        int sortname_idx = cursor.getColumnIndex("sortname");
+//        int mobilephone_idx = cursor.getColumnIndex("mobilephone");
+//        int photo_idx = cursor.getColumnIndex("photo");
+//        int groupname_idx = cursor.getColumnIndex("groupname");
+//        int info_idx = cursor.getColumnIndex("info");
+//
+//
+//        FileOutputStream out = null;
+//        BufferedWriter writer = null;
+//        SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+//        String date  = sDateFormat.format(new java.util.Date());
+//        String fileName = dirName + File.separator + date + randomString(6) + ".txt";
+//        Log.d("hehe", fileName);
+//
+//        try {
+//            out = new FileOutputStream(fileName);
+//            writer = new BufferedWriter(new OutputStreamWriter(out));
+//
+//            while (cursor.moveToNext()) {
+//                List<String> data = new ArrayList<>();
+//                data.add(cursor.getString(name_idx));
+//                data.add(cursor.getString(sortname_idx));
+//                data.add(cursor.getString(mobilephone_idx));
+//                data.add("" + cursor.getInt(photo_idx));
+//                data.add(cursor.getString(groupname_idx));
+//                data.add(cursor.getString(info_idx));
+//                writer.write(joinStrs(data, CommonSettingsAndFuncs.Spliter));
+//            }
+//
+//            writer.flush();
+//            writer.close();
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            db.close();
+//            dbHelper.close();
+//        }
+    }
+
+
+====
+导入联系人
+
+public static Vector<User> ImportContacts(Context context, String fileName) {
+        DBHelper dbHelper = new DBHelper(context);
+        FileInputStream input = null;
+        BufferedReader reader = null;
+        Vector<User> newUsers = new Vector<>();
+
+        try {
+            input = new FileInputStream(fileName);
+            reader = new BufferedReader(new InputStreamReader(input));
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] data = line.split(CommonSettingsAndFuncs.Spliter);
+                for (int i = 0; i < data.length; ++i)
+                    if (data[i].equals("null"))
+                        data[i] = "";
+                User user = dbHelper.insertFromStrings(data);
+                if (user != null)
+                    newUsers.add(user);
+            }
+
+            if (reader != null)
+                reader.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            dbHelper.close();
+        }
+
+        return newUsers;
+    }
+
+
+
+=====
+public User insertFromStrings(String[] data) {
+        if (isInList(data[2])) {
+            return null;
+        }
+
+        // 0: name, 1: sortname, 2: mobilephone, 3: photo, 4: groupname, 5: info
+        User user = new User();
+        user.name = data[0];
+        user.sortname = data[1];
+        user.mobilephone = data[2];
+        user.photo = Integer.parseInt(data[3]);
+        user.groupname = data[4];
+        user.info = data[5];
+        insertAUser(user);
+
+        return user;
+    }
+
+
+=======

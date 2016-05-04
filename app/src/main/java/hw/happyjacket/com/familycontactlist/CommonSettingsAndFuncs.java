@@ -6,6 +6,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.util.Xml;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -104,11 +107,11 @@ public class CommonSettingsAndFuncs {
         return null;
     }
 
-    public static String ExportContacts(Context context, String dirName) {
+    public static void ExportContacts(Context context, String dirName) {
         DBHelper dbHelper = new DBHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
         if (!db.isOpen())
-            return null;
+            return ;
 
         Cursor cursor = db.query(DBHelper.DB_TABLENAME, null, null, null, null, null, null);
         int name_idx = cursor.getColumnIndex("name");
@@ -118,29 +121,30 @@ public class CommonSettingsAndFuncs {
         int groupname_idx = cursor.getColumnIndex("groupname");
         int info_idx = cursor.getColumnIndex("info");
 
-
         FileOutputStream out = null;
         BufferedWriter writer = null;
         SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        String date  = sDateFormat.format(new java.util.Date());
+        String date = sDateFormat.format(new java.util.Date());
         String fileName = dirName + File.separator + date + randomString(6) + ".txt";
-        Log.d("hehe", fileName);
+        JSONObject AllContacts = new JSONObject();
+        JSONArray data = new JSONArray();
 
         try {
             out = new FileOutputStream(fileName);
             writer = new BufferedWriter(new OutputStreamWriter(out));
 
             while (cursor.moveToNext()) {
-                List<String> data = new ArrayList<>();
-                data.add(cursor.getString(name_idx));
-                data.add(cursor.getString(sortname_idx));
-                data.add(cursor.getString(mobilephone_idx));
-                data.add("" + cursor.getInt(photo_idx));
-                data.add(cursor.getString(groupname_idx));
-                data.add(cursor.getString(info_idx));
-                writer.write(joinStrs(data, CommonSettingsAndFuncs.Spliter));
+                JSONObject one = new JSONObject();
+                one.put("name", cursor.getString(name_idx));
+                one.put("sortname", cursor.getString(sortname_idx));
+                one.put("mobilephone", cursor.getString(mobilephone_idx));
+                one.put("photo", cursor.getInt(photo_idx));
+                one.put("groupname", cursor.getString(groupname_idx));
+                one.put("info", cursor.getString(info_idx));
+                data.put(one);
             }
 
+            writer.write(data.toString());
             writer.flush();
             writer.close();
         } catch (Exception e) {
@@ -149,8 +153,6 @@ public class CommonSettingsAndFuncs {
             db.close();
             dbHelper.close();
         }
-
-        return fileName;
     }
 
     public static Vector<User> ImportContacts(Context context, String fileName) {
@@ -162,15 +164,32 @@ public class CommonSettingsAndFuncs {
         try {
             input = new FileInputStream(fileName);
             reader = new BufferedReader(new InputStreamReader(input));
+            StringBuffer buf = new StringBuffer();
             String line;
+
             while ((line = reader.readLine()) != null) {
-                String[] data = line.split(CommonSettingsAndFuncs.Spliter);
-                for (int i = 0; i < data.length; ++i)
-                    if (data[i].equals("null"))
-                        data[i] = "";
-                User user = dbHelper.insertFromStrings(data);
-                if (user != null)
+                buf.append(line);
+            }
+
+            JSONTokener jsonParser = new JSONTokener(buf.toString());
+            JSONArray data = (JSONArray) jsonParser.nextValue();
+            User user = new User();
+
+            for (int i = 0; i < data.length(); ++i) {
+                JSONObject one = (JSONObject) data.get(i);
+                user.name = one.getString("name");
+                user.sortname = one.getString("sortname");
+                user.mobilephone = one.getString("mobilephone");
+                user.photo = one.getInt("photo");
+                user.groupname = one.getString("groupname");
+                if (one.has("info"))
+                    user.info = one.getString("info");
+
+                // 不知道为什么，10086删除后，还在？
+                if (dbHelper.insertAUser(user)) {
                     newUsers.add(user);
+                    Log.d("haha-new", user.name + ", " + user.mobilephone);
+                }
             }
 
             if (reader != null)
@@ -295,4 +314,6 @@ public class CommonSettingsAndFuncs {
             return CHINESE_INPUT;
         return EN_INPUT;
     }
+
+
 }
