@@ -56,6 +56,18 @@ public class MainShow extends PhoneShow {
     }
 
     @Override
+    public void refresh(Accessory accerssory, String[] pro) {
+        Integer t;
+        for(int i = 0 ; i < mPhoneListElementList.size() ; i++){
+            for (int j = 0; j < pro.length; j++) {
+                if(nmapp != null && ((t = nmapp.get(mPhoneListElementList.get(i).get(PhoneDictionary.NUMBER))) != null))
+                    mPhoneListElementList.get(i).put(pro[j], accerssory.decorate(pro[j], mPhoneListElementList_backup.get(t).get(pro[j])));
+            }
+        }
+        sPhoneAdapter.notifyDataSetChanged();
+    }
+
+    @Override
     public void AddPhoneElement(Accessory accessory, HashMap<String, String> input) {
         HashMap<String,String> t;
         HashMap<String,String> l, v;
@@ -141,28 +153,24 @@ public class MainShow extends PhoneShow {
     public void InitAdapter(Accessory accessory, String[] projection, String selection, String[] argument, String orderBy)
     {
         Vector<HashMap<String, String>> t = phoneList.init();
-        int count = 0;
         phoneList.setProjection(projection);
         phoneList.setSelection(selection);
         phoneList.setArgument(argument);
         phoneList.setOrderby(orderBy);
-        if(t == null)
-        {
+        if(t == null) {
             phoneList.connectDataBase();
             mPhoneListElementList_backup = phoneList.getPhoneList();
         }
-        else
-        {
+        else {
             for(HashMap<String,String> i : t)
                 mPhoneListElementList_backup.add(new HashMap<String, String>(i));
         }
-
-
         mDecorate = new Decorate(accessory);
         ElementCopy();
         for(int i = 0 ; i < mPhoneListElementList_backup.size() ; ++i){
             mPhoneListElementList_backup.get(i).put(PhoneDictionary.LOCATION,"");
             mPhoneListElementList.get(i).put(PhoneDictionary.LOCATION,"");
+            Log.i(TAG,mPhoneListElementList.get(i).get(PhoneDictionary.NUMBER) + " " + mPhoneListElementList.get(i).get(PhoneDictionary.NAME));
         }
 
         sPhoneAdapter = new MainAdapter(context, table, mPhoneListElementList,index);
@@ -178,6 +186,7 @@ public class MainShow extends PhoneShow {
                 PhoneLocationThread.CheckLocation(handler,phoneNumberList,context);
             }
         }).start();
+
         new Thread(new PhoneThreadCheck(context,mPhoneListElementList,handler)).start();
     }
 

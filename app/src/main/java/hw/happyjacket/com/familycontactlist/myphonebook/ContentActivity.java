@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.provider.CallLog;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -20,6 +21,9 @@ import android.support.v7.widget.Toolbar;
 
 import java.util.HashMap;
 
+import hw.happyjacket.com.familycontactlist.ChangePeopleDetail;
+import hw.happyjacket.com.familycontactlist.CreatePeopleDetail;
+import hw.happyjacket.com.familycontactlist.User;
 import hw.happyjacket.com.familycontactlist.extention.XiaoMiAccessory;
 import hw.happyjacket.com.familycontactlist.myphonebook.factory.DialogFactory;
 import hw.happyjacket.com.familycontactlist.myphonebook.factory.PhoneDialog;
@@ -45,6 +49,8 @@ public class ContentActivity extends AppCompatActivity {
     private TextView returns;
     private ContentShow mContentShow;
     private PhoneDialog contentDialog1, contentDialog2;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
+    private Toolbar toolbar;
     final String defaultName = "陌生联系人";
     final String condition = PhoneDictionary.NUMBER + " = ? ";
     @Override
@@ -80,12 +86,12 @@ public class ContentActivity extends AppCompatActivity {
 
     public void init()
     {
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         number = intent.getStringExtra(PhoneDictionary.NUMBER);
         backup = intent.getStringExtra(PhoneDictionary.NAME);
         location = intent.getStringExtra(PhoneDictionary.LOCATION);
         name = backup == null ? defaultName : new String(backup);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.content_top_menu);
+        toolbar = (Toolbar) findViewById(R.id.content_top_menu);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationContentDescription(name);
@@ -95,14 +101,14 @@ public class ContentActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.content_head);
+        collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.content_head);
         collapsingToolbarLayout.setTitle(name);
         collapsingToolbarLayout.setExpandedTitleColor(Color.WHITE);
         collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
 
 
         mListView = (ScrollListView) findViewById(R.id.content_number_and_detail);
-        mContentShow = new ContentShow(this,R.layout.call_log_list,number);
+        mContentShow = new ContentShow(this,R.layout.call_log_list,number,backup);
         mContentShow.setDefaultNumber(location);
         mContentShow.InitAdapter(new XiaoMiAccessory(), PhoneDictionary.PhoneCallLog, condition, new String[]{number}, CallLog.Calls.DEFAULT_SORT_ORDER);
         contentDialog1 = DialogFactory.getPhoneDialog(ContentActivity.this,R.layout.main_option,R.id.main_list,R.style.Menu,mContentShow.getIndex(),PhoneDictionary.ContentItems1,PhoneDictionary.CONTENT_OPTIONS1);
@@ -114,6 +120,17 @@ public class ContentActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 1:
+                        if (backup == null) {
+                            Intent intent1 = new Intent(ContentActivity.this, CreatePeopleDetail.class);
+                            intent1.putExtra(PhoneDictionary.NUMBER, number);
+                            startActivityForResult(intent1, PhoneDictionary.CREATE_PEOPLE_CODE);
+                        } else {
+                            Intent intent1 = new Intent(ContentActivity.this, ChangePeopleDetail.class);
+                            intent1.putExtra(PhoneDictionary.NUMBER, number);
+                            startActivityForResult(intent1, PhoneDictionary.CREATE_PEOPLE_CODE);
+                        }
+                        break;
+                    case 2:
                         if (mContentShow.getStatus() == PhoneDictionary.CONTENT1)
                             new PhoneOperation(ContentActivity.this).call(number);
                         else
@@ -131,17 +148,16 @@ public class ContentActivity extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 boolean pass = true;
-                switch (position){
+                switch (position) {
                     case 0:
                         contentDialog1.setPos(position);
                         contentDialog1.show();
                         break;
                     case 1:
-                        if(mContentShow.getStatus() == PhoneDictionary.CONTENT1) {
+                        if (mContentShow.getStatus() == PhoneDictionary.CONTENT1) {
                             contentDialog2.setPos(position);
                             contentDialog2.show();
-                        }
-                        else
+                        } else
                             pass = false;
                         break;
                     default:
@@ -156,5 +172,21 @@ public class ContentActivity extends AppCompatActivity {
 
     }
 
-
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (resultCode){
+            case PhoneDictionary.CREATE_PEOPLE_CODE:
+                User user = (User) data.getSerializableExtra(PhoneDictionary.OTHER);
+                collapsingToolbarLayout.setTitle(user.name);
+                backup = user.name;
+                name = user.name;
+                mContentShow.getPhoneListElementList().get(0).put(PhoneDictionary.DATE, user.mobilephone);
+                mContentShow.getPhoneListElementList().get(1).put(PhoneDictionary.DATE,"编辑联系人");
+                mContentShow.getPhoneAdapter().notifyDataSetChanged();
+                break;
+            default:
+                break;
+        }
+    }
 }

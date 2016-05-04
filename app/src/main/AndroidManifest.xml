@@ -68,6 +68,16 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".CreatePeopleDetail"
+                  android:windowSoftInputMode="adjustResize"
+                  android:theme="@style/AppTop">
+            <intent-filter>
+                <action android:name="android.intent.action.CPD" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+
         <activity android:name=".PeopleDetail">
             <intent-filter>
                 <action android:name="android.intent.action.PD" />
@@ -90,6 +100,8 @@
         <activity android:name=".ContactActivity"
                   android:theme="@style/AppTop">
         </activity>
+
+
 
         <service android:name=".myphonebook.InitService"/>
 

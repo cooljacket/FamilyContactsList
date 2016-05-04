@@ -38,6 +38,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import hw.happyjacket.com.familycontactlist.myphonebook.DefaultPicture;
 import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.PeopleInfoAdapter;
 import hw.happyjacket.com.familycontactlist.myphonebook.factory.DialogFactory;
@@ -54,8 +55,6 @@ public class ChangePeopleDetail extends AppCompatActivity {
     ImageButton btn_img;
     public static HashMap<String,Object> map;
     int imagePosition;
-
-
     EditText et_familyName;
     EditText et_name;
     Button add_info;
@@ -99,8 +98,8 @@ public class ChangePeopleDetail extends AppCompatActivity {
                     break;
 
                 case 100:
-                    imagePic = DialogFactory.getImagePicture();
-                    map.put(PhoneDictionary.Photo, DialogFactory.getImagePosition());
+                    imagePic = DefaultPicture.ImagePicture;
+                    map.put(PhoneDictionary.Photo, DefaultPicture.ImagePosition);
                     break;
                 case 103:
                     final  String tt = (String)msg.obj;
@@ -116,13 +115,11 @@ public class ChangePeopleDetail extends AppCompatActivity {
                 case 104:
                     info.add(new String[]{PhoneDictionary.PhoneCallChoices[msg.arg1],""});
                     mPeopleInfoAdapter.notifyDataSetChanged();
-
                 default:
                     int tmp = msg.what;
                     if(tmp>=0 && tmp < info.size()){
                         info.get(tmp)[0] = PhoneDictionary.PhoneCallChoices[msg.arg1];
                         mPeopleInfoAdapter.notifyDataSetChanged();
-                        break;
                     }
                     break;
             }
@@ -148,8 +145,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
                 if(data != null){
                     imagePic = PhotoZoom.getImageToView(ChangePeopleDetail.this, data);
                     imagePic = PhotoZoom.createCircleImage(imagePic, imagePic.getWidth(), imagePic.getHeight());
-                    DialogFactory.setImageP(-1);
-                    DialogFactory.setImagePosition(-1);
+                    DefaultPicture.ImageP = DefaultPicture.ImagePosition = -1;
                     btn_img.setImageBitmap(imagePic);
                     map.put(PhoneDictionary.Photo,-1);
                 }
@@ -194,15 +190,14 @@ public class ChangePeopleDetail extends AppCompatActivity {
         add_info = (Button)findViewById(R.id.add_info);
         btn_return=(Button)findViewById(R.id.btn_return);
         btn_save=(Button)findViewById(R.id.btn_save);
-        DialogFactory.setImageP((int) map.get("photo"));
-        DialogFactory.setImagePosition(DialogFactory.getImageP());
+        DefaultPicture.ImageP = (int) map.get("photo");
+        DefaultPicture.ImagePosition = DefaultPicture.ImageP;
 
 
 
 
         getUser();
         mPeopleInfoAdapter = new PeopleInfoAdapter(this,R.layout.change_people_detail,info);
-
         toolbar.setTitle("编辑联系人");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -230,7 +225,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
 
         mListView.setAdapter(mPeopleInfoAdapter);
-        DialogFactory.setImagePicture(imagePic = PhotoZoom.getBitmap((int) map.get("contactID"), (int) map.get(PhoneDictionary.Photo), TabContactsFragment.circleImage));
+        DefaultPicture.ImagePicture = (imagePic = PhotoZoom.getBitmap((int) map.get("contactID"), (int) map.get(PhoneDictionary.Photo), TabContactsFragment.circleImage));
         btn_img.setImageBitmap(imagePic);
         btn_img.setOnClickListener(new OnClickListener() {
             @Override
@@ -240,18 +235,6 @@ public class ChangePeopleDetail extends AppCompatActivity {
         });
 
         et_name.setText((String) map.get("contactName"));
-
-
-
-
-        group.setOnClickListener(new OnClickListener() {//群组弹框
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-
-
 
 //        family = (boolean)map.get("contactFamily");
 //        if(family){
@@ -363,7 +346,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
         User user = new User();
         user.cid = (int) map.get("contactID");
         user.uid = (int) map.get("UserID");
-        user.photo = DialogFactory.getImageP();
+        user.photo = DefaultPicture.ImageP;
 //        String[] s1 =(String[]) mListView.getItemAtPosition(0);
         //sb.append(ss[0]).append(";").append(ss[1]).append(";");
         user.mobilephone=(String) map.get("phoneNumber");
@@ -550,7 +533,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
         newmap.put("contactName", et_name.getText().toString());
         newmap.put("UserID",map.get("UserID"));
         newmap.put("contactID", map.get("contactID"));
-        newmap.put("photo", DialogFactory.getImagePosition());
+        newmap.put("photo", DefaultPicture.ImagePosition);
         newmap.put("phoneNumber",info.get(0)[1]);
         newmap.put("nickName",et_familyName.getText().toString());
         StringBuffer infoTmp = new StringBuffer();

@@ -141,6 +141,29 @@ public class PhotoZoom {
         }
     }
 
+    public static void saveBitmap(String id,Bitmap image){
+        String path;
+        File d = new File(Environment.getExternalStorageDirectory(),"image");
+        if(!d.exists())
+            d.mkdir();
+        File location = new File(d,id + ".jpg");
+        FileOutputStream fileOutputStream = null;
+
+        try{
+            if(location.exists()){
+                location.delete();
+            }
+            location.createNewFile();
+            fileOutputStream = new FileOutputStream(location);
+            image.compress(Bitmap.CompressFormat.JPEG, 80, fileOutputStream);
+            fileOutputStream.flush();
+            fileOutputStream.close();
+        } catch (IOException e) {
+            Log.i("error","error");
+            e.printStackTrace();
+        }
+    }
+
     public static Bitmap getBitmap(int id,int width,int height){
         String path;
         Bitmap bitmap = null;

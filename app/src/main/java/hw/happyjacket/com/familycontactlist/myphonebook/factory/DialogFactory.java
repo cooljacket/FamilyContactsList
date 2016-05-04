@@ -44,6 +44,7 @@ import hw.happyjacket.com.familycontactlist.ChangePeopleDetail;
 import hw.happyjacket.com.familycontactlist.CommonSettingsAndFuncs;
 import hw.happyjacket.com.familycontactlist.MainActivity;
 import hw.happyjacket.com.familycontactlist.R;
+import hw.happyjacket.com.familycontactlist.myphonebook.DefaultPicture;
 import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
 import hw.happyjacket.com.familycontactlist.myphonebook.PhoneDial;
 import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
@@ -65,13 +66,6 @@ import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 public class DialogFactory {
 
 
-    private static int imagePosition = -1;
-
-    private static Bitmap ImagePicture;
-
-    private static int ImageP;
-
-    private static int ImagePP;
 
     private static String Number = "";
 
@@ -83,37 +77,6 @@ public class DialogFactory {
         Number = number;
     }
 
-    public static int getImagePosition() {
-        return imagePosition;
-    }
-
-    public static void setImagePosition(int imagePosition) {
-        DialogFactory.imagePosition = imagePosition;
-    }
-
-    public static Bitmap getImagePicture() {
-        return ImagePicture;
-    }
-
-    public static void setImagePicture(Bitmap imagePicture) {
-        ImagePicture = imagePicture;
-    }
-
-    public static int getImageP() {
-        return ImageP;
-    }
-
-    public static void setImageP(int imageP) {
-        ImageP = imageP;
-    }
-
-    public static int getImagePP() {
-        return ImagePP;
-    }
-
-    public static void setImagePP(int imagePP) {
-        ImagePP = imagePP;
-    }
 
 
     public static PhoneDialog getPhoneDialog(Context context, int layout, int id,int style, final int index, String content[], int status){
@@ -173,7 +136,6 @@ public class DialogFactory {
                 Message message = handler.obtainMessage();
                 message.what = msgIndex;
                 message.arg1 = radioAdapter.getIndex();
-                Log.i("haha",message.arg1 + "");
                 handler.sendMessage(message);
                 defaultDialog.dismiss();
             }
@@ -310,7 +272,7 @@ public class DialogFactory {
                         context.startActivityForResult(intent, PhoneDictionary.IMAGE_REQUEST_CODE);
                         break;
                     case 1:
-                        DialogFactory.getImageDialog(context,"请选择图片",factory,PhoneDictionary.ImageID,btn_img,handler).show();
+                        DialogFactory.getImageDialog(context,"请选择图片",factory,btn_img,handler).show();
                         break;
                     default:
                         break;
@@ -329,7 +291,7 @@ public class DialogFactory {
      return builder.create();
     }
 
-    public static AlertDialog getImageDialog(final Activity context, String title, ViewSwitcher.ViewFactory factory, final int [] image, final ImageButton btn_img, final Handler handler){
+    public static AlertDialog getImageDialog(final Activity context, String title, ViewSwitcher.ViewFactory factory, final ImageButton btn_img, final Handler handler){
 
         final Gallery gallery;
         final ImageSwitcher IS;
@@ -338,21 +300,22 @@ public class DialogFactory {
         gallery = (Gallery) view.findViewById(R.id.img_gallery);
         IS = (ImageSwitcher) view.findViewById(R.id.image_switcher);
 
+        final int [] image = DefaultPicture.ImageID;
 
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setTitle("请选择头像");
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Bitmap a= PhotoZoom.ratio(context,image[imagePosition]);
+                Bitmap a= PhotoZoom.ratio(context,image[DefaultPicture.ImagePosition]);
                 Bitmap circleImage=PhotoZoom.createCircleImage(a, a.getWidth(),a.getHeight());
                 btn_img.setImageBitmap(circleImage);
-                ImagePicture = circleImage;
-                ImageP = imagePosition;
-                ImagePP = image[imagePosition];
+                DefaultPicture.ImagePicture = circleImage;
+                DefaultPicture.ImageP = DefaultPicture.ImagePosition;
+                DefaultPicture.ImagePP = image[DefaultPicture.ImagePosition];
                 Message message = handler.obtainMessage();
                 message.what = 100;
-                message.obj = ImagePicture;
+                message.obj = DefaultPicture.ImagePicture;
                 handler.sendMessage(message);
             }
         });
@@ -368,7 +331,7 @@ public class DialogFactory {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 IS.setImageResource(image[position]);
-                imagePosition = position;
+                DefaultPicture.ImagePosition = position;
             }
 
             @Override

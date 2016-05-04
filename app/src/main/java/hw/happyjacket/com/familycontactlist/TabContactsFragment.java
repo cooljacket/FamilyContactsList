@@ -169,8 +169,8 @@ public class TabContactsFragment extends Fragment {
             public void run() {
                 dbHelper = new DBHelper(mContext);
                 db = dbHelper.openDatabase();
-                getCircles();
                 TheFirstTimeInit();
+                getCircles();
                 AL = getPhoneContacts();
                 sortList();
                 dbHelper.close();
