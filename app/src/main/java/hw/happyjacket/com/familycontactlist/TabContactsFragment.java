@@ -13,7 +13,6 @@ import android.os.Message;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +21,9 @@ import android.widget.ListView;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 import java.util.Vector;
 
-import hw.happyjacket.com.familycontactlist.extention.ChineseWord;
 import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.TabContactAdapter;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
@@ -286,7 +283,7 @@ public class TabContactsFragment extends Fragment {
                         contactid = phoneCursor.getInt(PHONES_CONTACT_ID_INDEX);
                         contactID = phoneCursor.getString(PHONES_CONTACT_ID_INDEX);
                         contactPhone = phoneCursor.getString(PHONES_NUMBER_INDEX);
-                        contactSortname = CommonSettingsAndFuncs.convertToPinyin(mContext, contactName);
+                        contactSortname = CommonSettingsAndFuncs.convertToShortPinyin(mContext, contactName);
                         cursor = db.query("user", null, "cid = " + contactID, null, null, null, null);
                         if (!cursor.moveToFirst()) {
                             User user = new User();

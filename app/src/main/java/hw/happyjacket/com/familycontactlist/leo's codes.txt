@@ -735,3 +735,30 @@ public class Test {
 
 
 
+=====
+腿哥的不知道什么鬼的代码
+public static Vector<Integer> SearchAmongRecords(List<HashMap<String, String>> data, String pattern) {
+        Vector<Integer> result = new Vector<>();
+        Vector<Integer> sorts = new Vector<>();
+        int t;
+        boolean pass;
+        for (int i = 0; i < data.size(); ++i) {
+            String phoneNumber = data.get(i).get(PhoneDictionary.NUMBER);
+            if ((t = KMP_match(phoneNumber, pattern)) >= 0) {
+                pass = false;
+                for(int j = 0 ; j < sorts.size(); ++j) {
+                   if(t < sorts.get(j)){
+                       result.insertElementAt(i,j);
+                       sorts.insertElementAt(t,j);
+                       pass = true;
+                       break;
+                   }
+                }
+                if(!pass) {
+                    result.add(i);
+                    sorts.add(t);
+                }
+            }
+        }
+        return result;
+    }
