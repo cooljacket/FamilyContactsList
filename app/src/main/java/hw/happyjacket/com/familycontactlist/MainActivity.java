@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -35,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private RadioButton tab_record, tab_contacts;
     private TabRecordFragment mRecordTab;
     private TabContactsFragment mContactTab;
-    private List<Fragment> mTabs;
+    private static List<PhoneFragment> mTabs;
     private FragmentPagerAdapter mPagerAdapter;
     public static List<HashMap<String,String>> phoneElement;
     private static final int FILE_SELECT_CODE = 0;
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private void InitFragments() {
         mRecordTab = new TabRecordFragment();
         mContactTab = new TabContactsFragment();
-        mTabs = new ArrayList<Fragment>();
+        mTabs = new ArrayList<PhoneFragment>();
         mTabs.add(mRecordTab);
         mTabs.add(mContactTab);
 
@@ -159,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
             switch (requestCode) {
                 case PhoneDictionary.CONTAT_ACTION_START:
                     if (data != null && data.getSerializableExtra(PhoneDictionary.OTHER) != null)
-                        mContactTab.notifyDataSetChanged((HashMap<String, Object>) data.getSerializableExtra(PhoneDictionary.OTHER));
+                        mContactTab.notifyDataSetChanged((User) data.getSerializableExtra(PhoneDictionary.OTHER),(Bitmap)data.getParcelableExtra(PhoneDictionary.Picture));
                     break;
                 default:
                     break;
@@ -204,6 +205,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_account:
                 LoginOrRegister(MainActivity.this);
                 break;
+            case R.id.action_add_contact:
+                Toast.makeText(MainActivity.this, "添加联系人", Toast.LENGTH_SHORT).show();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -268,4 +272,19 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
+
+    public static void changePeopleDetail(User user, Bitmap picture){
+        for (PhoneFragment i : mTabs)
+            i.changePeopleDetail(user, picture);
+    }
+
+    public static void createPeopleDetail(User user, Bitmap picture){
+        for (PhoneFragment i : mTabs)
+            i.createPeopleDetail(user, picture);
+    }
+
+    public static void deletePeopleDetai(String number){
+        for(PhoneFragment i : mTabs)
+            i.deletePeopleDetail(number);
+    }
 }

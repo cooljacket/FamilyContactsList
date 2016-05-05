@@ -34,24 +34,31 @@ public class PhoneThreadCheck implements Runnable {
 
     @Override
     public void run() {
-        synchronized (TabContactsFragment.DataBaseLock) {
+
             Cursor t = null;
             String number = PhoneDictionary.NUMBER;
             String name = PhoneDictionary.NAME;
             String realName;
             String realNumber;
             ContentValues contentValues = new ContentValues();
+            synchronized (TabContactsFragment.DataBaseLock) {
             try {
                 for (HashMap<String, String> i : data) {
-                    if (i.get(name) == null) {
-                        realNumber = i.get(PhoneDictionary.NUMBER).replace(" ","").replace("+86","").replace("+","");
-                        t = mDBHelper.getUser(new String[]{"name"}, "mobilephone = ?", new String[]{realNumber}, null);
-                        if (t.moveToFirst()) {
-                            contentValues.clear();
-                            contentValues.put(name, (realName = t.getString(0)));
-                            mRecordList.update(contentValues, number + " = ?", new String[]{realNumber});
-                            i.put(name, realName);
-
+                    realNumber = i.get(PhoneDictionary.NUMBER).replace(" ","").replace("+86","").replace("+","");
+                    t = mDBHelper.getUser(new String[]{"name"}, "mobilephone = ?", new String[]{realNumber}, "limit 1");
+                    if (t.moveToFirst()) {
+                            realName = t.getString(0);
+                            if(!realName.equals(i.get(name))) {
+                                contentValues.clear();
+                                contentValues.put(name, realName);
+                                mRecordList.update(contentValues, number + " = ?", new String[]{realNumber});
+                                i.put(name, realName);
+                            }
+                    }
+                    else{
+                        if(i.get(name) != null) {
+                            i.remove(name);
+                            mRecordList.delete(number + " = ? ", new String[]{realNumber});
                         }
                     }
                 }
@@ -59,7 +66,7 @@ public class PhoneThreadCheck implements Runnable {
                 message.what = -1;
                 mHandler.sendMessage(message);
                 t.close();
-            } catch (Exception e) {
+            } catch (NullPointerException e) {
                 e.printStackTrace();
             }
         }

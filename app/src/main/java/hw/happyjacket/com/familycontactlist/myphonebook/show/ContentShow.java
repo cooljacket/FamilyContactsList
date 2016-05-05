@@ -20,16 +20,19 @@ public class ContentShow extends PhoneShow {
 
     private int status;
     private String number;
+    private String name;
     final int bound = 5;
     private String defaultList = "通话记录";
     private String defaultNumber = "电话";
+    private String defaultContact [] = {"编辑联系人","新建联系人"};
     public ContentShow(Activity context, int table) {
         super(context, table);
     }
 
-    public ContentShow(Activity context, int table, String number) {
+    public ContentShow(Activity context, int table, String number,String name) {
         super(context, table);
         this.number = number;
+        this.name = name;
     }
 
     public int getStatus() {
@@ -74,8 +77,11 @@ public class ContentShow extends PhoneShow {
         Vector<HashMap<String,String>> data = new Vector<>(2);
         HashMap<String,String> numbers = new HashMap<>();
         numbers.put(PhoneDictionary.DATE, number);
-        numbers.put(PhoneDictionary.NUMBER,defaultNumber);
+        numbers.put(PhoneDictionary.NUMBER, defaultNumber);
         data.add(numbers);
+        HashMap<String,String> contact = new HashMap<>();
+        contact.put(PhoneDictionary.DATE, name == null ? defaultContact[1] : defaultContact[0]);
+        data.add(contact);
         HashMap<String,String> point = new HashMap<>();
         point.put(PhoneDictionary.DATE, defaultList);
         data.add(point);
@@ -92,12 +98,16 @@ public class ContentShow extends PhoneShow {
             status = PhoneDictionary.CONTENT1;
             HashMap<String,String> num = new HashMap<>();
             num.put(PhoneDictionary.DATE, number);
-            num.put(PhoneDictionary.NUMBER,defaultNumber);
+            num.put(PhoneDictionary.NUMBER, defaultNumber);
+            HashMap<String,String> contact = new HashMap<>();
+            contact.put(PhoneDictionary.DATE, name == null ? defaultContact[1] : defaultContact[0]);
+            contact.put(PhoneDictionary.NUMBER,"");
             mPhoneListElementList.removeAllElements();
             for (HashMap<String,String> i : mPhoneListElementList_backup)
-                mPhoneListElementList.add(new HashMap<String, String>(i));
+                mPhoneListElementList.add(new HashMap<>(i));
             mPhoneListElementList = mDecorate.decorate(mPhoneListElementList);
-            mPhoneListElementList.insertElementAt(num, 0);
+            mPhoneListElementList.insertElementAt(num,0);
+            mPhoneListElementList.insertElementAt(contact, 1);
 
         }
         else {

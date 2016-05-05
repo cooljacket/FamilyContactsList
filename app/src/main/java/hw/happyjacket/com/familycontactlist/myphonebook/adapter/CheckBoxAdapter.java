@@ -86,6 +86,10 @@ public class CheckBoxAdapter extends ArrayAdapter<String> {
 
     }
 
+    public void setCheck(Vector<Boolean> check) {
+        this.check = check;
+    }
+
     public void addCheck(){
         check.add(false);
     }

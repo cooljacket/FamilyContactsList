@@ -25,8 +25,7 @@ import hw.happyjacket.com.familycontactlist.myphonebook.button.PhoneButton;
 public class RadioAdapter extends ArrayAdapter<String> {
 
     private int recourceID;
-    private int index = -1;
-
+    private int index = 0;
 
     public RadioAdapter(Context context, int resource) {
         super(context, resource);

@@ -27,6 +27,7 @@ import hw.happyjacket.com.familycontactlist.phone.phonelistener.PhoneThreadCheck
 public class MainShow extends PhoneShow {
 
 
+    private PhoneThreadCheck mPhoneThreadCheck;
     public MainShow(Activity context, int table) {
         super(context, table);
     }
@@ -40,6 +41,18 @@ public class MainShow extends PhoneShow {
             nmapp.put(i.get(PhoneDictionary.NUMBER), count++);
         }
         mPhoneListElementList = mDecorate.decorate(mPhoneListElementList);
+    }
+
+    @Override
+    public void refresh(Accessory accerssory, String[] pro) {
+        Integer t;
+        for(int i = 0 ; i < mPhoneListElementList.size() ; i++){
+            for (int j = 0; j < pro.length; j++) {
+                if(nmapp != null && ((t = nmapp.get(mPhoneListElementList.get(i).get(PhoneDictionary.NUMBER))) != null))
+                    mPhoneListElementList.get(i).put(pro[j], accerssory.decorate(pro[j], mPhoneListElementList_backup.get(t).get(pro[j])));
+            }
+        }
+        sPhoneAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -113,17 +126,9 @@ public class MainShow extends PhoneShow {
         if(pos == null || pos.size() == 0)
             return;
         mPhoneListElementList.removeAllElements();
-//        for(int i = 0, j = 0 ; i < mPhoneListElementList_backup.size(); ++i){
-//            if(j < pos.size() && pos.get(j).equals(i)){
-//                mPhoneListElementList.add(new HashMap<>(mPhoneListElementList_backup.get(i)));
-//                ++j;
-//            }
-//        }
-
-       for (int i = 0; i < pos.size(); ++i) {
-           mPhoneListElementList.add(new HashMap<>(MainActivity.phoneElement.get(pos.get(i))));
-       }
-
+        for (int i = 0; i < pos.size(); ++i) {
+            mPhoneListElementList.add(new HashMap<>(MainActivity.phoneElement.get(pos.get(i))));
+        }
         mDecorate.decorate(mPhoneListElementList);
         sPhoneAdapter.notifyDataSetChanged();
     }
@@ -145,15 +150,15 @@ public class MainShow extends PhoneShow {
             for(HashMap<String,String> i : t)
                 mPhoneListElementList_backup.add(new HashMap<String, String>(i));
         }
-
-
         mDecorate = new Decorate(accessory);
         ElementCopy();
         for(int i = 0 ; i < mPhoneListElementList_backup.size() ; ++i){
             mPhoneListElementList_backup.get(i).put(PhoneDictionary.LOCATION,"");
             mPhoneListElementList.get(i).put(PhoneDictionary.LOCATION,"");
+            Log.i(TAG,mPhoneListElementList.get(i).get(PhoneDictionary.NUMBER) + " " + mPhoneListElementList.get(i).get(PhoneDictionary.NAME));
         }
 
+        mPhoneThreadCheck = new PhoneThreadCheck(context,mPhoneListElementList,handler);
         sPhoneAdapter = new MainAdapter(context, table, mPhoneListElementList,index);
 
         final Vector<String> phoneNumberList = new Vector<>();
@@ -167,7 +172,12 @@ public class MainShow extends PhoneShow {
                 PhoneLocationThread.CheckLocation(handler,phoneNumberList,context);
             }
         }).start();
-        new Thread(new PhoneThreadCheck(context,mPhoneListElementList,handler)).start();
+
+        new Thread(mPhoneThreadCheck).start();
+    }
+
+    public void check(){
+        new Thread(mPhoneThreadCheck).start();
     }
 
     private Handler handler = new Handler() {
@@ -213,4 +223,5 @@ public class MainShow extends PhoneShow {
         }
 
     };
+
 }

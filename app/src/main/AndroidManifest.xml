@@ -58,6 +58,17 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".CreatePeopleDetail"
+                  android:windowSoftInputMode="adjustResize"
+                  android:theme="@style/AppTop">
+            <intent-filter>
+                <action android:name="android.intent.action.CPD" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+
         <activity android:name=".PeopleDetail">
             <intent-filter>
                 <action android:name="android.intent.action.PD" />
@@ -73,9 +84,11 @@
             android:name=".myphonebook.CallLogActivity"
             android:label="CallLog Detail"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity
             android:name=".ContactActivity"
             android:theme="@style/AppTop" />
+
         <activity android:name=".MyDirPicker.DirPicker">
             <intent-filter>
                 <action android:name="MY_DIR_PICKER" />
@@ -94,7 +107,11 @@
             android:theme="@style/AppTop">
         </activity>
 
-        <service android:name=".myphonebook.InitService" />
+
+
+
+        <service android:name=".myphonebook.InitService"/>
+
 
         <!-- 监听短信的广播消息 -->
         <receiver android:name=".SMSFireWall">

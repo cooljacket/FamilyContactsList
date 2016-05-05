@@ -6,8 +6,8 @@ package hw.happyjacket.com.familycontactlist;
 public class Group {
     public String groupname;
     public int groupnum ;
-    Group(){}
-    Group(String name,int num){
+    public Group(){}
+    public Group(String name,int num){
         groupname = name;
         groupnum = num;
     }

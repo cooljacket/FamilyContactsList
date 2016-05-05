@@ -15,12 +15,14 @@ import java.util.List;
 import java.util.Vector;
 
 import hw.happyjacket.com.familycontactlist.R;
+import hw.happyjacket.com.familycontactlist.TabContactUser;
 import hw.happyjacket.com.familycontactlist.TabContactsFragment;
+import hw.happyjacket.com.familycontactlist.User;
 
 /**
  * Created by root on 16-4-26.
  */
-public class TabContactAdapter extends ArrayAdapter<HashMap<String,Object> > {
+public class TabContactAdapter extends ArrayAdapter<TabContactUser> {
 
     private int recourceID;
     private Character sortName = null;
@@ -37,7 +39,7 @@ public class TabContactAdapter extends ArrayAdapter<HashMap<String,Object> > {
         recourceID = resource;
     }
 
-    public TabContactAdapter(Context context, int resource, List<HashMap<String, Object>> objects) {
+    public TabContactAdapter(Context context, int resource, List<TabContactUser> objects) {
         super(context, resource, objects);
         recourceID = resource;
     }
@@ -61,15 +63,15 @@ public class TabContactAdapter extends ArrayAdapter<HashMap<String,Object> > {
             myHolder = (MyHolder) view.getTag();
         }
 
-        HashMap<String,Object> item = getItem(position);
-        HashMap<String,Object> last = null;
+        TabContactUser item = getItem(position);
+        TabContactUser last = null;
         if(position > 0)
             last = getItem(position - 1);
 
-        String t1 = (String) item.get(TabContactsFragment.SORTNAME),t2;
+        String t1 = item.sortname,t2;
         char h1,h2;
         myHolder.alphebat.setHeight(0);
-        if(last != null && (t2 = (String)last.get(TabContactsFragment.SORTNAME)) != null && t2.length() > 0
+        if(last != null && (t2 = last.sortname) != null && t2.length() > 0
                 && t1 != null && t1.length() > 0 && 'A'<= (h1 = Character.toUpperCase(t1.charAt(0))) && h1 <= 'Z'){
             h2 = Character.toUpperCase(t2.charAt(0));
             if(h2 != h1) {
@@ -79,8 +81,8 @@ public class TabContactAdapter extends ArrayAdapter<HashMap<String,Object> > {
         }
 
 
-        myHolder.name.setText((String)item.get(TabContactsFragment.NAME));
-        myHolder.icon.setImageBitmap((Bitmap)item.get(TabContactsFragment.PHOTO));
+        myHolder.name.setText(item.name);
+        myHolder.icon.setImageBitmap(item.picture);
         return view;
     }
 

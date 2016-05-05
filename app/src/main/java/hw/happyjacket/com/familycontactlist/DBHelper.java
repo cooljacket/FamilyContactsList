@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.Vector;
 
@@ -13,13 +14,20 @@ import java.util.Vector;
  * Created by leo on 2016/4/10.
  */
 public class DBHelper extends SQLiteOpenHelper {
-    public static final   String DB_NAME="contact";
+    public static final String DB_NAME="contact";
     public final static int VERSION = 1;
-    public static final   String DB_TABLENAME="user";
+    public static final String DB_TABLENAME="user";
     public static final String GROUPTABLE = "grouptable";
     public static final String GROUPNAME = "groupname";
     public static final String GROUPID = "gid";
     public static final String GROUPNUM = "groupnum";
+    public static final String ID = "uid";
+    public static final String NAME = "name";
+    public static final String SORTNAME = "sortname";
+    public static final String NUMBER = "mobilephone";
+    public static final String PHOTO = "photo";
+    public static final String INFO = "info";
+    public static final String NICKNAME = "nickname";
 
     public SQLiteDatabase db;
     private Context context;
@@ -55,7 +63,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public ContentValues User2Contents(User user) {
         ContentValues values = new ContentValues();
-        values.put("cid", user.cid);
         values.put("name", user.name);
         values.put("sortname", user.sortname);
         values.put("mobilephone", user.mobilephone.replace(" ", ""));
@@ -103,8 +110,9 @@ public class DBHelper extends SQLiteOpenHelper {
         db.update("user", values, "uid = "+uid, null);
     }
 
+
     public void deleteUser(User user) {
-        ContentValues values = new ContentValues();
+
         int uid = user.uid;
         db.delete("user", "uid = " + uid, null);
     }
@@ -118,32 +126,47 @@ public class DBHelper extends SQLiteOpenHelper {
         }catch (SQLiteConstraintException e){
             e.getStackTrace();
         }
+
     }
 
     public void changeGroup(Group group) {
         ContentValues values = new ContentValues();
         String groupname = group.groupname;
         values.put("groupnum",group.groupnum);
-        db.update("grouptable", values, "groupname = " + groupname, null);
+        db.update("grouptable", values, "groupname = '" + groupname+"'", null);
     }
 
     public void deleteGroup(Group group) {
         ContentValues values = new ContentValues();
         String groupname = group.groupname;
-        db.delete("grouptable", "groupname = " + groupname, null);
+        db.delete("grouptable", "groupname = '" + groupname+"'", null);
+    }
+
+    public void deleteGroup(String name){
+        db.delete(GROUPTABLE,GROUPNAME + " = " + name,null);
     }
 
 
     public Vector<String> getGroup() {
-        Cursor t = db.query(GROUPTABLE, new String[]{GROUPNAME}, null, null, null, null, null, null);
+        Cursor t = db.query(GROUPTABLE, new String[]{GROUPNAME}, null, null, null, null,"gid",null);
         Vector<String> result = new Vector<>();
         if(t.moveToFirst()){
             do {
                 result.add(t.getString(0));
             }while (t.moveToNext());
         }
+        Log.i("DBHelper",result.toString());
         t.close();
         return result;
+    }
+
+    public int getGroupNum(Group group){
+        Cursor t = db.query("grouptable",null,"groupname='"+group.groupname+"'",null,null,null,null);
+        int num=0;
+        if(t.moveToFirst()){
+            num = t.getInt(1);
+        }
+        return num;
     }
 
 
@@ -151,20 +174,20 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         StringBuffer tableCreate = new StringBuffer();
         tableCreate.append("create table user ( uid integer primary key autoincrement,")//userid0
-                .append("cid integer not null,")//1contactid
-                .append("name text,")//2
-                .append("sortname text ,")//3
-                .append("mobilephone text default '0',")//4
-                .append("photo integer,")//头像编号5
-                .append("groupname text default '无',")//群组，默认no6
-                .append("info text,")//7
-                .append("nickname text);");//8
+                .append("name text,")//1
+                .append("sortname text ,")//2
+                .append("mobilephone text default '0',")//3
+                .append("photo integer,")//头像编号4
+                .append("groupname text default '无',")//群组，默认no5
+                .append("info text,")//6
+                .append("nickname text);");//7
         db.execSQL(tableCreate.toString());
 
         StringBuffer tableCreate2 = new StringBuffer();
-        tableCreate2.append("create table grouptable ( gid integer primary key autoincrement,")//contactid
-                .append("groupname text not null,")
-                .append("groupnum int not null);");
+        tableCreate2.append("create table grouptable ( ")//
+                .append("gid integer primary key autoincrement,")
+                .append("groupname text unique not null,")//0
+                .append("groupnum int not null);");//1
         db.execSQL(tableCreate2.toString());
         ContentValues contentValues = new ContentValues();
         contentValues.put(GROUPNAME,"家庭");

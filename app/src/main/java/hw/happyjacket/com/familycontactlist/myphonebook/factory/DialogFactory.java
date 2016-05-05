@@ -36,8 +36,11 @@ import java.util.List;
 import java.util.Vector;
 
 import hw.happyjacket.com.familycontactlist.CommonUtils;
+import hw.happyjacket.com.familycontactlist.DBHelper;
+import hw.happyjacket.com.familycontactlist.Group;
 import hw.happyjacket.com.familycontactlist.MainActivity;
 import hw.happyjacket.com.familycontactlist.R;
+import hw.happyjacket.com.familycontactlist.myphonebook.DefaultPicture;
 import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
 import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.CheckBoxAdapter;
@@ -58,13 +61,6 @@ import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 public class DialogFactory {
 
 
-    private static int imagePosition = -1;
-
-    private static Bitmap ImagePicture;
-
-    private static int ImageP;
-
-    private static int ImagePP;
 
     private static String Number = "";
 
@@ -76,37 +72,6 @@ public class DialogFactory {
         Number = number;
     }
 
-    public static int getImagePosition() {
-        return imagePosition;
-    }
-
-    public static void setImagePosition(int imagePosition) {
-        DialogFactory.imagePosition = imagePosition;
-    }
-
-    public static Bitmap getImagePicture() {
-        return ImagePicture;
-    }
-
-    public static void setImagePicture(Bitmap imagePicture) {
-        ImagePicture = imagePicture;
-    }
-
-    public static int getImageP() {
-        return ImageP;
-    }
-
-    public static void setImageP(int imageP) {
-        ImageP = imageP;
-    }
-
-    public static int getImagePP() {
-        return ImagePP;
-    }
-
-    public static void setImagePP(int imagePP) {
-        ImagePP = imagePP;
-    }
 
 
     public static PhoneDialog getPhoneDialog(Context context, int layout, int id,int style, final int index, String content[], int status){
@@ -143,9 +108,9 @@ public class DialogFactory {
 
     public static PhoneDialog getRadioDialog(Context context, int style, String content[], final Handler handler, final int msgIndex){
 
-        View view = LayoutInflater.from(context).inflate(R.layout.dialog_option,null);
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_option2,null);
         final RadioAdapter radioAdapter = new RadioAdapter(context,R.layout.dialog_radio,content);
-        ScrollListView listView = (ScrollListView) view.findViewById(R.id.dialog_option_listview);
+        ScrollListView listView = (ScrollListView) view.findViewById(R.id.dialog_option2_listview);
         listView.setAdapter(radioAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -156,17 +121,14 @@ public class DialogFactory {
         });
         final DefaultDialog defaultDialog = new DefaultDialog(context,style,0);
         defaultDialog.setContentView(view);
-        Button positive = (Button) view.findViewById(R.id.dialog_option_positive);
-        Button negative = (Button) view.findViewById(R.id.dialog_option_negative);
-        Button other = (Button) view.findViewById(R.id.new_dialog_option);
-        other.setVisibility(View.INVISIBLE);
+        Button positive = (Button) view.findViewById(R.id.dialog_option2_positive);
+        Button negative = (Button) view.findViewById(R.id.dialog_option2_negative);
         positive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Message message = handler.obtainMessage();
                 message.what = msgIndex;
                 message.arg1 = radioAdapter.getIndex();
-                Log.i("haha",message.arg1 + "");
                 handler.sendMessage(message);
                 defaultDialog.dismiss();
             }
@@ -181,9 +143,10 @@ public class DialogFactory {
         return defaultDialog;
     }
 
-    public static PhoneDialog getCheckBoxDialog(final Activity context, int style, final List<String> content, String []  have,final Handler handler,final int index,final int change){
+    public static PhoneDialog getCheckBoxDialog(final Activity context, int style, final List<String> content, String []  have,final Handler handler,final int index){
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_option,null);
         final CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(context,R.layout.dialog_checkbox,content,have);
+        final DBHelper dbHelper = new DBHelper(context);
         ScrollListView listView = (ScrollListView) view.findViewById(R.id.dialog_option_listview);
         listView.setAdapter(checkBoxAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -198,6 +161,8 @@ public class DialogFactory {
         Button positive = (Button) view.findViewById(R.id.dialog_option_positive);
         Button negative = (Button) view.findViewById(R.id.dialog_option_negative);
         Button addNewOption = (Button) view.findViewById(R.id.new_dialog_option);
+        Button delete = (Button) view.findViewById(R.id.dialog_option_delete);
+
         addNewOption.setText("新建群组");
         final Handler sHandler = new Handler(){
             @Override
@@ -205,13 +170,11 @@ public class DialogFactory {
                 super.handleMessage(msg);
                 switch (msg.what){
                     case 0:
-                        content.add((String) msg.obj);
+                        String t = (String) msg.obj;
+                        content.add(t);
                         checkBoxAdapter.addCheck();
                         checkBoxAdapter.notifyDataSetChanged();
-                        Message msg1 = handler.obtainMessage();
-                        msg1.what = change;
-                        msg1.obj = msg.obj;
-                        handler.sendMessage(msg1);
+                        dbHelper.initGroup(new Group(t,0));
                         break;
                     default:
                         break;
@@ -246,6 +209,25 @@ public class DialogFactory {
             }
         });
 
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Vector<Boolean> t = checkBoxAdapter.getIsChecked();
+                int i = 0;
+                while (i < t.size()){
+                    if(t.get(i)) {
+                        dbHelper.deleteGroup(content.get(i));
+                        content.remove(i);
+                        t.remove(i);
+                        continue;
+                    }
+                    ++i;
+                }
+                checkBoxAdapter.notifyDataSetChanged();
+
+            }
+        });
+
 
         return defaultDialog;
 
@@ -276,12 +258,23 @@ public class DialogFactory {
         return builder.create();
     }
 
-    public static AlertDialog WarningDialog(final Activity context,String positive, String warn){
+
+
+    public static AlertDialog WarningDialog(final Activity context, String warn){
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//        builder.setMessage(msg);
         builder.setTitle(warn);
-        builder.setPositiveButton(positive, new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+
                 dialog.dismiss();
             }
         });
@@ -303,7 +296,7 @@ public class DialogFactory {
                         context.startActivityForResult(intent, PhoneDictionary.IMAGE_REQUEST_CODE);
                         break;
                     case 1:
-                        DialogFactory.getImageDialog(context,"请选择图片",factory,PhoneDictionary.ImageID,btn_img,handler).show();
+                        DialogFactory.getImageDialog(context,"请选择图片",factory,btn_img,handler).show();
                         break;
                     default:
                         break;
@@ -322,7 +315,7 @@ public class DialogFactory {
      return builder.create();
     }
 
-    public static AlertDialog getImageDialog(final Activity context, String title, ViewSwitcher.ViewFactory factory, final int [] image, final ImageButton btn_img, final Handler handler){
+    public static AlertDialog getImageDialog(final Activity context, String title, ViewSwitcher.ViewFactory factory, final ImageButton btn_img, final Handler handler){
 
         final Gallery gallery;
         final ImageSwitcher IS;
@@ -331,21 +324,22 @@ public class DialogFactory {
         gallery = (Gallery) view.findViewById(R.id.img_gallery);
         IS = (ImageSwitcher) view.findViewById(R.id.image_switcher);
 
+        final int [] image = DefaultPicture.ImageID;
 
         AlertDialog.Builder builder=new AlertDialog.Builder(context);
         builder.setTitle("请选择头像");
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Bitmap a= PhotoZoom.ratio(context,image[imagePosition]);
+                Bitmap a= PhotoZoom.ratio(context,image[DefaultPicture.ImagePosition]);
                 Bitmap circleImage=PhotoZoom.createCircleImage(a, a.getWidth(),a.getHeight());
                 btn_img.setImageBitmap(circleImage);
-                ImagePicture = circleImage;
-                ImageP = imagePosition;
-                ImagePP = image[imagePosition];
+                DefaultPicture.ImagePicture = circleImage;
+                DefaultPicture.ImageP = DefaultPicture.ImagePosition;
+                DefaultPicture.ImagePP = image[DefaultPicture.ImagePosition];
                 Message message = handler.obtainMessage();
                 message.what = 100;
-                message.obj = ImagePicture;
+                message.obj = DefaultPicture.ImagePicture;
                 handler.sendMessage(message);
             }
         });
@@ -361,7 +355,7 @@ public class DialogFactory {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 IS.setImageResource(image[position]);
-                imagePosition = position;
+                DefaultPicture.ImagePosition = position;
             }
 
             @Override

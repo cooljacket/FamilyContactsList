@@ -53,6 +53,7 @@ public class PhoneDictionary {
     public static final int CONTACT_REQUEST_CODE  = 1;
     public static final int CONTAT_ACTION_START = 2;
     public static final int CONTACT_DELETE  = 3;
+    public static final int CREATE_PEOPLE_CODE = 4;
 
 
 
@@ -70,18 +71,7 @@ public class PhoneDictionary {
     public static final String PhoneCallChoices[] = {"手机", "邮箱","地址","公司","QQ","传真","注释"};
     public static final String AllPhoneChoices[] = {"手机" ,"邮箱", "地址"};
 
-    public static final int ImageID[] = {R.drawable.p4,R.drawable.p5,R.drawable.p6,
-            R.drawable.p1,R.drawable.p2,R.drawable.p3,
-            R.drawable.p7,R.drawable.p8,R.drawable.p9,
-            R.drawable.p10,R.drawable.p11,R.drawable.p12,
-            R.drawable.p13,R.drawable.p14,R.drawable.p15,
-            R.drawable.p16,R.drawable.p17,R.drawable.p18,
-            R.drawable.p19,R.drawable.p20,R.drawable.p21,
-            R.drawable.p22,R.drawable.p23,R.drawable.p24,
-            R.drawable.p25,R.drawable.p26,R.drawable.p27,
-            R.drawable.p28,R.drawable.p29,R.drawable.p30,
-            R.drawable.p31
-    };
+
 
 
 }

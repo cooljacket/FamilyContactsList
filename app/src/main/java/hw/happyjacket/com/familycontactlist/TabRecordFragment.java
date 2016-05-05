@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -36,11 +37,12 @@ import hw.happyjacket.com.familycontactlist.myphonebook.show.PhoneRegister;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 import hw.happyjacket.com.familycontactlist.phone.PhoneOperation;
 import hw.happyjacket.com.familycontactlist.phone.database.DataBaseDictionary;
+import hw.happyjacket.com.familycontactlist.phone.phonelistener.PhoneThreadCheck;
 
 /**
  * Created by jacket on 2016/3/30.
  */
-public class TabRecordFragment extends Fragment {
+public class TabRecordFragment extends PhoneFragment {
 
     private static final String TAG = TabRecordFragment.class.toString();
     private View recordView;
@@ -190,7 +192,18 @@ public class TabRecordFragment extends Fragment {
     }
 
 
+    @Override
+    public void changePeopleDetail(User user, Bitmap picture) {
+        mainShow.check();
+    }
 
+    @Override
+    public void createPeopleDetail(User user, Bitmap picture) {
+        mainShow.check();
+    }
 
-
+    @Override
+    public void deletePeopleDetail(String number) {
+        mainShow.check();
+    }
 }
