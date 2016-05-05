@@ -2,27 +2,33 @@
 <menu xmlns:android="http://schemas.android.com/apk/res-auto"
     xmlns:android1="http://schemas.android.com/apk/res/android">
 
-    <!-- 搜索, 应该作为动作按钮展示-->
-    <item
-        android1:id="@+id/action_search"
-        android:icon="@android:drawable/ic_menu_search"
-        android1:title="@string/action_search"
-        android:showAsAction="always" />
-
     <item
         android1:id="@+id/action_export"
-        android:icon="@android:drawable/ic_menu_compass"
         android1:title="@string/action_export"
         android:showAsAction="never" />
 
     <item
         android1:id="@+id/action_import"
-        android:icon="@android:drawable/ic_input_add"
         android1:title="@string/action_import"
         android:showAsAction="never" />
 
     <item
-        android1:id="@+id/action_settings"
+        android1:id="@+id/action_export_web"
+        android1:title="@string/action_push_to_cloud"
+        android:showAsAction="never" />
+
+    <item
+        android1:id="@+id/action_import_web"
+        android1:title="@string/action_pull_from_cloud"
+        android:showAsAction="never" />
+
+    <item
+        android1:id="@+id/action_fm"
         android1:title="@string/action_family_money"
+        android:showAsAction="never" />
+
+    <item
+        android1:id="@+id/action_account"
+        android1:title="@string/action_login_register"
         android:showAsAction="never" />
 </menu>

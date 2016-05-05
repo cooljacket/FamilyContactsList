@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
+import hw.happyjacket.com.familycontactlist.MainActivity;
 import hw.happyjacket.com.familycontactlist.PhoneLocationMaster;
 import hw.happyjacket.com.familycontactlist.extention.Accessory;
 import hw.happyjacket.com.familycontactlist.extention.Decorate;
@@ -112,12 +113,17 @@ public class MainShow extends PhoneShow {
         if(pos == null || pos.size() == 0)
             return;
         mPhoneListElementList.removeAllElements();
-        for(int i = 0, j = 0 ; i < mPhoneListElementList_backup.size(); ++i){
-            if(j < pos.size() && pos.get(j).equals(i)){
-                mPhoneListElementList.add(new HashMap<>(mPhoneListElementList_backup.get(i)));
-                ++j;
-            }
-        }
+//        for(int i = 0, j = 0 ; i < mPhoneListElementList_backup.size(); ++i){
+//            if(j < pos.size() && pos.get(j).equals(i)){
+//                mPhoneListElementList.add(new HashMap<>(mPhoneListElementList_backup.get(i)));
+//                ++j;
+//            }
+//        }
+
+       for (int i = 0; i < pos.size(); ++i) {
+           mPhoneListElementList.add(new HashMap<>(MainActivity.phoneElement.get(pos.get(i))));
+       }
+
         mDecorate.decorate(mPhoneListElementList);
         sPhoneAdapter.notifyDataSetChanged();
     }
@@ -127,18 +133,15 @@ public class MainShow extends PhoneShow {
     public void InitAdapter(Accessory accessory, String[] projection, String selection, String[] argument, String orderBy)
     {
         Vector<HashMap<String, String>> t = phoneList.init();
-        int count = 0;
         phoneList.setProjection(projection);
         phoneList.setSelection(selection);
         phoneList.setArgument(argument);
         phoneList.setOrderby(orderBy);
-        if(t == null)
-        {
+        if(t == null) {
             phoneList.connectDataBase();
             mPhoneListElementList_backup = phoneList.getPhoneList();
         }
-        else
-        {
+        else {
             for(HashMap<String,String> i : t)
                 mPhoneListElementList_backup.add(new HashMap<String, String>(i));
         }

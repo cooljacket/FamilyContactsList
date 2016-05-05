@@ -356,7 +356,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
         user.name=et_name.getText().toString();
         user.info=(String) map.get("info");
-        user.sortname = CommonSettingsAndFuncs.convertToShortPinyin(this, user.name);
+        user.sortname = CommonUtils.convertToShortPinyin(this, user.name);
 
 //        String[] s2 =(String[]) mListView.getItemAtPosition(mListView.getCount()-1);
 //        mPeopleInfoAdapter.notifyDataSetChanged();

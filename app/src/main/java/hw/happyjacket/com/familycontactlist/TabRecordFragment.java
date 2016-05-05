@@ -29,7 +29,6 @@ import java.util.Vector;
 import hw.happyjacket.com.familycontactlist.extention.XiaoMiAccessory;
 import hw.happyjacket.com.familycontactlist.myphonebook.InitService;
 import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
-import hw.happyjacket.com.familycontactlist.myphonebook.adapter.MainAdapter;
 import hw.happyjacket.com.familycontactlist.myphonebook.factory.DialogFactory;
 import hw.happyjacket.com.familycontactlist.myphonebook.factory.PhoneDialog;
 import hw.happyjacket.com.familycontactlist.myphonebook.show.MainShow;
@@ -70,11 +69,11 @@ public class TabRecordFragment extends Fragment {
     public void onStart() {
         if(mainShow == null) {
             init();
+            // 初始化的时候可能还不够，有变化的时候也要及时更新这个量。。
             MainActivity.phoneElement = mainShow.getPhoneListElementList_backup();
         }
         else {
             mainShow.refresh(new XiaoMiAccessory(), new String[]{PhoneDictionary.DATE});
-
         }
         super.onStart();
     }

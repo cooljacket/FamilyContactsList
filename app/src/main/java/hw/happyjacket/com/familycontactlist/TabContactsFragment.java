@@ -262,7 +262,7 @@ public class TabContactsFragment extends Fragment {
                         contactid = phoneCursor.getInt(PHONES_CONTACT_ID_INDEX);
                         contactID = phoneCursor.getString(PHONES_CONTACT_ID_INDEX);
                         contactPhone = phoneCursor.getString(PHONES_NUMBER_INDEX);
-                        contactSortname = CommonSettingsAndFuncs.convertToShortPinyin(mContext, contactName);
+                        contactSortname = CommonUtils.convertToShortPinyin(mContext, contactName);
                         cursor = db.query("user", null, "cid = " + contactID, null, null, null, null);
                         if (!cursor.moveToFirst()) {
                             User user = new User();

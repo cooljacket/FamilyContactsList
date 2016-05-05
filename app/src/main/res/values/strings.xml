@@ -3,11 +3,11 @@
     <string name="title_activity_black_list">BlackListActivity</string>
     <string name="call_log_button">></string>
     <string name="return_button">&lt;</string>
-    <string name="action_search">搜索</string>
     <string name="action_settings">其它设置lo</string>
-    <string name="action_export">导出联系人</string>
-    <string name="action_import">导入联系人</string>
-    <string name="action_push_to_cloud">导出到云端</string>
-    <string name="action_pull_from_cloud">从云端导入</string>
+    <string name="action_export">导出联系人到本地</string>
+    <string name="action_import">从本地导入联系人</string>
+    <string name="action_push_to_cloud">导出联系人到云端</string>
+    <string name="action_pull_from_cloud">从云端导入联系人</string>
     <string name="action_family_money">亲情余额</string>
+    <string name="action_login_register">登录/注册</string>
 </resources>

@@ -35,7 +35,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
-import hw.happyjacket.com.familycontactlist.CommonSettingsAndFuncs;
+import hw.happyjacket.com.familycontactlist.CommonUtils;
 import hw.happyjacket.com.familycontactlist.MainActivity;
 import hw.happyjacket.com.familycontactlist.R;
 import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
@@ -453,7 +453,7 @@ public class DialogFactory {
                 if(Number.equals(t))
                     return;
                 Number = t;
-                Vector<Integer> pos = CommonSettingsAndFuncs.SearchAmongRecords(MainActivity.phoneElement, Number);
+                Vector<Integer> pos = CommonUtils.SearchAmongRecords(MainActivity.phoneElement, Number);
                 mainShow.notifyDataSetChanged(pos);
             }
         });
