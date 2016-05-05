@@ -221,4 +221,9 @@ public class MainActivity extends AppCompatActivity {
         for (PhoneFragment i : mTabs)
             i.createPeopleDetail(user, picture);
     }
+
+    public static void deletePeopleDetai(String number){
+        for(PhoneFragment i : mTabs)
+            i.deletePeopleDetail(number);
+    }
 }

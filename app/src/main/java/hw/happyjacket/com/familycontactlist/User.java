@@ -8,9 +8,9 @@ import java.io.Serializable;
  * Created by leo on 2016/4/10.
  */
 public class User implements Serializable{
-    public int cid;
     public int uid;
     public int photo;
+    public int pos;
     public String name;
     public String sortname;
     public String mobilephone;
@@ -19,12 +19,12 @@ public class User implements Serializable{
     public String nickname;
 
     public User() {
-        uid = photo = -2;
+        uid = photo = pos = -2;
     }
 
     public void update(User users){
-        uid = users.uid == -1 ? uid : users.uid;
-        photo = users.photo == -1 ? photo : users.photo;
+        uid = users.uid == -2 ? uid : users.uid;
+        photo = users.photo == -2 ? photo : users.photo;
         name = users.name == null ? name : users.name;
         sortname = users.sortname == null ? sortname : users.sortname;
         mobilephone = users.mobilephone ==  null ? mobilephone : users.mobilephone;

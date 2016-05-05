@@ -7,7 +7,4 @@ import android.graphics.Bitmap;
  */
 public class TabContactUser extends User {
     public Bitmap picture;
-    public int pos;
-
-
 }

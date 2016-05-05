@@ -62,6 +62,7 @@ public class ContactActivity extends AppCompatActivity{
     private Bitmap picture;
     private DBHelper mDBHelper;
     private android.support.v7.widget.Toolbar mToolbar;
+    private static String TAG = ContactActivity.class.toString();
 
 
     @Override
@@ -71,7 +72,7 @@ public class ContactActivity extends AppCompatActivity{
         ContactListView = (ScrollListView) findViewById(R.id.contact_number_and_detail);
         head = (CollapsingToolbarLayout) findViewById(R.id.contact_toolbar_layout);
         mIntent = getIntent();
-        data = (User) mIntent.getSerializableExtra(PhoneDictionary.OTHER);
+        data = (User) mIntent.getSerializableExtra(TabContactsFragment.CARGO);
         mDBHelper = new DBHelper(this);
         showDetail();
 
@@ -110,7 +111,8 @@ public class ContactActivity extends AppCompatActivity{
                         break;
                     case 2:
                         Intent intent1 = new Intent(ContactActivity.this, ChangePeopleDetail.class);
-                        intent1.putExtra("data", data);
+                        intent1.putExtra(TabContactsFragment.NUMBER, data.mobilephone);
+                        intent1.putExtra(TabContactsFragment.NAME,data.name);
                         startActivityForResult(intent1, PhoneDictionary.CONTACT_REQUEST_CODE);
                         break;
                     case 3:
@@ -122,74 +124,14 @@ public class ContactActivity extends AppCompatActivity{
                         mContactShow.setInBlackList(!mContactShow.isInBlackList());
                         mContactShow.notifyDataSetChanged();
                         break;
-//<<<<<<< HEAD
-//                    case 4://删除联系人
-////                        new BlackListMaster(ContactActivity.this).delete(mContactShow.getNumber());
-//                        AlertDialog.Builder builder = new AlertDialog.Builder(ContactActivity.this);
-////        builder.setMessage(msg);
-//                        builder.setTitle("是否删除联系人 "+name);
-//                        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                //dialog.dismiss();
-//                            }
-//                        });
-//                        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                int Userid = (int) data.get("UserID");
-//                                DBHelper helper =new DBHelper(ContactActivity.this.getApplicationContext());
-//                                User user =new User();
-//                                user.uid=Userid;
-//                                helper.deleteUser(user);//数据库里删除
-//
-//                                Intent datas = new Intent();
-//                                HashMap<String,Object> newdata = new HashMap<String,Object>();
-//                                newdata.put("delete",1);
-//                                newdata.put("contactName", "321");
-//                                newdata.put("contactPhoto", picture);
-//                                newdata.put("contactSortname", data.get("contactSortname"));
-//                                newdata.put(PhoneDictionary.Photo,data.get(PhoneDictionary.Photo));
-//                                datas.putExtra(PhoneDictionary.OTHER, newdata);
-//                                setResult(PhoneDictionary.CONTAT_ACTION_START, datas);//不管有没修改都要更新数据
-//
-//                                Toast.makeText(ContactActivity.this,"remove "+10, Toast.LENGTH_SHORT).show();
-//                                finish();
-//
-//                            }
-//                        });
-//                        AlertDialog ad = builder.create();
-//                        ad.show();
-//
-//=======
                     case 4:
-//                        AlertDialog.Builder builder = new AlertDialog.Builder(ContactActivity.this);
-////        builder.setMessage(msg);
-//                        builder.setTitle("是否删除联系人 "+name);
-//                        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-//                                //dialog.dismiss();
-//                            }
-//                        });
-//                        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//                            @Override
-//                            public void onClick(DialogInterface dialog, int which) {
-                                User user = new User();
-                                user.uid = uid;
-                                mDBHelper.deleteUser(user);
-                                Intent intent = new Intent();
-                                intent.putExtra(TabContactsFragment.DELETE, true);
-                                setResult(PhoneDictionary.CONTACT_DELETE, intent);//不管有没修改都要更新数据
-                                finish();
-//
-//                            }
-//                        });
-
-//>>>>>>> 736707cd64d60cbe186bd744017b192e9c3072c5
+                        User user = new User();
+                        user.uid = uid;
+                        mDBHelper.deleteUser(user);
+                        MainActivity.deletePeopleDetai(data.mobilephone);
+                        finish();
                         break;
                     case 5:
-
                         break;
                     default:
                         break;
@@ -222,28 +164,27 @@ public class ContactActivity extends AppCompatActivity{
 
         switch (resultCode){//处理结果码
             case PhoneDictionary.CONTACT_REQUEST_CODE://有修改
-                User t = (User) datas.getSerializableExtra(PhoneDictionary.OTHER);
-                name = t.name;
+                data.name = name = datas.getStringExtra(TabContactsFragment.NAME);
+                Log.i(TAG,name + "");
                 head.setTitle(name);
-                mContactShow.setNumber(number = t.mobilephone);
+                mContactShow.setNumber(data.mobilephone = number = datas.getStringExtra(TabContactsFragment.NUMBER));
                 HashMap<String,String> theFirstLine = mContactShow.getPhoneListElementList().get(0);
                 theFirstLine.put(PhoneDictionary.DATE, number);
                 theFirstLine.put(PhoneDictionary.NUMBER, mContactShow.getPhoneListElementList().get(0).get(PhoneDictionary.NUMBER));
                 mContactShow.getPhoneListElementList().set(0, theFirstLine);
                 mContactShow.notifyDataSetChanged();
-                data.update(t);
                 break;
-
             default:
                 break;
         }
         super.onActivityResult(requestCode, resultCode, datas);
     }
 
-    public static void actionStart(Activity context,User user,int pos){
+    public static void actionStart(Activity context,User user){
         Intent intent = new Intent(context,ContactActivity.class);
-        intent.putExtra(TabContactsFragment.CARGO,user);
-        intent.putExtra(TabContactsFragment.POS,pos);
+        User user1 = new User();
+        user1.update(user);
+        intent.putExtra(TabContactsFragment.CARGO, user1);
         context.startActivityForResult(intent, PhoneDictionary.CONTAT_ACTION_START);
     }
 

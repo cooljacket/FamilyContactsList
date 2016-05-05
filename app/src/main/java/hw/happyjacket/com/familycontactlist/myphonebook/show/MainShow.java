@@ -26,6 +26,7 @@ import hw.happyjacket.com.familycontactlist.phone.phonelistener.PhoneThreadCheck
 public class MainShow extends PhoneShow {
 
 
+    private PhoneThreadCheck mPhoneThreadCheck;
     public MainShow(Activity context, int table) {
         super(context, table);
     }
@@ -156,6 +157,7 @@ public class MainShow extends PhoneShow {
             Log.i(TAG,mPhoneListElementList.get(i).get(PhoneDictionary.NUMBER) + " " + mPhoneListElementList.get(i).get(PhoneDictionary.NAME));
         }
 
+        mPhoneThreadCheck = new PhoneThreadCheck(context,mPhoneListElementList,handler);
         sPhoneAdapter = new MainAdapter(context, table, mPhoneListElementList,index);
 
         final Vector<String> phoneNumberList = new Vector<>();
@@ -170,7 +172,11 @@ public class MainShow extends PhoneShow {
             }
         }).start();
 
-        new Thread(new PhoneThreadCheck(context,mPhoneListElementList,handler)).start();
+        new Thread(mPhoneThreadCheck).start();
+    }
+
+    public void check(){
+        new Thread(mPhoneThreadCheck).start();
     }
 
     private Handler handler = new Handler() {
@@ -216,4 +222,5 @@ public class MainShow extends PhoneShow {
         }
 
     };
+
 }

@@ -36,6 +36,8 @@ import java.util.List;
 import java.util.Vector;
 
 import hw.happyjacket.com.familycontactlist.CommonSettingsAndFuncs;
+import hw.happyjacket.com.familycontactlist.DBHelper;
+import hw.happyjacket.com.familycontactlist.Group;
 import hw.happyjacket.com.familycontactlist.MainActivity;
 import hw.happyjacket.com.familycontactlist.R;
 import hw.happyjacket.com.familycontactlist.myphonebook.DefaultPicture;
@@ -106,9 +108,9 @@ public class DialogFactory {
 
     public static PhoneDialog getRadioDialog(Context context, int style, String content[], final Handler handler, final int msgIndex){
 
-        View view = LayoutInflater.from(context).inflate(R.layout.dialog_option,null);
+        View view = LayoutInflater.from(context).inflate(R.layout.dialog_option2,null);
         final RadioAdapter radioAdapter = new RadioAdapter(context,R.layout.dialog_radio,content);
-        ScrollListView listView = (ScrollListView) view.findViewById(R.id.dialog_option_listview);
+        ScrollListView listView = (ScrollListView) view.findViewById(R.id.dialog_option2_listview);
         listView.setAdapter(radioAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -119,10 +121,8 @@ public class DialogFactory {
         });
         final DefaultDialog defaultDialog = new DefaultDialog(context,style,0);
         defaultDialog.setContentView(view);
-        Button positive = (Button) view.findViewById(R.id.dialog_option_positive);
-        Button negative = (Button) view.findViewById(R.id.dialog_option_negative);
-        Button other = (Button) view.findViewById(R.id.new_dialog_option);
-        other.setVisibility(View.INVISIBLE);
+        Button positive = (Button) view.findViewById(R.id.dialog_option2_positive);
+        Button negative = (Button) view.findViewById(R.id.dialog_option2_negative);
         positive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,9 +143,10 @@ public class DialogFactory {
         return defaultDialog;
     }
 
-    public static PhoneDialog getCheckBoxDialog(final Activity context, int style, final List<String> content, String []  have,final Handler handler,final int index,final int change){
+    public static PhoneDialog getCheckBoxDialog(final Activity context, int style, final List<String> content, String []  have,final Handler handler,final int index){
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_option,null);
         final CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(context,R.layout.dialog_checkbox,content,have);
+        final DBHelper dbHelper = new DBHelper(context);
         ScrollListView listView = (ScrollListView) view.findViewById(R.id.dialog_option_listview);
         listView.setAdapter(checkBoxAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -160,6 +161,8 @@ public class DialogFactory {
         Button positive = (Button) view.findViewById(R.id.dialog_option_positive);
         Button negative = (Button) view.findViewById(R.id.dialog_option_negative);
         Button addNewOption = (Button) view.findViewById(R.id.new_dialog_option);
+        Button delete = (Button) view.findViewById(R.id.dialog_option_delete);
+
         addNewOption.setText("新建群组");
         final Handler sHandler = new Handler(){
             @Override
@@ -167,13 +170,11 @@ public class DialogFactory {
                 super.handleMessage(msg);
                 switch (msg.what){
                     case 0:
-                        content.add((String) msg.obj);
+                        String t = (String) msg.obj;
+                        content.add(t);
                         checkBoxAdapter.addCheck();
                         checkBoxAdapter.notifyDataSetChanged();
-                        Message msg1 = handler.obtainMessage();
-                        msg1.what = change;
-                        msg1.obj = msg.obj;
-                        handler.sendMessage(msg1);
+                        dbHelper.initGroup(new Group(t,0));
                         break;
                     default:
                         break;
@@ -205,6 +206,25 @@ public class DialogFactory {
             @Override
             public void onClick(View v) {
                 InputDialog(context,"请输入组名",sHandler,0).show();
+            }
+        });
+
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Vector<Boolean> t = checkBoxAdapter.getIsChecked();
+                int i = 0;
+                while (i < t.size()){
+                    if(t.get(i)) {
+                        dbHelper.deleteGroup(content.get(i));
+                        content.remove(i);
+                        t.remove(i);
+                        continue;
+                    }
+                    ++i;
+                }
+                checkBoxAdapter.notifyDataSetChanged();
+
             }
         });
 

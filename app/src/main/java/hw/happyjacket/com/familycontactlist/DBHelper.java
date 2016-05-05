@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.Vector;
 
@@ -62,7 +63,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public ContentValues User2Contents(User user) {
         ContentValues values = new ContentValues();
-        values.put("cid", user.cid);
         values.put("name", user.name);
         values.put("sortname", user.sortname);
         values.put("mobilephone", user.mobilephone.replace(" ", ""));
@@ -118,25 +118,13 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void initGroup(Group group){//初始化数据库，或者新建组群
-        Cursor t = db.query(GROUPTABLE, new String[]{GROUPNAME}, null, null, null, null, null, null);
-        boolean flag=false;
-        if(t.moveToFirst()){
-            do {
-                if(t.getString(0)==group.groupname){
-                    flag = true;
-                    break;
-                }
-            }while (t.moveToNext());
-        }
-        if(!flag){
-            ContentValues values = new ContentValues();
-            values.put("groupname",group.groupname);
-            values.put("groupnum", group.groupnum);
-            try{
-                db.insert("grouptable", null, values);
-            }catch (SQLiteConstraintException e){
-                e.getStackTrace();
-            }
+        ContentValues values = new ContentValues();
+        values.put("groupname",group.groupname);
+        values.put("groupnum", group.groupnum);
+        try{
+            db.insert("grouptable", null, values);
+        }catch (SQLiteConstraintException e){
+            e.getStackTrace();
         }
 
     }
@@ -154,15 +142,20 @@ public class DBHelper extends SQLiteOpenHelper {
         db.delete("grouptable", "groupname = '" + groupname+"'", null);
     }
 
+    public void deleteGroup(String name){
+        db.delete(GROUPTABLE,GROUPNAME + " = " + name,null);
+    }
+
 
     public Vector<String> getGroup() {
-        Cursor t = db.query(GROUPTABLE, new String[]{GROUPNAME}, null, null, null, null, null, null);
+        Cursor t = db.query(GROUPTABLE, new String[]{GROUPNAME}, null, null, null, null,"gid",null);
         Vector<String> result = new Vector<>();
         if(t.moveToFirst()){
             do {
                 result.add(t.getString(0));
             }while (t.moveToNext());
         }
+        Log.i("DBHelper",result.toString());
         t.close();
         return result;
     }
@@ -181,19 +174,19 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         StringBuffer tableCreate = new StringBuffer();
         tableCreate.append("create table user ( uid integer primary key autoincrement,")//userid0
-                .append("cid integer not null,")//1contactid
-                .append("name text,")//2
-                .append("sortname text ,")//3
-                .append("mobilephone text default '0',")//4
-                .append("photo integer,")//头像编号5
-                .append("groupname text default '无',")//群组，默认no6
-                .append("info text,")//7
-                .append("nickname text);");//8
+                .append("name text,")//1
+                .append("sortname text ,")//2
+                .append("mobilephone text default '0',")//3
+                .append("photo integer,")//头像编号4
+                .append("groupname text default '无',")//群组，默认no5
+                .append("info text,")//6
+                .append("nickname text);");//7
         db.execSQL(tableCreate.toString());
 
         StringBuffer tableCreate2 = new StringBuffer();
         tableCreate2.append("create table grouptable ( ")//
-                .append("groupname text primary key not null,")//0
+                .append("gid integer primary key autoincrement,")
+                .append("groupname text unique not null,")//0
                 .append("groupnum int not null);");//1
         db.execSQL(tableCreate2.toString());
         ContentValues contentValues = new ContentValues();

@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
 
+import hw.happyjacket.com.familycontactlist.myphonebook.DefaultPicture;
 import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.TabContactAdapter;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
@@ -41,10 +42,12 @@ public class TabContactsFragment extends PhoneFragment {
     public static String DELETE = "contactDelete";
     public static String POS = "contactPos";
     public static String CARGO = "cargo";
+    public static String NUMBER = "number";
+    
     public static final String DataBaseLock = "lock";
     private Context mContext;
     private ListView listview;
-    private Vector<TabContactUser> AL;
+    private Vector<TabContactUser> AL = new Vector<>();
     private int positionNew;
     private DBHelper dbHelper = null;
     private SQLiteDatabase db = null;
@@ -61,19 +64,6 @@ public class TabContactsFragment extends PhoneFragment {
             ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME,
             ContactsContract.CommonDataKinds.Phone.CONTACT_ID,
             ContactsContract.CommonDataKinds.Phone.NUMBER
-    };
-    public Vector<HashMap<String,Object>> contacts = new Vector<>();
-    private int[] image = {R.drawable.p4,R.drawable.p5,R.drawable.p6,
-            R.drawable.p1,R.drawable.p2,R.drawable.p3,
-            R.drawable.p7,R.drawable.p8,R.drawable.p9,
-            R.drawable.p10,R.drawable.p11,R.drawable.p12,
-            R.drawable.p13,R.drawable.p14,R.drawable.p15,
-            R.drawable.p16,R.drawable.p17,R.drawable.p18,
-            R.drawable.p19,R.drawable.p20,R.drawable.p21,
-            R.drawable.p22,R.drawable.p23,R.drawable.p24,
-            R.drawable.p25,R.drawable.p26,R.drawable.p27,
-            R.drawable.p28,R.drawable.p29,R.drawable.p30,
-            R.drawable.p31
     };
     public static Bitmap[] circleImage = new Bitmap[31];
     private Thread mThread;
@@ -96,7 +86,7 @@ public class TabContactsFragment extends PhoneFragment {
                                 positionNew = position;
                                 TabContactUser user = AL.get(position);
                                 // 当requestCode为3的时候表示请求转向CPD这个页面？？
-                                ContactActivity.actionStart(getActivity(), user, user.pos);
+                                ContactActivity.actionStart(getActivity(), user);
                             }
                         });
                         listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -163,18 +153,11 @@ public class TabContactsFragment extends PhoneFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getContext();
-
-
         new Thread(new Runnable() {
             @Override
             public void run() {
                 dbHelper = new DBHelper(mContext);
                 db = dbHelper.openDatabase();
-                Group group = new Group();
-                group.groupname="家庭";
-                group.groupnum=0;
-                dbHelper.initGroup(group);
-                getCircles();
                 TheFirstTimeInit();
                 getCircles();
                 getPhoneContacts();
@@ -194,7 +177,7 @@ public class TabContactsFragment extends PhoneFragment {
     private void getCircles() {
         Bitmap a;
         for(int i=0; i<31; i++){
-            a = PhotoZoom.ratio(getActivity(), image[i]);
+            a = PhotoZoom.ratio(getActivity(), DefaultPicture.ImageID[i]);
             circleImage[i] = PhotoZoom.createCircleImage(a, a.getWidth(), a.getHeight());//ratio(image[i],100,100)
         }
     }
@@ -271,15 +254,14 @@ public class TabContactsFragment extends PhoneFragment {
                         //得到联系人ID
                         contactid = phoneCursor.getInt(PHONES_CONTACT_ID_INDEX);
                         contactID = phoneCursor.getString(PHONES_CONTACT_ID_INDEX);
-                        contactPhone = phoneCursor.getString(PHONES_NUMBER_INDEX);
+                        contactPhone = phoneCursor.getString(PHONES_NUMBER_INDEX).replace(" ","").replace("+86","").replace("+", "");
                         contactSortname = CommonSettingsAndFuncs.convertToShortPinyin(mContext, contactName);
-                        cursor = db.query("user", null, "cid = " + contactID, null, null, null, null);
+                        cursor = db.query(DBHelper.DB_TABLENAME, null, DBHelper.NUMBER + " = " + contactPhone, null, null, null, null);
                         if (!cursor.moveToFirst()) {
                             User user = new User();
-                            user.cid = contactid;
                             user.name = contactName;
                             user.sortname = contactSortname;
-                            user.mobilephone = contactPhone.replace(" ","").replace("+86","").replace("+","");
+                            user.mobilephone = contactPhone;
                             user.groupname = "无";
                             user.nickname = "";
                             Random random = new Random();
@@ -302,12 +284,11 @@ public class TabContactsFragment extends PhoneFragment {
         ContentResolver resolver1 = mContext.getContentResolver();
         // 获取手机联系人
 
-        Cursor cursor = db.query("user", new String[]{DBHelper.NAME,DBHelper.SORTNAME,DBHelper.NUMBER,DBHelper.PHOTO,DBHelper.ID}, null, null, null, null, null);
+        Cursor cursor = db.query(DBHelper.DB_TABLENAME, new String[]{DBHelper.NAME,DBHelper.SORTNAME,DBHelper.NUMBER,DBHelper.PHOTO,DBHelper.ID}, null, null, null, null, null);
         if (cursor != null){
             if(cursor.moveToFirst()) {
                 do {
                     TabContactUser user = new TabContactUser();
-
                     //familyname
                     user.name = cursor.getString(0);
                     //group
@@ -329,11 +310,35 @@ public class TabContactsFragment extends PhoneFragment {
 
     @Override
     public void changePeopleDetail(User user, Bitmap picture) {
-
+        for(TabContactUser i : AL){
+            if(i.mobilephone.equals(user.mobilephone)){
+                i.picture = picture;
+                i.name = user.name;
+                break;
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 
     @Override
     public void createPeopleDetail(User user, Bitmap picture) {
-
+        TabContactUser user1 = new TabContactUser();
+        user1.update(user);
+        user1.picture = picture;
+        AL.add(user1);
+        sortList();
     }
+
+    @Override
+    public void deletePeopleDetail(String number) {
+        for(int i = 0 ; i < AL.size() ; ++i) {
+            Log.i("changePeople",AL.get(i).mobilephone + " " + number);
+            if(AL.get(i).mobilephone.equals(number)){
+                Log.i("changePeople",AL.get(i).mobilephone + " " + i + "  " + number);
+                delete(i);
+                break;
+            }
+        }
+    }
+
 }

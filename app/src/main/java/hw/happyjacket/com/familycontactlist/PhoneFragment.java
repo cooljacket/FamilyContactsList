@@ -11,4 +11,6 @@ public abstract class PhoneFragment extends Fragment {
     public abstract void changePeopleDetail(User user, Bitmap picture);
 
     public abstract void createPeopleDetail(User user, Bitmap picture);
+
+    public abstract void deletePeopleDetail(String number);
 }

@@ -1,6 +1,7 @@
 package hw.happyjacket.com.familycontactlist;
 
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Vector;
 import android.content.Context;
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -39,29 +41,32 @@ import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
  */
 public class ChangePeopleDetail extends AppCompatActivity {
 
-    ImageButton btn_img;
+    private static String TAG = ChangePeopleDetail.class.toString();
+    private ImageButton btn_img;
     private User user;
-    int imagePosition;
-    EditText et_familyName;
-    EditText et_name;
-    Button add_info;
-    Button btn_save;
-    Button btn_return;
-    Button group_name_button;
-    TextView groupName;
-    RelativeLayout group;
-    Toolbar toolbar;
-    int imageP;//头像序号
-    Bitmap imagePic;//头像Rid
-    String oldGroupName;//旧的群组名
-    int imagePP;
-    Vector<String[]> info;// = new Vector<>();
-    ScrollListView mListView;
-    PeopleInfoAdapter mPeopleInfoAdapter;
-    DBHelper mDBHelper;
-    String have[];
-    Vector<String> AllGroup;//存可选的群组
-    Handler mHandler = new Handler(){
+    private int imagePosition;
+    private EditText et_familyName;
+    private EditText et_name;
+    private Button add_info;
+    private Button btn_save;
+    private Button btn_return;
+    private Button group_name_button;
+    private TextView groupName;
+    private RelativeLayout group;
+    private Toolbar toolbar;
+    private int imageP;//头像序号
+    private Bitmap imagePic;//头像Rid
+    private String oldGroupName;//旧的群组名
+    private String number;
+    private String name;
+    private int imagePP;
+    private Vector<String[]> info;// = new Vector<>();
+    private ScrollListView mListView;
+    private PeopleInfoAdapter mPeopleInfoAdapter;
+    private DBHelper mDBHelper;
+    private String have[];
+    private Vector<String> AllGroup;//存可选的群组
+    private Handler mHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what){
@@ -71,8 +76,6 @@ public class ChangePeopleDetail extends AppCompatActivity {
                     for(int i = 0 ; i < t.size(); ++i)
                         if (t.get(i))
                             stringBuffer.append(AllGroup.get(i) + "/");
-
-
                     if(stringBuffer.length() == 0) {
                         stringBuffer.append("无");
                         have = null;
@@ -81,7 +84,6 @@ public class ChangePeopleDetail extends AppCompatActivity {
                         stringBuffer.deleteCharAt(stringBuffer.length() - 1);
                         have = stringBuffer.toString().split("/");
                     }
-
                     groupName.setText(stringBuffer.toString());
                     break;
 
@@ -89,20 +91,13 @@ public class ChangePeopleDetail extends AppCompatActivity {
                     imagePic = DefaultPicture.ImagePicture;
                     user.photo = DefaultPicture.ImagePosition;
                     break;
-                case 103:
-                    final  String tt = (String)msg.obj;
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mDBHelper.initGroup(new Group(tt,0));
-                        }
-                    }).start();
-
-                    break;
-
                 case 104:
-                    info.add(new String[]{PhoneDictionary.PhoneCallChoices[msg.arg1],""});
+                    info.add(new String[]{PhoneDictionary.PhoneCallChoices[msg.arg1], ""});
                     mPeopleInfoAdapter.notifyDataSetChanged();
+                    break;
+                case 105:
+
+
                 default:
                     int tmp = msg.what;
                     if(tmp>=0 && tmp < info.size()){
@@ -163,7 +158,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.edit_people_detail);
         final Intent intent = getIntent();
-        user = (User)intent.getSerializableExtra(TabContactsFragment.CARGO);
+        user = new User();
         mDBHelper = new DBHelper(this);
         group = (RelativeLayout) findViewById(R.id.edit_group);
         AllGroup = mDBHelper.getGroup();
@@ -178,13 +173,13 @@ public class ChangePeopleDetail extends AppCompatActivity {
         btn_return=(Button)findViewById(R.id.btn_return);
         btn_save=(Button)findViewById(R.id.btn_save);
         info = new Vector<>();
+
+        initUser();
+        getUser();
         DefaultPicture.ImageP = user.photo;
         DefaultPicture.ImagePosition = DefaultPicture.ImageP;
 
 
-
-
-        getUser();
         mPeopleInfoAdapter = new PeopleInfoAdapter(this,R.layout.change_people_detail,info);
         toolbar.setTitle("编辑联系人");
         setSupportActionBar(toolbar);
@@ -206,13 +201,14 @@ public class ChangePeopleDetail extends AppCompatActivity {
         group_name_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFactory.getCheckBoxDialog(ChangePeopleDetail.this, R.style.Menu, AllGroup, have, mHandler, 102, 103).show();
+                DialogFactory.getCheckBoxDialog(ChangePeopleDetail.this, R.style.Menu, AllGroup, have, mHandler, 102).show();
             }
         });
 
 
 
         mListView.setAdapter(mPeopleInfoAdapter);
+        Log.i(TAG,user.photo +  "");
         DefaultPicture.ImagePicture = (imagePic = PhotoZoom.getBitmap(user.mobilephone, user.photo, TabContactsFragment.circleImage));
         btn_img.setImageBitmap(imagePic);
         btn_img.setOnClickListener(new OnClickListener() {
@@ -288,11 +284,14 @@ public class ChangePeopleDetail extends AppCompatActivity {
 //                        +"image2  "+imagePosition, Toast.LENGTH_SHORT).show();
 //                imagePic= btn_img.();
                 Changed();
-                MainActivity.changePeopleDetail(user,imagePic);
-               /* map = getChanged();*/
+                MainActivity.changePeopleDetail(user, imagePic);
                 int tmp = user.photo;
                 if(tmp == -1)
                     PhotoZoom.saveBitmap(user.mobilephone, imagePic);
+                Intent intent1 = new Intent();
+                intent1.putExtra(TabContactsFragment.NAME,user.name);
+                intent1.putExtra(TabContactsFragment.NUMBER,user.mobilephone);
+                setResult(PhoneDictionary.CONTACT_REQUEST_CODE,intent1);
                 finish();
 
             }
@@ -324,7 +323,6 @@ public class ChangePeopleDetail extends AppCompatActivity {
         DBHelper helper =new DBHelper(ChangePeopleDetail.this.getApplicationContext());
 
         User user = new User();
-        user.cid = (int) map.get("contactID");
         user.uid = (int) map.get("UserID");
         user.photo = DefaultPicture.ImageP;
 //        String[] s1 =(String[]) mListView.getItemAtPosition(0);
@@ -399,30 +397,41 @@ public class ChangePeopleDetail extends AppCompatActivity {
     }
 
 
-    private void getUser(){
-        DBHelper helper =new DBHelper(ChangePeopleDetail.this.getApplicationContext());
-        SQLiteDatabase db =helper.openDatabase();
-        Cursor cursor = db.query(DBHelper.DB_TABLENAME,new String[]{DBHelper.GROUPNAME,DBHelper.INFO,DBHelper.NICKNAME},DBHelper.ID + " = "+user.uid,null,null,null,null,"limit 1");
-//        Toast.makeText(getApplicationContext(),"get"+Userid, Toast.LENGTH_SHORT).show();
-        String groupname = null,infos = null,nickName = null;
-        if(cursor.moveToFirst()){
-            groupname = user.groupname = cursor.getString(0);
-            infos = user.info = cursor.getString(1);
-            nickName = user.nickname = cursor.getString(2);
-        }
-        cursor.close();
-        info.add(new String[]{"手机", user.mobilephone});
-        String pname="",parameter = "";
-        if(infos!=null && !infos.equals("")){
-            String [] infoTmp = infos.split("&&");
-            for(int i = 0 ; i < infoTmp.length; i+=2){
-                info.add(new String[]{infoTmp[i],infoTmp[i + 1]});
-            }
-        }
+    private void initUser(){
+        Intent intent = getIntent();
+        user.name = intent.getStringExtra(TabContactsFragment.NAME);
+        user.mobilephone = intent.getStringExtra(TabContactsFragment.NUMBER);
+    }
 
-        groupName.setText(groupname == null ? "无" : groupname);
-        oldGroupName = groupName.getText().toString();
-        et_familyName.setText(nickName == null ? "" : nickName);
+
+    private void getUser(){
+        try {
+            DBHelper helper = new DBHelper(ChangePeopleDetail.this.getApplicationContext());
+            SQLiteDatabase db = helper.openDatabase();
+            Cursor cursor = db.query(DBHelper.DB_TABLENAME, new String[]{DBHelper.ID,DBHelper.SORTNAME, DBHelper.PHOTO, DBHelper.GROUPNAME, DBHelper.INFO, DBHelper.NICKNAME}, DBHelper.NUMBER + " = " + user.mobilephone, null, null, null, null, "1");
+//        Toast.makeText(getApplicationContext(),"get"+Userid, Toast.LENGTH_SHORT).show();
+            String groupname = null, infos = null, nickName = null;
+            if (cursor.moveToFirst()) {
+                user.uid = cursor.getInt(0);
+                user.sortname = cursor.getString(1);
+                user.photo = cursor.getInt(2);
+                groupname = user.groupname = cursor.getString(3);
+                infos = user.info = cursor.getString(4);
+                nickName = user.nickname = cursor.getString(5);
+            }
+            cursor.close();
+            info.add(new String[]{"手机", user.mobilephone});
+            String pname = "", parameter = "";
+            if (infos != null && !infos.equals("")) {
+                String[] infoTmp = infos.split("&&");
+                for (int i = 0; i < infoTmp.length; i += 2) {
+                    info.add(new String[]{infoTmp[i], infoTmp[i + 1]});
+                }
+            }
+
+            groupName.setText(groupname == null ? "无" : groupname);
+            oldGroupName = groupName.getText().toString();
+            et_familyName.setText(nickName == null ? "" : nickName);
 
 //        groupName.setText("aaaaaaaaaa");
 //        list1.add(groupname);
@@ -438,7 +447,11 @@ public class ChangePeopleDetail extends AppCompatActivity {
 //            info[i][0] = paramName[i];
 //            info[i][1] = param[i];
 //        }
-        helper.close();
+            helper.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
 //
@@ -515,6 +528,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
 
     private void Changed(){
         user.name =  et_name.getText().toString();
+        user.sortname = CommonSettingsAndFuncs.convertToShortPinyin(this,user.name);
         user.photo  = DefaultPicture.ImagePosition;
         user.mobilephone = info.get(0)[1];
         user.nickname = et_familyName.getText().toString();
@@ -529,6 +543,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
             infoTmp.append(tt[0]).append("&&").append(tt[1]);
         }
         user.info = infoTmp.toString();
+        user.groupname = groupName.getText().toString();
         DBHelper dbHelper = new DBHelper(this);
         dbHelper.changeUser(user);
         dbHelper.close();

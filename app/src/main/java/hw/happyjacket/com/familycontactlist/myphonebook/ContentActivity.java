@@ -23,6 +23,7 @@ import java.util.HashMap;
 
 import hw.happyjacket.com.familycontactlist.ChangePeopleDetail;
 import hw.happyjacket.com.familycontactlist.CreatePeopleDetail;
+import hw.happyjacket.com.familycontactlist.TabContactsFragment;
 import hw.happyjacket.com.familycontactlist.User;
 import hw.happyjacket.com.familycontactlist.extention.XiaoMiAccessory;
 import hw.happyjacket.com.familycontactlist.myphonebook.factory.DialogFactory;
@@ -122,11 +123,12 @@ public class ContentActivity extends AppCompatActivity {
                     case 1:
                         if (backup == null) {
                             Intent intent1 = new Intent(ContentActivity.this, CreatePeopleDetail.class);
-                            intent1.putExtra(PhoneDictionary.NUMBER, number);
+                            intent1.putExtra(TabContactsFragment.NUMBER, number);
                             startActivityForResult(intent1, PhoneDictionary.CREATE_PEOPLE_CODE);
                         } else {
                             Intent intent1 = new Intent(ContentActivity.this, ChangePeopleDetail.class);
-                            intent1.putExtra(PhoneDictionary.NUMBER, number);
+                            intent1.putExtra(TabContactsFragment.NUMBER, number);
+                            intent1.putExtra(TabContactsFragment.NAME,name);
                             startActivityForResult(intent1, PhoneDictionary.CREATE_PEOPLE_CODE);
                         }
                         break;
@@ -154,6 +156,9 @@ public class ContentActivity extends AppCompatActivity {
                         contentDialog1.show();
                         break;
                     case 1:
+                        pass = false;
+                        break;
+                    case 2:
                         if (mContentShow.getStatus() == PhoneDictionary.CONTENT1) {
                             contentDialog2.setPos(position);
                             contentDialog2.show();
@@ -175,15 +180,31 @@ public class ContentActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        String num;
         switch (resultCode){
+
             case PhoneDictionary.CREATE_PEOPLE_CODE:
-                User user = (User) data.getSerializableExtra(PhoneDictionary.OTHER);
-                collapsingToolbarLayout.setTitle(user.name);
-                backup = user.name;
-                name = user.name;
-                mContentShow.getPhoneListElementList().get(0).put(PhoneDictionary.DATE, user.mobilephone);
+                num = data.getStringExtra(TabContactsFragment.NUMBER);
+                if (!number.equals(num))
+                    break;
+                String name_tmp = data.getStringExtra(TabContactsFragment.NAME);
+                collapsingToolbarLayout.setTitle(name_tmp);
+                backup = name_tmp;
+                name = name_tmp;
                 mContentShow.getPhoneListElementList().get(1).put(PhoneDictionary.DATE,"编辑联系人");
                 mContentShow.getPhoneAdapter().notifyDataSetChanged();
+                break;
+            case PhoneDictionary.CONTACT_REQUEST_CODE:
+                num = data.getStringExtra(TabContactsFragment.NUMBER);
+                if(!num.equals(number)) {
+                    collapsingToolbarLayout.setTitle(name = defaultName);
+                    backup = null;
+                    mContentShow.getPhoneListElementList().get(1).put(PhoneDictionary.DATE,"新建联系人");
+                    mContentShow.getPhoneAdapter().notifyDataSetChanged();
+                    break;
+                }
+                name = data.getStringExtra(TabContactsFragment.NAME);
+                collapsingToolbarLayout.setTitle(name);
                 break;
             default:
                 break;

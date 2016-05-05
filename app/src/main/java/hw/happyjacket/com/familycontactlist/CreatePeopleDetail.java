@@ -89,17 +89,6 @@ public class CreatePeopleDetail extends AppCompatActivity {
                     imagePic = DefaultPicture.ImagePicture;
                     mUser.photo = DefaultPicture.ImagePosition;
                     break;
-                case 103:
-                    final  String tt = (String)msg.obj;
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mDBHelper.initGroup(new Group(tt,0));
-                        }
-                    }).start();
-
-                    break;
-
                 case 104:
                     info.add(new String[]{PhoneDictionary.PhoneCallChoices[msg.arg1],""});
                     mPeopleInfoAdapter.notifyDataSetChanged();
@@ -124,7 +113,6 @@ public class CreatePeopleDetail extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode){//处理请求
-
             case PhoneDictionary.IMAGE_REQUEST_CODE:
                 if(data != null)
                     PhotoZoom.startPhotoZoom(CreatePeopleDetail.this, data.getData());
@@ -177,7 +165,7 @@ public class CreatePeopleDetail extends AppCompatActivity {
         btn_save=(Button)findViewById(R.id.btn_save);
 
 
-        DefaultPicture.ImagePosition = Math.abs(new Random().nextInt()) % DefaultPicture.ImageID.length;
+        DefaultPicture.ImagePosition = Math.abs(new Random().nextInt(DefaultPicture.ImageID.length));
         DefaultPicture.ImageP = DefaultPicture.ImagePosition;
         DefaultPicture.ImagePicture = imagePic = TabContactsFragment.circleImage[DefaultPicture.ImagePosition];
 
@@ -200,7 +188,7 @@ public class CreatePeopleDetail extends AppCompatActivity {
         group_name_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogFactory.getCheckBoxDialog(CreatePeopleDetail.this, R.style.Menu, AllGroup, have, mHandler, 102, 103).show();
+                DialogFactory.getCheckBoxDialog(CreatePeopleDetail.this, R.style.Menu, AllGroup, have, mHandler, 102).show();
             }
         });
 
@@ -244,10 +232,10 @@ public class CreatePeopleDetail extends AppCompatActivity {
                 if(mUser.photo == -1)
                     PhotoZoom.saveBitmap(number, imagePic);
                 Intent intent = new Intent();
-                intent.putExtra(PhoneDictionary.OTHER, mUser);
+                intent.putExtra(TabContactsFragment.NAME,mUser.name);
+                intent.putExtra(TabContactsFragment.NUMBER, mUser.mobilephone);
+                MainActivity.createPeopleDetail(mUser,imagePic);
                 setResult(PhoneDictionary.CREATE_PEOPLE_CODE, intent);
-                DBHelper dbHelper = new DBHelper(CreatePeopleDetail.this);
-                dbHelper.insertAUser(mUser);
                 finish();
             }
         });
@@ -288,6 +276,8 @@ public class CreatePeopleDetail extends AppCompatActivity {
         mUser.info = infoTmp.toString();
         mUser.sortname = CommonSettingsAndFuncs.convertToShortPinyin(CreatePeopleDetail.this, mUser.name);
         mUser.groupname = groupName.getText().toString();
+        DBHelper dbHelper = new DBHelper(CreatePeopleDetail.this);
+        dbHelper.insertAUser(mUser);
     }
 
 

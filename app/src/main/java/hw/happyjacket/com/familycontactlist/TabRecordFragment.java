@@ -38,6 +38,7 @@ import hw.happyjacket.com.familycontactlist.myphonebook.show.PhoneRegister;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 import hw.happyjacket.com.familycontactlist.phone.PhoneOperation;
 import hw.happyjacket.com.familycontactlist.phone.database.DataBaseDictionary;
+import hw.happyjacket.com.familycontactlist.phone.phonelistener.PhoneThreadCheck;
 
 /**
  * Created by jacket on 2016/3/30.
@@ -194,11 +195,16 @@ public class TabRecordFragment extends PhoneFragment {
 
     @Override
     public void changePeopleDetail(User user, Bitmap picture) {
-
+        mainShow.check();
     }
 
     @Override
     public void createPeopleDetail(User user, Bitmap picture) {
+        mainShow.check();
+    }
 
+    @Override
+    public void deletePeopleDetail(String number) {
+        mainShow.check();
     }
 }
