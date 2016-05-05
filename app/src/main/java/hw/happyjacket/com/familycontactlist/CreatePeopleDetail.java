@@ -43,6 +43,7 @@ public class CreatePeopleDetail extends AppCompatActivity {
     private ImageButton btn_img;
     private User mUser;
     private String number;
+    private String name;
     int imagePosition;
     private EditText et_familyName;
     private EditText et_name;
@@ -219,16 +220,18 @@ public class CreatePeopleDetail extends AppCompatActivity {
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Changed();
-                if(mUser.name == null || mUser.name.length() == 0){
-                    Toast.makeText(CreatePeopleDetail.this,"名字不可为空",Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if(mUser.mobilephone == null || mUser.mobilephone.length() == 0){
-                    Toast.makeText(CreatePeopleDetail.this,"号码不可为空",Toast.LENGTH_SHORT).show();
-                    return;
-                }
 
+                name = et_name.getText().toString();
+                number = info.get(0)[1];
+                if (name == null || name.equals("")) {
+                    DialogFactory.WarningDialog(CreatePeopleDetail.this, "姓名不能为空").show();
+                    return;
+                }
+                if (number == null || number.equals("") ){
+                    DialogFactory.WarningDialog(CreatePeopleDetail.this,"号码不能为空").show();
+                    return;
+                }
+                Changed();
                 if(mUser.photo == -1)
                     PhotoZoom.saveBitmap(number, imagePic);
                 Intent intent = new Intent();

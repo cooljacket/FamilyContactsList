@@ -17,6 +17,7 @@ import java.util.Vector;
 
 import hw.happyjacket.com.familycontactlist.BlackListMaster;
 import hw.happyjacket.com.familycontactlist.CommonSettingsAndFuncs;
+import hw.happyjacket.com.familycontactlist.DBHelper;
 import hw.happyjacket.com.familycontactlist.HttpConnectionUtil;
 import hw.happyjacket.com.familycontactlist.PhoneLocationMaster;
 import hw.happyjacket.com.familycontactlist.extention.Accessory;
@@ -155,11 +156,11 @@ public class ContactShow extends PhoneShow {
         phoneList.setArgument(argument);
         phoneList.setOrderby(orderby);
         phoneList.connectDataBase();
-        number = phoneList.getPhoneList().get(0).get("mobilephone");
+        number = phoneList.getPhoneList().get(0).get(DBHelper.NUMBER);
         number = number.replace(" ", "").replace("+86", "").replace("+", "");
         inBlackList = new BlackListMaster(context).isInBlackList(number);
         mPhoneListElementList = getDefaultData();
-        sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index);
+        sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index,1,number);
         mThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -187,7 +188,6 @@ public class ContactShow extends PhoneShow {
                     Log.i("weather", response);
                     weatherInfo = response;
                 }
-
                 @Override
                 public void onError(Exception e) {
                     weatherInfo = null;
@@ -204,7 +204,8 @@ public class ContactShow extends PhoneShow {
 
             try {
                 String[] result = CommonSettingsAndFuncs.ParseWeatherXML(new ByteArrayInputStream(weatherInfo.getBytes()));
-                weatherInfo = String.format(result[0], name);
+                weatherInfo = result[1] + " " + result[2] + " " + result[3] ;
+                ((CallLogAdapter)sPhoneAdapter).setMessage(String.format(result[0],name));
             } catch (XmlPullParserException e) {
                 weatherInfo = "error";
                 e.printStackTrace();

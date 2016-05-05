@@ -29,6 +29,7 @@ import android.widget.ImageButton;
 import android.widget.ImageSwitcher;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import java.util.HashMap;
@@ -162,7 +163,6 @@ public class DialogFactory {
         Button negative = (Button) view.findViewById(R.id.dialog_option_negative);
         Button addNewOption = (Button) view.findViewById(R.id.new_dialog_option);
         Button delete = (Button) view.findViewById(R.id.dialog_option_delete);
-
         addNewOption.setText("新建群组");
         final Handler sHandler = new Handler(){
             @Override
@@ -170,7 +170,17 @@ public class DialogFactory {
                 super.handleMessage(msg);
                 switch (msg.what){
                     case 0:
+                        boolean pass = true;
                         String t = (String) msg.obj;
+                        for (String i : content) {
+                            if (i.equals(t)) {
+                                WarningDialog(context,"该群组已存在").show();
+                                pass = false;
+                                break;
+                            }
+                        }
+                        if (!pass)
+                            break;
                         content.add(t);
                         checkBoxAdapter.addCheck();
                         checkBoxAdapter.notifyDataSetChanged();
@@ -262,8 +272,21 @@ public class DialogFactory {
 
     public static AlertDialog WarningDialog(final Activity context, String warn){
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
-//        builder.setMessage(msg);
         builder.setTitle(warn);
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+
+                dialog.dismiss();
+            }
+        });
+        return  builder.create();
+    }
+
+    public static AlertDialog JudgeDialog(final  Activity context, String message){
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(message);
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -273,8 +296,6 @@ public class DialogFactory {
         builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
-
                 dialog.dismiss();
             }
         });

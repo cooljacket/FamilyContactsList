@@ -63,14 +63,21 @@ public class TabContactAdapter extends ArrayAdapter<TabContactUser> {
             myHolder = (MyHolder) view.getTag();
         }
 
+
+
         TabContactUser item = getItem(position);
         TabContactUser last = null;
-        if(position > 0)
-            last = getItem(position - 1);
-
         String t1 = item.sortname,t2;
         char h1,h2;
         myHolder.alphebat.setHeight(0);
+        if(position > 0)
+            last = getItem(position - 1);
+
+        else if(t1 != null && t1.length() > 0 && 'A'<= (h1 = Character.toUpperCase(t1.charAt(0))) && h1 <= 'Z'){
+            myHolder.alphebat.setHeight(height);
+            myHolder.alphebat.setText(" " + h1);
+        }
+
         if(last != null && (t2 = last.sortname) != null && t2.length() > 0
                 && t1 != null && t1.length() > 0 && 'A'<= (h1 = Character.toUpperCase(t1.charAt(0))) && h1 <= 'Z'){
             h2 = Character.toUpperCase(t2.charAt(0));

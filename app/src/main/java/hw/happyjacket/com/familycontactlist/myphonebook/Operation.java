@@ -70,6 +70,8 @@ public class Operation {
 
     public static void sms(String number) {sPhoneOperation.sms(number);}
 
+    public static void sms(String number, String message) {sPhoneOperation.sms(number,message);}
+
     public static void endCall(String number){sPhoneCallUtis.endCall(number);}
 
     public static boolean isBlackList(String number){

@@ -31,6 +31,7 @@ public class PeopleInfoAdapter extends ArrayAdapter<String[] > {
 
     private int recourceID;
     private Handler mHandler;
+    private List<String[]> info;
     private String TAG = this.getClass().toString();
 
     public PeopleInfoAdapter(Context context, int resource) {
@@ -46,11 +47,13 @@ public class PeopleInfoAdapter extends ArrayAdapter<String[] > {
     public PeopleInfoAdapter(Context context, int resource, List<String[]> objects) {
         super(context,resource,objects);
         recourceID = resource;
+        info = objects;
     }
     public PeopleInfoAdapter(Context context, int resource, List<String[]> objects, Handler handler) {
         super(context, resource, objects);
         recourceID = resource;
         mHandler = handler;
+        info = objects;
     }
 
 
@@ -88,8 +91,19 @@ public class PeopleInfoAdapter extends ArrayAdapter<String[] > {
         viewHolder.name.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(position > 0)
-                    DialogFactory.getRadioDialog(getContext(),R.style.Menu, PhoneDictionary.PhoneCallChoices,mHandler,position).show();
+                if (position > 0)
+                    DialogFactory.getRadioDialog(getContext(), R.style.Menu, PhoneDictionary.PhoneCallChoices, mHandler, position).show();
+            }
+        });
+
+        viewHolder.clear = (ImageButton) view.findViewById(R.id.text_clear);
+        if (position == 0)
+            viewHolder.clear.setVisibility(View.INVISIBLE);
+        viewHolder.clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                info.remove(position);
+                notifyDataSetChanged();
             }
         });
         return view;

@@ -143,7 +143,7 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     public void deleteGroup(String name){
-        db.delete(GROUPTABLE,GROUPNAME + " = " + name,null);
+        db.delete(GROUPTABLE,GROUPNAME + " = '" + name + "'",null);
     }
 
 

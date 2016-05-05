@@ -283,6 +283,16 @@ public class ChangePeopleDetail extends AppCompatActivity {
 //                Toast.makeText(getApplicationContext(),"image1  "+imageP
 //                        +"image2  "+imagePosition, Toast.LENGTH_SHORT).show();
 //                imagePic= btn_img.();
+                name = et_name.getText().toString();
+                number = info.get(0)[1];
+                if (name == null || name.equals("")) {
+                    DialogFactory.WarningDialog(ChangePeopleDetail.this, "姓名不能为空").show();
+                    return;
+                }
+                if (number == null || number.equals("") ){
+                    DialogFactory.WarningDialog(ChangePeopleDetail.this,"号码不能为空").show();
+                    return;
+                }
                 Changed();
                 MainActivity.changePeopleDetail(user, imagePic);
                 int tmp = user.photo;
