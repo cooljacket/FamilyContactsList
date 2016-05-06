@@ -1,7 +1,8 @@
 package hw.happyjacket.com.familycontactlist;
 
+import android.app.AlertDialog;
 import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.DialogInterface;
 import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -214,9 +215,17 @@ public class CommonUtils {
         return EN_INPUT;
     }
 
-    public void Login(Context context) {
-//        SharedPreferences.Editor editor = context.getSharedPreferences(CommonUtils.TOKEN_SF, Context.MODE_PRIVATE).edit();
-        SharedPreferences pref = context.getSharedPreferences(CommonUtils.TOKEN_SF, Context.MODE_PRIVATE);
-        String token = pref.getString(CommonUtils.TOKEN_KEY, null);
+
+    public static void AlertMsg(Context context, String title, String msg) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        dialog.setTitle(title);
+        dialog.setMessage(msg);
+        dialog.setPositiveButton("俺知道了", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 }

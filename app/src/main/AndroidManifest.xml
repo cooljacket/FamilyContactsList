@@ -99,7 +99,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".FamilyMoney" />
+        <activity android:name=".FamilyMoney"
+            android:theme="@style/AppTop" />
 
 
         <activity android:name=".LoginActivity"
@@ -114,6 +115,9 @@
 
 
         <service android:name=".myphonebook.InitService"/>
+
+
+        <receiver android:name=".FMAlarmReceiver"></receiver>
 
 
         <!-- 监听短信的广播消息 -->

@@ -1,25 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="hw.happyjacket.com.familycontactlist.FamilyMoney">
 
 
-    <LinearLayout
+    <android.support.v7.widget.Toolbar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/login_toolbar"/>
+
+
+    <RelativeLayout
         android:id="@+id/fm_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <TextView
-            android:text="亲情余额："
+
+        <LinearLayout
+            android:id="@+id/fm_money_tips"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="亲情余额："
+                android:textSize="@dimen/fm_text_size"
+                android:textColor="@color/dark_black"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+
+            <TextView
+                android:id="@+id/family_money"
+                android:text="100"
+                android:textSize="@dimen/fm_text_size"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+        <Switch
+            android:id="@+id/control_fm_func"
+            android:layout_below="@+id/fm_money_tips"
+            android:paddingTop="15dp"
+            android:text="@string/switch_fm_func"
+            android:textSize="@dimen/fm_text_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
 
     <ListView
         android:id="@+id/families"
         android:layout_below="@+id/fm_header"
+        android:paddingTop="15dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
+        android:layout_height="match_parent"/>
 
-</RelativeLayout>
+</LinearLayout>

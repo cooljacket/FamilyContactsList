@@ -12,7 +12,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,8 +20,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 import java.util.Vector;
 
@@ -347,5 +344,4 @@ public class TabContactsFragment extends PhoneFragment {
             }
         }
     }
-
 }

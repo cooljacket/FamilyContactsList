@@ -10,5 +10,5 @@
     <string name="action_pull_from_cloud">从云端导入联系人</string>
     <string name="action_family_money">亲情余额</string>
     <string name="action_login_register">登录/注册</string>
-    <string name="action_add_contact">添加联系人</string>
+    <string name="switch_fm_func">提醒功能</string>
 </resources>
