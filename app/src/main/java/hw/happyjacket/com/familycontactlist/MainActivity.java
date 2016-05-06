@@ -1,10 +1,13 @@
 package hw.happyjacket.com.familycontactlist;
 
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,7 +15,9 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -41,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     public static List<HashMap<String,String>> phoneElement;
     private static final int FILE_SELECT_CODE = 0;
     private MenuItem login_register_item;
+    private ActionBar mActionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
+
+        mActionBar = getSupportActionBar();
+
 
         InitTabHeader();
     }
@@ -178,8 +187,9 @@ public class MainActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_activity_actions, menu);
         login_register_item = menu.getItem(5);
-        if (LoginActivity.getToken(MainActivity.this) != null)
+        if (LoginActivity.getToken(MainActivity.this) != null) {
             login_register_item.setTitle(CommonUtils.HAS_LOGIN);
+        }
         return super.onCreateOptionsMenu(menu);
     }
 

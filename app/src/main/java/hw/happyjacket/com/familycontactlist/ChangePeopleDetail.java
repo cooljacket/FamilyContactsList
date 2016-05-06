@@ -54,12 +54,10 @@ public class ChangePeopleDetail extends AppCompatActivity {
     private TextView groupName;
     private RelativeLayout group;
     private Toolbar toolbar;
-    private int imageP;//头像序号
     private Bitmap imagePic;//头像Rid
     private String oldGroupName;//旧的群组名
     private String number;
     private String name;
-    private int imagePP;
     private Vector<String[]> info;// = new Vector<>();
     private ScrollListView mListView;
     private PeopleInfoAdapter mPeopleInfoAdapter;
