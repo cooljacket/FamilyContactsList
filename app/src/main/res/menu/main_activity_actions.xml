@@ -32,4 +32,10 @@
         android1:id="@+id/action_import_web"
         android1:title="@string/action_pull_from_cloud"
         android:showAsAction="never" />
+
+    <item
+        android1:id="@+id/action_add_contact"
+        android1:title="@string/add_new_contact"
+        android:showAsAction="never" />
+
 </menu>
