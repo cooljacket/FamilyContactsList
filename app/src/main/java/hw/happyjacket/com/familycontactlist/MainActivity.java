@@ -1,10 +1,13 @@
 package hw.happyjacket.com.familycontactlist;
 
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,6 +15,7 @@ import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -42,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     public static List<HashMap<String,String>> phoneElement;
     private static final int FILE_SELECT_CODE = 0;
     private MenuItem login_register_item;
+    private ActionBar mActionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +73,9 @@ public class MainActivity extends AppCompatActivity {
             public void onPageScrollStateChanged(int state) {
             }
         });
+
+        mActionBar = getSupportActionBar();
+
 
         InitTabHeader();
     }
@@ -120,13 +128,16 @@ public class MainActivity extends AppCompatActivity {
 
      public void ChangeTab(int checkedId) {
          RadioButton last = getTheTab(selected_tab);
-         last.setBackgroundColor(getResources().getColor(R.color.tab_bk_color));
-         last.setTextColor(getResources().getColor(R.color.tab_text_unfocus_color));
+         last.setChecked(false);
+        /* last.setBackgroundColor(getResources().getColor(R.color.tab_bk_color));
+         last.setTextColor(getResources().getColor(R.color.tab_text_unfocus_color));*/
 
          selected_tab = checkedId;
          RadioButton it = getTheTab(selected_tab);
-         it.setBackgroundColor(getResources().getColor(R.color.tab_front_color));
-         it.setTextColor(getResources().getColor(R.color.dark_black));
+         it.setChecked(true);
+        /* it.setBackgroundColor(getResources().getColor(R.color.tab_front_color));
+         it.setTextColor(getResources().getColor(R.color.tab_text_focus_color));*/
+
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -181,6 +192,7 @@ public class MainActivity extends AppCompatActivity {
             LoginActivity.SetToken(MainActivity.this, null);
         if (LoginActivity.getToken(MainActivity.this) != null)
             login_register_item.setTitle(CommonUtils.HAS_LOGIN);
+
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -208,6 +220,9 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_account:
                 LoginOrRegister(MainActivity.this);
                 break;
+            case R.id.action_add_contact:
+                CreatePeopleDetail.actionStart(MainActivity.this, null);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }

@@ -129,7 +129,7 @@ public class ContentShow extends PhoneShow {
         phoneList.setArgument(argument);
         phoneList.setOrderby(orderby);
         refresh();
-        sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index,true);
+        sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index,0,number);
     }
 
 }

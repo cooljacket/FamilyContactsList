@@ -34,6 +34,8 @@ public class PhoneOperation {
             Log.i(TAG,"Call permission denied");
         }
     }
+
+
     public void delete(String id)
     {
         try {
@@ -54,6 +56,19 @@ public class PhoneOperation {
         }
         catch (Exception e){
             e.printStackTrace();
+        }
+    }
+
+    public void sms(String phoneNumber, String message){
+        Uri uri = Uri.parse("smsto:" + phoneNumber);
+        Intent intent = new Intent(android.content.Intent.ACTION_SENDTO,uri);
+        intent.putExtra("sms_body",message);
+        try {
+            context.startActivity(intent);
+        }
+        catch (SecurityException e)
+        {
+            Log.i(TAG, "Call permission denied");
         }
     }
 

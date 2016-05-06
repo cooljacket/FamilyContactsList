@@ -1,5 +1,6 @@
 package hw.happyjacket.com.familycontactlist;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -53,12 +54,10 @@ public class ChangePeopleDetail extends AppCompatActivity {
     private TextView groupName;
     private RelativeLayout group;
     private Toolbar toolbar;
-    private int imageP;//头像序号
     private Bitmap imagePic;//头像Rid
     private String oldGroupName;//旧的群组名
     private String number;
     private String name;
-    private int imagePP;
     private Vector<String[]> info;// = new Vector<>();
     private ScrollListView mListView;
     private PeopleInfoAdapter mPeopleInfoAdapter;
@@ -282,6 +281,16 @@ public class ChangePeopleDetail extends AppCompatActivity {
 //                Toast.makeText(getApplicationContext(),"image1  "+imageP
 //                        +"image2  "+imagePosition, Toast.LENGTH_SHORT).show();
 //                imagePic= btn_img.();
+                name = et_name.getText().toString();
+                number = info.get(0)[1];
+                if (name == null || name.equals("")) {
+                    DialogFactory.WarningDialog(ChangePeopleDetail.this, "姓名不能为空").show();
+                    return;
+                }
+                if (number == null || number.equals("") ){
+                    DialogFactory.WarningDialog(ChangePeopleDetail.this,"号码不能为空").show();
+                    return;
+                }
                 Changed();
                 MainActivity.changePeopleDetail(user, imagePic);
                 int tmp = user.photo;
@@ -480,6 +489,12 @@ public class ChangePeopleDetail extends AppCompatActivity {
         }
     }
 
+    public static void actionStart (Activity context, String number, String name){
+        Intent intent1 = new Intent(context, ChangePeopleDetail.class);
+        intent1.putExtra(TabContactsFragment.NUMBER, number);
+        intent1.putExtra(TabContactsFragment.NAME, name);
+        context.startActivityForResult(intent1, PhoneDictionary.CREATE_PEOPLE_CODE);
+    }
 
 
 

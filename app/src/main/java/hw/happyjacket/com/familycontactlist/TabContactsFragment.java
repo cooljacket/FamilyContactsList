@@ -40,7 +40,7 @@ public class TabContactsFragment extends PhoneFragment {
     public static String POS = "contactPos";
     public static String CARGO = "cargo";
     public static String NUMBER = "number";
-    
+
     public static final String DataBaseLock = "lock";
     private Context mContext;
     private ListView listview;
@@ -298,6 +298,15 @@ public class TabContactsFragment extends PhoneFragment {
 
     // 追加新插入的用户到AL的尾部，然后插入排序，最后notify一下adapter
     public void AddNewUser(Vector<User> newUsers) {
+        TabContactUser t = new TabContactUser();
+        for (User i : newUsers){
+            t.update(i);
+            if (t.name == null || t.mobilephone == null)
+                continue;
+            t.sortname = CommonUtils.convertToShortPinyin(mContext,t.name);
+            t.picture = circleImage[new Random().nextInt(DefaultPicture.ImageID.length)];
+            AL.add(t);
+        }
         sortList();
         adapter.notifyDataSetChanged();
     }

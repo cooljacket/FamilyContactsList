@@ -14,7 +14,9 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import hw.happyjacket.com.familycontactlist.BlackListMaster;
+import hw.happyjacket.com.familycontactlist.DBHelper;
 import hw.happyjacket.com.familycontactlist.CommonUtils;
+
 import hw.happyjacket.com.familycontactlist.HttpConnectionUtil;
 import hw.happyjacket.com.familycontactlist.extention.Accessory;
 import hw.happyjacket.com.familycontactlist.extention.Decorate;
@@ -151,11 +153,9 @@ public class ContactShow extends PhoneShow {
         phoneList.setArgument(argument);
         phoneList.setOrderby(orderby);
         phoneList.connectDataBase();
-        number = phoneList.getPhoneList().get(0).get("mobilephone");
-        number = number.replace(" ", "").replace("+86", "").replace("+", "");
         inBlackList = new BlackListMaster(context).isInBlackList(number);
         mPhoneListElementList = getDefaultData();
-        sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index);
+        sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index,1,number);
         mThread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -183,7 +183,6 @@ public class ContactShow extends PhoneShow {
                     Log.i("weather", response);
                     weatherInfo = response;
                 }
-
                 @Override
                 public void onError(Exception e) {
                     weatherInfo = null;
@@ -200,7 +199,8 @@ public class ContactShow extends PhoneShow {
 
             try {
                 String[] result = CommonUtils.ParseWeatherXML(new ByteArrayInputStream(weatherInfo.getBytes()));
-                weatherInfo = String.format(result[0], name);
+                weatherInfo = result[1] + " " + result[2] + " " + result[3] ;
+                ((CallLogAdapter)sPhoneAdapter).setMessage(String.format(result[0],name));
             } catch (XmlPullParserException e) {
                 weatherInfo = "error";
                 e.printStackTrace();
@@ -208,7 +208,8 @@ public class ContactShow extends PhoneShow {
                 weatherInfo = "error";
                 e.printStackTrace();
             } finally {
-               mPhoneListElementList.get(1).put(PhoneDictionary.DATE,weatherInfo);
+                mPhoneListElementList.get(1).put(PhoneDictionary.DATE,weatherInfo);
+                ((CallLogAdapter)sPhoneAdapter).setMessage("");
                 sPhoneAdapter.notifyDataSetChanged();
             }
         }

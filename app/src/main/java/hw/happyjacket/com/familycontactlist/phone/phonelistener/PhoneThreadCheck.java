@@ -40,6 +40,7 @@ public class PhoneThreadCheck implements Runnable {
             String name = PhoneDictionary.NAME;
             String realName;
             String realNumber;
+            String NULL = null;
             ContentValues contentValues = new ContentValues();
             synchronized (TabContactsFragment.DataBaseLock) {
             try {
@@ -58,7 +59,9 @@ public class PhoneThreadCheck implements Runnable {
                     else{
                         if(i.get(name) != null) {
                             i.remove(name);
-                            mRecordList.delete(number + " = ? ", new String[]{realNumber});
+                            contentValues.clear();
+                            contentValues.put(PhoneDictionary.NAME,NULL);
+                            mRecordList.update(contentValues,PhoneDictionary.NUMBER + " = ?",new String[]{realNumber});
                         }
                     }
                 }

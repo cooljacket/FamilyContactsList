@@ -1,5 +1,6 @@
 package hw.happyjacket.com.familycontactlist;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -39,6 +40,8 @@ public class CreatePeopleDetail extends AppCompatActivity {
     private ImageButton btn_img;
     private User mUser;
     private String number;
+    private String name;
+    int imagePosition;
     private EditText et_familyName;
     private EditText et_name;
     private Button add_info;
@@ -185,6 +188,7 @@ public class CreatePeopleDetail extends AppCompatActivity {
 
         mUser = new User();
         number = getIntent().getStringExtra(PhoneDictionary.NUMBER);
+        number = number == null ? "" : number;
         info = new Vector<>();
         info.add(new String[]{"手机",number});
         mPeopleInfoAdapter = new PeopleInfoAdapter(this,R.layout.change_people_detail,info);
@@ -209,16 +213,18 @@ public class CreatePeopleDetail extends AppCompatActivity {
         btn_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Changed();
-                if(mUser.name == null || mUser.name.length() == 0){
-                    Toast.makeText(CreatePeopleDetail.this,"名字不可为空",Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                if(mUser.mobilephone == null || mUser.mobilephone.length() == 0){
-                    Toast.makeText(CreatePeopleDetail.this,"号码不可为空",Toast.LENGTH_SHORT).show();
-                    return;
-                }
 
+                name = et_name.getText().toString();
+                number = info.get(0)[1];
+                if (name == null || name.equals("")) {
+                    DialogFactory.WarningDialog(CreatePeopleDetail.this, "姓名不能为空").show();
+                    return;
+                }
+                if (number == null || number.equals("") ){
+                    DialogFactory.WarningDialog(CreatePeopleDetail.this,"号码不能为空").show();
+                    return;
+                }
+                Changed();
                 if(mUser.photo == -1)
                     PhotoZoom.saveBitmap(number, imagePic);
                 Intent intent = new Intent();
@@ -248,7 +254,6 @@ public class CreatePeopleDetail extends AppCompatActivity {
 
 
     private void Changed(){
-
         StringBuffer infoTmp = new StringBuffer();
         String[] tt;
         mUser.name = et_name.getText().toString();
@@ -282,5 +287,11 @@ public class CreatePeopleDetail extends AppCompatActivity {
             iv.setLayoutParams(new ImageSwitcher.LayoutParams(250,250));
             return iv;
         }
+    }
+
+    public static void actionStart (Activity context, String number){
+        Intent intent = new Intent(context, CreatePeopleDetail.class);
+        intent.putExtra(TabContactsFragment.NUMBER, number);
+        context.startActivityForResult(intent, PhoneDictionary.CREATE_PEOPLE_CODE);
     }
 }

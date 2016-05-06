@@ -80,10 +80,9 @@ public class ContactActivity extends AppCompatActivity{
 
     private void showDetail(){
         name = data.name;
+        number = data.mobilephone;
         mToolbar = (Toolbar) findViewById(R.id.contact_toolbar);
         setSupportActionBar(mToolbar);
-
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -96,9 +95,10 @@ public class ContactActivity extends AppCompatActivity{
         uid = data.uid;
 
         mContactShow = new ContactShow(this, R.layout.call_log_list, name);
-        mContactShow.getPhoneList().setDb("contact");
-        mContactShow.getPhoneList().setTable("user");
-        mContactShow.InitAdapter(new XiaoMiAccessory(), new String[]{"mobilephone"}, "uid" + " = ? ", new String[]{"" + uid}, null);
+        mContactShow.getPhoneList().setDb(DBHelper.DB_NAME);
+        mContactShow.getPhoneList().setTable(DBHelper.DB_TABLENAME);
+        mContactShow.setNumber(number);
+        mContactShow.InitAdapter(new XiaoMiAccessory(), new String[]{DBHelper.NUMBER}, DBHelper.ID + " = ? ", new String[]{"" + uid}, null);
         ContactListView.setAdapter(mContactShow.getPhoneAdapter());
         ContactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override

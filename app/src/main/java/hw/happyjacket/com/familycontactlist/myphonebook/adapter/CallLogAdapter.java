@@ -22,7 +22,9 @@ import java.util.List;
  */
 public class CallLogAdapter extends PhoneAdapter {
 
-    private boolean sms  = false;
+    private int sms  = -1;
+    private String number = "";
+    private String message = "";
 
     public CallLogAdapter(Context context, int textViewResourceId, List<HashMap<String,String>> objects) {
         super(context,textViewResourceId, objects);
@@ -32,17 +34,48 @@ public class CallLogAdapter extends PhoneAdapter {
         super(context, textViewResourceId, objects,index);
     }
 
-    public CallLogAdapter(Context context, int textViewResourceId, List<HashMap<String, String>> objects, int index, boolean sms) {
+    public CallLogAdapter(Context context, int textViewResourceId, List<HashMap<String, String>> objects, int index, int sms) {
         super(context, textViewResourceId, objects, index);
         this.sms = sms;
     }
 
-    public boolean isSms() {
+    public CallLogAdapter(Context context, int textViewResourceId, List<HashMap<String, String>> objects, int index, int sms,String number) {
+        super(context, textViewResourceId, objects, index);
+        this.sms = sms;
+        this.number = number;
+    }
+
+    public CallLogAdapter(Context context, int textViewResourceId, List<HashMap<String, String>> objects, int index, int sms,String number, String message) {
+        super(context, textViewResourceId, objects, index);
+        this.sms = sms;
+        this.number = number;
+        this.message = message;
+    }
+
+
+
+    public int isSms() {
         return sms;
     }
 
-    public void setSms(boolean sms) {
+    public void setSms(int sms) {
         this.sms = sms;
+    }
+
+    public String getNumber() {
+        return number;
+    }
+
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
     @Override
@@ -70,13 +103,13 @@ public class CallLogAdapter extends PhoneAdapter {
 
         viewHolder.info1.setText(data.get(PhoneDictionary.DATE));
 
-        if(position == 0 && sms) {
+        if(sms == position) {
             viewHolder.info4.setVisibility(View.VISIBLE);
             viewHolder.info4.setBackgroundResource(android.R.drawable.sym_action_chat);
             viewHolder.info4.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Operation.sms(data.get(PhoneDictionary.DATE));
+                    Operation.sms(number,message);
                 }
             });
         }
