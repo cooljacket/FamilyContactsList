@@ -231,6 +231,7 @@ public class TabContactsFragment extends PhoneFragment {
 
     public void TheFirstTimeInit(){
         synchronized (DataBaseLock) {
+            Vector<Integer> v = new Vector<>();
             ContentResolver resolver1 = mContext.getContentResolver();
             SharedPreferences pref = mContext.getSharedPreferences(SHARE_NAME, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = pref.edit();
@@ -249,20 +250,34 @@ public class TabContactsFragment extends PhoneFragment {
                         contactName = phoneCursor.getString(PHONES_DISPLAY_NAME_INDEX);
                         contactPhone = phoneCursor.getString(PHONES_NUMBER_INDEX).replace(" ","").replace("+86","").replace("+", "");
                         contactSortname = CommonUtils.convertToShortPinyin(mContext, contactName);
-                        cursor = db.query(DBHelper.DB_TABLENAME, null, DBHelper.NUMBER + " = " + contactPhone, null, null, null, null);
-
-                        if (!cursor.moveToFirst()) {
+                        contactid = phoneCursor.getInt(PHONES_CONTACT_ID_INDEX);
+                        if(!v.contains(contactid)){
                             User user = new User();
                             user.name = contactName;
                             user.sortname = contactSortname;
                             user.mobilephone = contactPhone;
                             user.groupname = "无";
                             user.nickname = "";
+                            v.add(contactid);
                             Random random = new Random();
                             user.photo = random.nextInt(31);
                             dbHelper.insertAUser(user);
                         }
-                        cursor.close();
+//                        cursor = db.query(DBHelper.DB_TABLENAME, null, DBHelper.CONTACTID + " = " + contactid, null, null, null, null);
+//
+//                        if (!cursor.moveToFirst()) {
+//                            User user = new User();
+//                            user.name = contactName;
+//                            user.sortname = contactSortname;
+//                            user.mobilephone = contactPhone;
+//                            user.groupname = "无";
+//                            user.nickname = "";
+//                            v.add(contactid);
+//                            Random random = new Random();
+//                            user.photo = random.nextInt(31);
+//                            dbHelper.insertAUser(user);
+//                        }
+//                        cursor.close();
                     }
                     phoneCursor.close();
                 }
@@ -283,9 +298,7 @@ public class TabContactsFragment extends PhoneFragment {
             if(cursor.moveToFirst()) {
                 do {
                     TabContactUser user = new TabContactUser();
-                    //familyname
                     user.name = cursor.getString(0);
-                    //group
                     user.sortname = cursor.getString(1);
                     user.mobilephone = cursor.getString(2);
                     user.photo = cursor.getInt(3);

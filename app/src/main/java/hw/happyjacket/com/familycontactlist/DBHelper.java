@@ -28,6 +28,7 @@ public class DBHelper extends SQLiteOpenHelper {
     public static final String PHOTO = "photo";
     public static final String INFO = "info";
     public static final String NICKNAME = "nickname";
+    public static final String CONTACTID = "cid";
 
     public SQLiteDatabase db;
     private Context context;
@@ -183,6 +184,7 @@ public class DBHelper extends SQLiteOpenHelper {
                 .append("groupname text default '无',")//群组，默认no5
                 .append("info text,")//6
                 .append("nickname text);");//7
+//                .append("cid integer);");//8
         db.execSQL(tableCreate.toString());
 
         StringBuffer tableCreate2 = new StringBuffer();
