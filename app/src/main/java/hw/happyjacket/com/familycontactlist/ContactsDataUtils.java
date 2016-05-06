@@ -36,7 +36,7 @@ public class ContactsDataUtils {
         String fileName = dirName + File.separator + date + CommonUtils.randomString(6) + ".txt";
         JSONArray data = ExportAsJSONArray(context);
         if (data != null)
-            WriteJsonArray(fileName, data);
+            WriteJsonArray(fileName, data, context);
     }
 
     public static void ExportContactsToWeb(Context context, final Handler handler) {
@@ -109,7 +109,7 @@ public class ContactsDataUtils {
         return data;
     }
 
-    public static void WriteJsonArray(String fileName, JSONArray data) {
+    public static void WriteJsonArray(String fileName, JSONArray data, Context context) {
         FileOutputStream out = null;
         BufferedWriter writer = null;
 
@@ -122,6 +122,7 @@ public class ContactsDataUtils {
                 writer.close();
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(context, "导出本地联系人出错", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -146,6 +147,7 @@ public class ContactsDataUtils {
                 reader.close();
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(context, "导入本地联系人出错", Toast.LENGTH_SHORT).show();
         }
 
         return newUsers;

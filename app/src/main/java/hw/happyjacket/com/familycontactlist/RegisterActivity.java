@@ -53,17 +53,17 @@ public class RegisterActivity extends AppCompatActivity {
                 String uname = username.getText().toString();
                 String psw = psw1.getText().toString();
                 if (uname.equals("null") || uname.length() == 0) {
-                    LoginActivity.AlertMsg(RegisterActivity.this, "注册错误", "请输入用户名");
+                    CommonUtils.AlertMsg(RegisterActivity.this, "注册错误", "请输入用户名");
                     return ;
                 }
 
                 if (psw.equals("null") || uname.length() == 0) {
-                    LoginActivity.AlertMsg(RegisterActivity.this, "注册错误", "请输入密码");
+                    CommonUtils.AlertMsg(RegisterActivity.this, "注册错误", "请输入密码");
                     return ;
                 }
 
                 if (!psw.equals(psw2.getText().toString())) {
-                    LoginActivity.AlertMsg(RegisterActivity.this, "注册错误", "两次输入的密码不一致");
+                    CommonUtils.AlertMsg(RegisterActivity.this, "注册错误", "两次输入的密码不一致");
                     return ;
                 }
 
@@ -94,7 +94,7 @@ public class RegisterActivity extends AppCompatActivity {
 
                     @Override
                     public void onError(Exception e) {
-                        LoginActivity.AlertMsg(RegisterActivity.this, "登录出错", "请检查用户名密码或网络是否有错误");
+                        CommonUtils.AlertMsg(RegisterActivity.this, "登录出错", "请检查用户名密码或网络是否有错误");
                     }
                 });
             }
@@ -104,7 +104,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            LoginActivity.AlertMsg(RegisterActivity.this, "注册出错", (String) msg.obj);
+            CommonUtils.AlertMsg(RegisterActivity.this, "注册出错", (String) msg.obj);
         }
     };
 }

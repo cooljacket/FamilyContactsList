@@ -2,6 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res-auto"
     xmlns:android1="http://schemas.android.com/apk/res/android">
 
+
+    <item
+        android1:id="@+id/action_account"
+        android1:title="@string/action_login_register"
+        android:showAsAction="never" />
+
+    <item
+        android1:id="@+id/action_fm"
+        android1:title="@string/action_family_money"
+        android:showAsAction="never" />
+
     <item
         android1:id="@+id/action_export"
         android1:title="@string/action_export"
@@ -20,20 +31,5 @@
     <item
         android1:id="@+id/action_import_web"
         android1:title="@string/action_pull_from_cloud"
-        android:showAsAction="never" />
-
-    <item
-        android1:id="@+id/action_fm"
-        android1:title="@string/action_family_money"
-        android:showAsAction="never" />
-
-    <item
-        android1:id="@+id/action_account"
-        android1:title="@string/action_login_register"
-        android:showAsAction="never" />
-
-    <item
-        android1:id="@+id/action_add_contact"
-        android1:title="@string/action_add_contact"
         android:showAsAction="never" />
 </menu>

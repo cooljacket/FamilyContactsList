@@ -41,17 +41,20 @@ public class DBHelper extends SQLiteOpenHelper {
         openDatabase();
     }
 
+
     public DBHelper(Context context, String name, int version) {
         super(context, DB_NAME, null, VERSION);
         this.context = context;
         openDatabase();
     }
 
+
     public DBHelper(Context context){
         super(context, DB_NAME, null, VERSION);
         this.context = context;
         openDatabase();
     }
+
 
     public SQLiteDatabase openDatabase() {
         if(db == null){
@@ -60,6 +63,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
         return db;
     }
+
 
     public ContentValues User2Contents(User user) {
         ContentValues values = new ContentValues();
@@ -72,6 +76,7 @@ public class DBHelper extends SQLiteOpenHelper {
         values.put("nickname", user.nickname);
         return values;
     }
+
 
     public boolean isInList(String phoneNumber) {
         Cursor cursor = db.query(DB_TABLENAME, null, "mobilephone = ?", new String[]{phoneNumber}, null, null, null, null);
@@ -112,7 +117,6 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     public void deleteUser(User user) {
-
         int uid = user.uid;
         db.delete("user", "uid = " + uid, null);
     }
@@ -133,19 +137,18 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         String groupname = group.groupname;
         values.put("groupnum",group.groupnum);
-        db.update("grouptable", values, "groupname = '" + groupname+"'", null);
+        db.update("grouptable", values, "groupname = '" + groupname + "'", null);
     }
 
     public void deleteGroup(Group group) {
         ContentValues values = new ContentValues();
         String groupname = group.groupname;
-        db.delete("grouptable", "groupname = '" + groupname+"'", null);
+        db.delete("grouptable", "groupname = '" + groupname + "'", null);
     }
 
     public void deleteGroup(String name){
-        db.delete(GROUPTABLE,GROUPNAME + " = " + name,null);
+        db.delete(GROUPTABLE, GROUPNAME + "=?", new String[]{name});
     }
-
 
     public Vector<String> getGroup() {
         Cursor t = db.query(GROUPTABLE, new String[]{GROUPNAME}, null, null, null, null,"gid",null);
@@ -168,7 +171,6 @@ public class DBHelper extends SQLiteOpenHelper {
         }
         return num;
     }
-
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -209,5 +211,24 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public synchronized void close() {
         super.close();
+    }
+
+    public Vector<User> getFamilies() {
+        Vector<User> families = new Vector<User>();
+        Cursor cursor = db.query(DB_TABLENAME, null, GROUPNAME + "=?", new String[]{"家庭"}, null, null, null);
+
+        Log.d("get families", "in");
+
+        while (cursor.moveToNext()) {
+            User user = new User();
+            user.name = cursor.getString(cursor.getColumnIndex("name"));
+            user.mobilephone = cursor.getString(cursor.getColumnIndex("mobilephone"));
+            Log.d("get families", user.name + ", " + user.mobilephone);
+            families.add(user);
+        }
+
+        cursor.close();
+
+        return families;
     }
 }

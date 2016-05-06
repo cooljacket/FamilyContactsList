@@ -6,7 +6,7 @@
     <color name="tab_front_color">#ffffff</color>
     <color name="tab_bk_color">#469448</color>
     <color name="white">#ffffff</color>
-    <color name="tab_text_focus_color">#000000</color>
+    <color name="dark_black">#000000</color>
     <color name="tab_text_unfocus_color">#ffffff</color>
     <color name="button_color_highlight">#ffffff</color>
     <color name="button_color">#999999</color>

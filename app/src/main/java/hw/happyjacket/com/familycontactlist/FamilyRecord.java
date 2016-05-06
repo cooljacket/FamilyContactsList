@@ -1,5 +1,11 @@
 package hw.happyjacket.com.familycontactlist;
 
+import android.content.Context;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Vector;
+
 /**
  * Created by jacket on 2016/5/4.
  */
@@ -23,5 +29,17 @@ public class FamilyRecord {
             return String.format("%d小时前", time / HOUR);
         else
             return String.format("%d天前", time / DAY);
+    }
+
+    public static List<FamilyRecord> GetAllFamilies(Context context) {
+        DBHelper dbHelper = new DBHelper(context);
+        Vector<User> families = dbHelper.getFamilies();
+        List<FamilyRecord> records = new ArrayList<>();
+
+        for (User user : families) {
+            records.add(new FamilyRecord(user.name, FamilyRecord.DAY * 40));
+        }
+
+        return records;
     }
 }

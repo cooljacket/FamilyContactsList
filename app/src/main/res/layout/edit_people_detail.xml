@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
-
-
+    android:layout_height="match_parent">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/change_people_toolbar"
@@ -14,13 +12,13 @@
         app:layout_collapseMode="pin"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
+
     <ScrollView
         android:id="@+id/people_info_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/change_people_toolbar"
-        android:scrollbars="vertical"
-        >
+        android:scrollbars="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,18 +29,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:orientation="vertical"
-                android:layout_weight="8"
-                >
+                android:layout_weight="8">
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginTop="10dp"
-
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
+                    android:layout_marginRight="10dp">
 
-                    >
                     <ImageButton
                         android:id="@+id/btn_img"
                         android:layout_width="70dp"
@@ -50,16 +46,14 @@
                         android:background="#00000000"
                         android:scaleType="centerCrop"
                         android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                        android:layout_marginBottom="20dp"
-                        >
-
+                        android:layout_marginBottom="20dp">
                     </ImageButton>
+
                     <LinearLayout
                         android:layout_marginLeft="20dp"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        >
+                        android:orientation="vertical">
                         <EditText
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
@@ -74,15 +68,13 @@
                             android:layout_marginBottom="8dp"
                             android:textCursorDrawable="@drawable/color_cursor"
                             android:hint="姓名"
-                            android:textColorHint="#C0C0C0"
-                            />
+                            android:textColorHint="#C0C0C0" />
+
                         <EditText
                             android:layout_width="220dp"
                             android:layout_height="0.8dp"
                             android:background="@drawable/vertical_divider"
-                            android:layout_gravity="center_horizontal"
-                            />
-
+                            android:layout_gravity="center_horizontal" />
 
                         <EditText
                             android:layout_width="fill_parent"
@@ -98,17 +90,11 @@
                             android:textSize="17dp"
                             android:textCursorDrawable="@drawable/color_cursor"
                             android:hint="昵称"
-                            android:textColorHint="#C0C0C0"
-
-                            />
+                            android:textColorHint="#C0C0C0" />
                         <EditText
                             android:layout_width="220dp"
                             android:layout_height="0.8dp"
-                            android:background="@drawable/vertical_divider"
-                            />
-
-
-
+                            android:background="@drawable/vertical_divider" />
 
                     </LinearLayout>
 
@@ -137,8 +123,7 @@
                     android:paddingBottom="0dp"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="14dp"
-                    android:orientation="vertical"
-                    >
+                    android:orientation="vertical">
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -149,8 +134,7 @@
                         android:focusable="false"
                         android:clickable="false"
                         android:text="群组"
-                        android:textSize="17dp"
-                        />
+                        android:textSize="17dp" />
                     <TextView
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
@@ -165,8 +149,7 @@
                         android:layout_gravity="left"
                         android:textColor="#b0b0b0"
                         android:textSize="16dp"
-                        android:text=""
-                        />
+                        android:text="" />
                     <Button
                         android:layout_width="40dp"
                         android:layout_height="wrap_content"
@@ -184,8 +167,7 @@
                     android:layout_width="320dp"
                     android:layout_height="0.8dp"
                     android:background="@drawable/vertical_divider"
-                    android:layout_gravity="center_horizontal"
-                    />
+                    android:layout_gravity="center_horizontal" />
                 <Button
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
@@ -193,26 +175,21 @@
                     android:textColor="#84CA8B"
                     android:text="添加新项目"
                     android:id="@+id/add_info"
-                    android:background="@drawable/button_selector"
-
-
-                    />
+                    android:background="@drawable/button_selector" />
                 <TextView
                     android:layout_width="320dp"
                     android:layout_height="0.8dp"
                     android:background="@drawable/vertical_divider"
-                    android:layout_gravity="center_horizontal"
-                    />
+                    android:layout_gravity="center_horizontal" />
 
             </LinearLayout>
 
 
-
-
-
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="50dp" />
 
         </LinearLayout>
-
 
     </ScrollView>
 
@@ -221,8 +198,7 @@
         android:layout_height="40dp"
         android:orientation="horizontal"
         android:background="@color/green"
-        android:layout_alignParentBottom="true"
-        >
+        android:layout_alignParentBottom="true">
 
         <Button
             android:layout_weight="1"
@@ -233,8 +209,7 @@
             android:background="#F0F0F0"
             android:text="取消"
             android:textSize="20dp"
-            android:layout_gravity="bottom"
-            />
+            android:layout_gravity="bottom" />
 
 
         <Button
@@ -246,10 +221,8 @@
             android:background="#F0F0F0"
             android:text="确定"
             android:textSize="20dp"
-            android:layout_gravity="bottom"
-            />
+            android:layout_gravity="bottom" />
 
     </LinearLayout>
-
 
 </RelativeLayout>

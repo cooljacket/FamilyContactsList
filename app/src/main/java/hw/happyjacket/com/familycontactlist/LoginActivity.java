@@ -1,8 +1,6 @@
 package hw.happyjacket.com.familycontactlist;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -67,13 +65,13 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String uname = userName.getText().toString();
                 if (uname == null || uname.length() == 0) {
-                    AlertMsg(LoginActivity.this, "输入非法", "用户名不能为空");
+                    CommonUtils.AlertMsg(LoginActivity.this, "输入非法", "用户名不能为空");
                     return ;
                 }
 
                 String pwd = password.getText().toString();
                 if (pwd == null || pwd.length() == 0) {
-                    AlertMsg(LoginActivity.this, "输入非法", "密码不能为空");
+                    CommonUtils.AlertMsg(LoginActivity.this, "输入非法", "密码不能为空");
                 }
 
                 HashMap<String, String> data = new HashMap<>();
@@ -124,11 +122,12 @@ public class LoginActivity extends AppCompatActivity {
 
     public static String getToken(Context context) {
         SharedPreferences pref = context.getSharedPreferences(CommonUtils.TOKEN_SF, MODE_PRIVATE);
-        if (!pref.getBoolean(LOGIN_REMEMBER_ME, false)) {
-            SetToken(context, null);
-            return null;
-        }
         return pref.getString(CommonUtils.TOKEN_KEY, null);
+    }
+
+    public static boolean getRememberState(Context context) {
+        SharedPreferences pref = context.getSharedPreferences(CommonUtils.TOKEN_SF, MODE_PRIVATE);
+        return pref.getBoolean(LOGIN_REMEMBER_ME, false);
     }
 
     public static void SetToken(Context context, String token) {
@@ -150,23 +149,11 @@ public class LoginActivity extends AppCompatActivity {
         SetToken(context, null);
     }
 
-    public static void AlertMsg(Context context, String title, String msg) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        dialog.setTitle(title);
-        dialog.setMessage(msg);
-        dialog.setPositiveButton("俺知道了", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        dialog.show();
-    }
 
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
-            AlertMsg(LoginActivity.this, "登录出错", (String) msg.obj);
+            CommonUtils.AlertMsg(LoginActivity.this, "登录出错", (String) msg.obj);
         }
     };
 }

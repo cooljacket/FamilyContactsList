@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -125,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
          selected_tab = checkedId;
          RadioButton it = getTheTab(selected_tab);
          it.setBackgroundColor(getResources().getColor(R.color.tab_front_color));
-         it.setTextColor(getResources().getColor(R.color.tab_text_focus_color));
+         it.setTextColor(getResources().getColor(R.color.dark_black));
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -138,11 +139,11 @@ public class MainActivity extends AppCompatActivity {
                     // ps，联系人修改姓名之后，sortname要记得也要同步更新！！！
                     // 注。。。AddNewUser接口还没实现啊啊啊啊啊
                     mContactTab.AddNewUser(newUsers);
-                    Toast.makeText(MainActivity.this, "导入", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "导入本地联系人成功", Toast.LENGTH_SHORT).show();
                     break;
                 case DirPicker.TO_PICK_A_DIR:
                     ContactsDataUtils.ExportContactsToLocalFile(MainActivity.this, data.getStringExtra(DirPicker.PATH_KEY));
-                    Toast.makeText(MainActivity.this, "export", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "导出本地联系人成功", Toast.LENGTH_SHORT).show();
                     break;
                 case LoginActivity.LOGIN_RESULT:
                     login_register_item.setTitle(CommonUtils.HAS_LOGIN);
@@ -175,7 +176,9 @@ public class MainActivity extends AppCompatActivity {
         // 为ActionBar扩展菜单项
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_activity_actions, menu);
-        login_register_item = menu.getItem(5);
+        login_register_item = menu.getItem(0);
+        if (LoginActivity.getRememberState(MainActivity.this))
+            LoginActivity.SetToken(MainActivity.this, null);
         if (LoginActivity.getToken(MainActivity.this) != null)
             login_register_item.setTitle(CommonUtils.HAS_LOGIN);
         return super.onCreateOptionsMenu(menu);
@@ -205,9 +208,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_account:
                 LoginOrRegister(MainActivity.this);
                 break;
-            case R.id.action_add_contact:
-                Toast.makeText(MainActivity.this, "添加联系人", Toast.LENGTH_SHORT).show();
-                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -251,21 +251,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    public static final int action_export_web = 1, action_import_web = 2;
-
     private Handler handler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
             switch (msg.what) {
-                case action_export_web:
+                case ContactsDataUtils.EXPORT_TO_WEB:
+                    Log.d("hehe-export", (String) msg.obj);
                     boolean result = ((String) msg.obj).equals("true");
                     String str = result ? "备份到云端成功" : "备份到云端失败，请稍后重试";
                     Toast.makeText(MainActivity.this, str, Toast.LENGTH_LONG).show();
                     break;
-                case action_import_web:
+                case ContactsDataUtils.IMPORT_FROM_WEB:
                     Vector<User> newUsers = (Vector<User>) msg.obj;
                     // 已插入到数据库中，记得更新列表的显示
 
+                    Toast.makeText(MainActivity.this, "从云端导入联系人成功", Toast.LENGTH_SHORT).show();
                     break;
                 default:
                     break;
