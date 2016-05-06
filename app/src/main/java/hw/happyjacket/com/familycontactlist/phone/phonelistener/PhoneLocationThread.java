@@ -21,6 +21,7 @@ public class PhoneLocationThread {
     private static String phoneNumber,phoneNumberTmp;
     private static String result;
     final static String HostURL = "http://webservice.webxml.com.cn";
+    final static String Format = "%s/WebServices/MobileCodeWS.asmx/getMobileCodeInfo?mobileCode=%s&userID=";
     private static int what = 0;
 
     //set the flag to ensure that the thread will close if the main thread has closed
@@ -56,7 +57,7 @@ public class PhoneLocationThread {
                 continue;
             }
 
-            String LocationURL = String.format("%s/WebServices/MobileCodeWS.asmx/getMobileCodeInfo?mobileCode=%s&userID=", HostURL, phoneNumber);
+            String LocationURL = String.format(Format, HostURL, phoneNumber);
             HttpConnectionUtil.get(LocationURL, new String[]{phoneNumberTmp}, new HttpConnectionUtil.HttpCallbackListener() {
                 @Override
                 public void onFinish(String response, String number) {
@@ -120,7 +121,7 @@ public class PhoneLocationThread {
             return;
         }
 
-        String LocationURL = String.format("%s/WebServices/MobileCodeWS.asmx/getMobileCodeInfo?mobileCode=%s&userID=", HostURL, phoneNumber);
+        String LocationURL = String.format(Format, HostURL, phoneNumber);
         HttpConnectionUtil.get(LocationURL, new String[]{phoneNumber}, new HttpConnectionUtil.HttpCallbackListener() {
             @Override
             public void onFinish(String response, String number) {
@@ -148,7 +149,5 @@ public class PhoneLocationThread {
             handler.sendMessage(msg_for_location);
             return;
         }
-        msg_for_location.obj = result;
-        handler.sendMessage(msg_for_location);
     }
 }

@@ -12,6 +12,7 @@ import android.os.IBinder;
 import android.os.Message;
 import android.provider.CallLog;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,7 +31,6 @@ import java.util.Vector;
 import hw.happyjacket.com.familycontactlist.extention.XiaoMiAccessory;
 import hw.happyjacket.com.familycontactlist.myphonebook.InitService;
 import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
-import hw.happyjacket.com.familycontactlist.myphonebook.adapter.MainAdapter;
 import hw.happyjacket.com.familycontactlist.myphonebook.factory.DialogFactory;
 import hw.happyjacket.com.familycontactlist.myphonebook.factory.PhoneDialog;
 import hw.happyjacket.com.familycontactlist.myphonebook.show.MainShow;
@@ -52,7 +52,7 @@ public class TabRecordFragment extends PhoneFragment {
     private ListView OptionListView;
     private Activity mContext;
     private PhoneDialog option;
-    private Button Dial;
+    private FloatingActionButton Dial;
     private Handler mHandler;
 
 
@@ -72,11 +72,11 @@ public class TabRecordFragment extends PhoneFragment {
     public void onStart() {
         if(mainShow == null) {
             init();
+            // 初始化的时候可能还不够，有变化的时候也要及时更新这个量。。
             MainActivity.phoneElement = mainShow.getPhoneListElementList_backup();
         }
         else {
             mainShow.refresh(new XiaoMiAccessory(), new String[]{PhoneDictionary.DATE});
-
         }
         super.onStart();
     }
@@ -119,7 +119,7 @@ public class TabRecordFragment extends PhoneFragment {
             mainShow = new MainShow(mContext,R.layout.phone_element);
             mainShow.InitAdapter(new XiaoMiAccessory(), DataBaseDictionary.CallLog_Projection, null, null, CallLog.Calls.DEFAULT_SORT_ORDER);
             String content [] = mainShow.getPhoneList().getProjection();
-            Dial = (Button) recordView.findViewById(R.id.phone_call);
+            Dial = (FloatingActionButton) recordView.findViewById(R.id.phone_fab);
             Dial.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

@@ -1,16 +1,14 @@
 package hw.happyjacket.com.familycontactlist;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -22,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
-import java.util.HashMap;
 import java.util.Random;
 import java.util.Vector;
 
@@ -104,11 +101,6 @@ public class CreatePeopleDetail extends AppCompatActivity {
             super.handleMessage(msg);
         }
     };
-
-
-
-
-
 
 
     @Override
@@ -196,6 +188,7 @@ public class CreatePeopleDetail extends AppCompatActivity {
 
         mUser = new User();
         number = getIntent().getStringExtra(PhoneDictionary.NUMBER);
+        number = number == null ? "" : number;
         info = new Vector<>();
         info.add(new String[]{"手机",number});
         mPeopleInfoAdapter = new PeopleInfoAdapter(this,R.layout.change_people_detail,info);
@@ -261,7 +254,6 @@ public class CreatePeopleDetail extends AppCompatActivity {
 
 
     private void Changed(){
-
         StringBuffer infoTmp = new StringBuffer();
         String[] tt;
         mUser.name = et_name.getText().toString();
@@ -277,13 +269,11 @@ public class CreatePeopleDetail extends AppCompatActivity {
             infoTmp.append(tt[0]).append("&&").append(tt[1]);
         }
         mUser.info = infoTmp.toString();
-        mUser.sortname = CommonSettingsAndFuncs.convertToShortPinyin(CreatePeopleDetail.this, mUser.name);
+        mUser.sortname = CommonUtils.convertToShortPinyin(CreatePeopleDetail.this, mUser.name);
         mUser.groupname = groupName.getText().toString();
         DBHelper dbHelper = new DBHelper(CreatePeopleDetail.this);
         dbHelper.insertAUser(mUser);
     }
-
-
 
     public class MyViewFactory implements ViewSwitcher.ViewFactory {
         private Context context;
@@ -299,8 +289,9 @@ public class CreatePeopleDetail extends AppCompatActivity {
         }
     }
 
-
-
-
-
+    public static void actionStart (Activity context, String number){
+        Intent intent = new Intent(context, CreatePeopleDetail.class);
+        intent.putExtra(TabContactsFragment.NUMBER, number);
+        context.startActivityForResult(intent, PhoneDictionary.CREATE_PEOPLE_CODE);
+    }
 }

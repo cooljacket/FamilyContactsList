@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Vector;
 
+import hw.happyjacket.com.familycontactlist.MainActivity;
 import hw.happyjacket.com.familycontactlist.PhoneLocationMaster;
 import hw.happyjacket.com.familycontactlist.extention.Accessory;
 import hw.happyjacket.com.familycontactlist.extention.Decorate;
@@ -125,8 +126,8 @@ public class MainShow extends PhoneShow {
         if(pos == null || pos.size() == 0)
             return;
         mPhoneListElementList.removeAllElements();
-        for(int i = 0 ; i < pos.size(); ++i){
-                mPhoneListElementList.add(new HashMap<>(mPhoneListElementList_backup.get(pos.get(i))));
+        for (int i = 0; i < pos.size(); ++i) {
+            mPhoneListElementList.add(new HashMap<>(MainActivity.phoneElement.get(pos.get(i))));
         }
         mDecorate.decorate(mPhoneListElementList);
         sPhoneAdapter.notifyDataSetChanged();

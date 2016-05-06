@@ -1,11 +1,9 @@
 package hw.happyjacket.com.familycontactlist.myphonebook.show;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.ContactsContract;
 import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -16,13 +14,12 @@ import java.util.HashMap;
 import java.util.Vector;
 
 import hw.happyjacket.com.familycontactlist.BlackListMaster;
-import hw.happyjacket.com.familycontactlist.CommonSettingsAndFuncs;
 import hw.happyjacket.com.familycontactlist.DBHelper;
+import hw.happyjacket.com.familycontactlist.CommonUtils;
+
 import hw.happyjacket.com.familycontactlist.HttpConnectionUtil;
-import hw.happyjacket.com.familycontactlist.PhoneLocationMaster;
 import hw.happyjacket.com.familycontactlist.extention.Accessory;
 import hw.happyjacket.com.familycontactlist.extention.Decorate;
-import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.CallLogAdapter;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 import hw.happyjacket.com.familycontactlist.phone.phonelistener.PhoneLocationThread;
@@ -156,8 +153,6 @@ public class ContactShow extends PhoneShow {
         phoneList.setArgument(argument);
         phoneList.setOrderby(orderby);
         phoneList.connectDataBase();
-        number = phoneList.getPhoneList().get(0).get(DBHelper.NUMBER);
-        number = number.replace(" ", "").replace("+86", "").replace("+", "");
         inBlackList = new BlackListMaster(context).isInBlackList(number);
         mPhoneListElementList = getDefaultData();
         sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index,1,number);
@@ -179,8 +174,8 @@ public class ContactShow extends PhoneShow {
 
         @Override
         protected Void doInBackground(Void... params) {
-            String weatherURL = CommonSettingsAndFuncs.HostURL + String.format(CommonSettingsAndFuncs.GetWeatherURLFormat,
-                    CommonSettingsAndFuncs.changeCharset(location, "UTF-8"));
+            String weatherURL = CommonUtils.W_Host + String.format(CommonUtils.GetWeatherURLFormat,
+                    CommonUtils.changeCharset(location, "UTF-8"));
             Log.d("hehehe", weatherURL + ", " + location);
             HttpConnectionUtil.getIt(weatherURL, null, new HttpConnectionUtil.HttpCallbackListener() {
                 @Override
@@ -203,7 +198,7 @@ public class ContactShow extends PhoneShow {
                 return;
 
             try {
-                String[] result = CommonSettingsAndFuncs.ParseWeatherXML(new ByteArrayInputStream(weatherInfo.getBytes()));
+                String[] result = CommonUtils.ParseWeatherXML(new ByteArrayInputStream(weatherInfo.getBytes()));
                 weatherInfo = result[1] + " " + result[2] + " " + result[3] ;
                 ((CallLogAdapter)sPhoneAdapter).setMessage(String.format(result[0],name));
             } catch (XmlPullParserException e) {
@@ -213,7 +208,8 @@ public class ContactShow extends PhoneShow {
                 weatherInfo = "error";
                 e.printStackTrace();
             } finally {
-               mPhoneListElementList.get(1).put(PhoneDictionary.DATE,weatherInfo);
+                mPhoneListElementList.get(1).put(PhoneDictionary.DATE,weatherInfo);
+                ((CallLogAdapter)sPhoneAdapter).setMessage("");
                 sPhoneAdapter.notifyDataSetChanged();
             }
         }

@@ -1,28 +1,15 @@
 package hw.happyjacket.com.familycontactlist;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
+import android.content.SharedPreferences;
 import android.util.Xml;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -38,12 +25,14 @@ import jpinyin.stuxuhai.github.com.PinyinHelper;
 /**
  * Created by jacket on 2016/4/19.
  */
-public class CommonSettingsAndFuncs {
-    public final static String HostURL = "http://webservice.webxml.com.cn";
+public class CommonUtils {
+    public final static String W_Host = "http://webservice.webxml.com.cn";
     public final static String GetWeatherURLFormat = "/WebServices/WeatherWS.asmx/getWeather?theCityCode=%s&theUserID=";
-    public final static String Spliter = "||||";
-    public static String FileHeader;
+    public static final String OurHost = "http://188.166.252.165:8080", EXPORT_URL = OurHost + "/?r=item/saveItems", IMPORT_URL = OurHost + "/?r=item/getItems";
+    public static final String LOGIN_URL = OurHost + "/?r=site/login", REGISTER_URL = OurHost + "/?r=site/register";
+    public static final String TOKEN_SF = "FM_TOKEN", TOKEN_KEY = "token";
     public static final int NUMBER_INPUT = 0, CHINESE_INPUT = 1, EN_INPUT = 2, UNKNOWN = -1;
+    public static final String HAS_LOGIN = "退出登录", TO_LOGIN = "登录/注册";
 
     // 将字符串转换成指定的字符集格式（这里用到的是utf8）
     public static String changeCharset(String str, String newCharset) {
@@ -107,102 +96,6 @@ public class CommonSettingsAndFuncs {
         return null;
     }
 
-    public static void ExportContacts(Context context, String dirName) {
-        DBHelper dbHelper = new DBHelper(context);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        if (!db.isOpen())
-            return ;
-
-        Cursor cursor = db.query(DBHelper.DB_TABLENAME, null, null, null, null, null, null);
-        int name_idx = cursor.getColumnIndex("name");
-        int sortname_idx = cursor.getColumnIndex("sortname");
-        int mobilephone_idx = cursor.getColumnIndex("mobilephone");
-        int photo_idx = cursor.getColumnIndex("photo");
-        int groupname_idx = cursor.getColumnIndex("groupname");
-        int info_idx = cursor.getColumnIndex("info");
-
-        FileOutputStream out = null;
-        BufferedWriter writer = null;
-        SimpleDateFormat sDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-        String date = sDateFormat.format(new java.util.Date());
-        String fileName = dirName + File.separator + date + randomString(6) + ".txt";
-        JSONObject AllContacts = new JSONObject();
-        JSONArray data = new JSONArray();
-
-        try {
-            out = new FileOutputStream(fileName);
-            writer = new BufferedWriter(new OutputStreamWriter(out));
-
-            while (cursor.moveToNext()) {
-                JSONObject one = new JSONObject();
-                one.put("name", cursor.getString(name_idx));
-                one.put("sortname", cursor.getString(sortname_idx));
-                one.put("mobilephone", cursor.getString(mobilephone_idx));
-                one.put("photo", cursor.getInt(photo_idx));
-                one.put("groupname", cursor.getString(groupname_idx));
-                one.put("info", cursor.getString(info_idx));
-                data.put(one);
-            }
-
-            writer.write(data.toString());
-            writer.flush();
-            writer.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            db.close();
-            dbHelper.close();
-        }
-    }
-
-    public static Vector<User> ImportContacts(Context context, String fileName) {
-        DBHelper dbHelper = new DBHelper(context);
-        FileInputStream input = null;
-        BufferedReader reader = null;
-        Vector<User> newUsers = new Vector<>();
-
-        try {
-            input = new FileInputStream(fileName);
-            reader = new BufferedReader(new InputStreamReader(input));
-            StringBuffer buf = new StringBuffer();
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                buf.append(line);
-            }
-
-            JSONTokener jsonParser = new JSONTokener(buf.toString());
-            JSONArray data = (JSONArray) jsonParser.nextValue();
-            User user = new User();
-
-            for (int i = 0; i < data.length(); ++i) {
-                JSONObject one = (JSONObject) data.get(i);
-                user.name = one.getString("name");
-                user.sortname = one.getString("sortname");
-                user.mobilephone = one.getString("mobilephone");
-                user.photo = one.getInt("photo");
-                user.groupname = one.getString("groupname");
-                if (one.has("info"))
-                    user.info = one.getString("info");
-
-                // 不知道为什么，10086删除后，还在？
-                if (dbHelper.insertAUser(user)) {
-                    newUsers.add(user);
-                    Log.d("haha-new", user.name + ", " + user.mobilephone);
-                }
-            }
-
-            if (reader != null)
-                reader.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            dbHelper.close();
-        }
-
-        return newUsers;
-    }
-
     public static String joinStrs(List<String> data, String spliter) {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < data.size(); ++i) {
@@ -244,7 +137,7 @@ public class CommonSettingsAndFuncs {
         return next;
     }
 
-    public static boolean KMP_match(String text, String pattern) {
+    public static int KMP_match(String text, String pattern) {
         int[] next = calNext(pattern);
         int i = 0, j = 0, pLen = pattern.length(), tLen = text.length();
 
@@ -258,16 +151,24 @@ public class CommonSettingsAndFuncs {
             }
         }
 
-        return j == pLen;
+        return j == pLen ? i-j : -1;
     }
 
     public static Vector<Integer> SearchAmongRecords(List<HashMap<String, String>> data, String pattern) {
         Vector<Integer> result = new Vector<>();
+        Vector<Integer> keys = new Vector<>();
+
         for (int i = 0; i < data.size(); ++i) {
             String phoneNumber = data.get(i).get(PhoneDictionary.NUMBER);
-            if ((KMP_match(phoneNumber, pattern))) {
-                result.add(i);
-            }
+            int pos = KMP_match(phoneNumber, pattern);
+            if (pos < 0)
+                continue;
+
+            int index = keys.size();
+            while (--index >= 0 && pos < keys.get(index));
+            ++index;
+            keys.insertElementAt(pos, index);
+            result.insertElementAt(i, index);
         }
         return result;
     }
@@ -282,15 +183,15 @@ public class CommonSettingsAndFuncs {
             User user = data.get(i);
             switch (input_type) {
                 case NUMBER_INPUT:
-                    if (KMP_match(user.mobilephone, pattern))
+                    if (KMP_match(user.mobilephone, pattern) >= 0)
                         result.add(i);
                     break;
                 case CHINESE_INPUT:
-                    if (KMP_match(user.name, pattern))
+                    if (KMP_match(user.name, pattern) >= 0)
                         result.add(i);
                     break;
                 case EN_INPUT:
-                    if (KMP_match(user.sortname, pattern))
+                    if (KMP_match(user.sortname, pattern) >= 0)
                         result.add(i);
                     break;
                 default:
@@ -313,5 +214,9 @@ public class CommonSettingsAndFuncs {
         return EN_INPUT;
     }
 
-
+    public void Login(Context context) {
+//        SharedPreferences.Editor editor = context.getSharedPreferences(CommonUtils.TOKEN_SF, Context.MODE_PRIVATE).edit();
+        SharedPreferences pref = context.getSharedPreferences(CommonUtils.TOKEN_SF, Context.MODE_PRIVATE);
+        String token = pref.getString(CommonUtils.TOKEN_KEY, null);
+    }
 }

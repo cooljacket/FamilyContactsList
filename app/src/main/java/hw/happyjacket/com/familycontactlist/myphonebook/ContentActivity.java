@@ -121,16 +121,10 @@ public class ContentActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 1:
-                        if (backup == null) {
-                            Intent intent1 = new Intent(ContentActivity.this, CreatePeopleDetail.class);
-                            intent1.putExtra(TabContactsFragment.NUMBER, number);
-                            startActivityForResult(intent1, PhoneDictionary.CREATE_PEOPLE_CODE);
-                        } else {
-                            Intent intent1 = new Intent(ContentActivity.this, ChangePeopleDetail.class);
-                            intent1.putExtra(TabContactsFragment.NUMBER, number);
-                            intent1.putExtra(TabContactsFragment.NAME,name);
-                            startActivityForResult(intent1, PhoneDictionary.CREATE_PEOPLE_CODE);
-                        }
+                        if (backup == null)
+                            CreatePeopleDetail.actionStart(ContentActivity.this, number);
+                        else
+                            ChangePeopleDetail.actionStart(ContentActivity.this, number, name);
                         break;
                     case 2:
                         if (mContentShow.getStatus() == PhoneDictionary.CONTENT1)

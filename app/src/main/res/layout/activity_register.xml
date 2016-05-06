@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/register_bg">
+
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/register_toolbar"/>
+
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+
+
+
+        <LinearLayout
+            android:layout_width="340dp"
+            android:layout_height="280dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="35dp"
+            android:orientation="vertical" >
+
+            <EditText
+                android:id="@+id/register_uname"
+                android:layout_width="320dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="1dp"
+                android:background="#FFFFFF"
+                android:drawablePadding="10dp"
+                android:hint=" 请输入您的用户名"
+                android:textColor="#3D3D3D"
+                android:textColorHint="#A3B1CA"
+                android:textSize="15sp" >
+            </EditText>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.2dp"
+                android:layout_marginTop="4dp"
+                android:background="#F2F2F2" >
+            </View>
+            <EditText
+                android:id="@+id/register_psw1"
+                android:layout_width="320dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center_horizontal"
+                android:background="#FFFFFF"
+
+                android:hint=" 请输入您的密码  "
+                android:inputType="textPassword"
+                android:textColorHint="#A3B1CA"
+                android:textSize="15sp" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.2dp"
+                android:layout_marginTop="4dp"
+                android:background="#F2F2F2" >
+            </View>
+            <EditText
+                android:id="@+id/register_psw2"
+                android:layout_width="320dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center_horizontal"
+                android:background="#FFFFFF"
+                android:drawablePadding="10dp"
+                android:hint=" 请再次输入您的密码  "
+                android:inputType="textPassword"
+                android:textColorHint="#A3B1CA"
+                android:textSize="15sp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_marginTop="10dp">
+
+            <Button
+                android:id="@+id/btnReset"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:textColor="#5E6A81"
+                android:layout_marginLeft="210dp"
+                android:text="重置"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="340dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:orientation="vertical" >
+        <Button
+            android:id="@+id/btnRegister_submit"
+            android:layout_width="320dp"
+            android:layout_height="48dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="8dp"
+            android:background="#FFC8B4"
+            android:gravity="center"
+            android:text="确 认 注 册"
+            android:textColor="#F08080"
+            android:textSize="20dp"
+            android:textStyle="bold" >
+        </Button>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="90dp"
+        android:background="#F2F2F2" >
+    </View>
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical" >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:text="你不仅在电话簿里,更在我心里˙﹏˙"
+            android:textColor="#5E6A81"
+            android:layout_marginBottom="5dp"
+            android:textStyle="bold" >
+        </TextView>
+    </LinearLayout>
+
+
+
+</LinearLayout>

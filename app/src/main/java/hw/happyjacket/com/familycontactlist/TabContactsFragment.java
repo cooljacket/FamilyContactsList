@@ -250,13 +250,10 @@ public class TabContactsFragment extends PhoneFragment {
                     while (phoneCursor.moveToNext()) {
                         //得到联系人名称
                         contactName = phoneCursor.getString(PHONES_DISPLAY_NAME_INDEX);
-
-                        //得到联系人ID
-                        contactid = phoneCursor.getInt(PHONES_CONTACT_ID_INDEX);
-                        contactID = phoneCursor.getString(PHONES_CONTACT_ID_INDEX);
                         contactPhone = phoneCursor.getString(PHONES_NUMBER_INDEX).replace(" ","").replace("+86","").replace("+", "");
-                        contactSortname = CommonSettingsAndFuncs.convertToShortPinyin(mContext, contactName);
+                        contactSortname = CommonUtils.convertToShortPinyin(mContext, contactName);
                         cursor = db.query(DBHelper.DB_TABLENAME, null, DBHelper.NUMBER + " = " + contactPhone, null, null, null, null);
+
                         if (!cursor.moveToFirst()) {
                             User user = new User();
                             user.name = contactName;
@@ -309,7 +306,7 @@ public class TabContactsFragment extends PhoneFragment {
             t.update(i);
             if (t.name == null || t.mobilephone == null)
                 continue;
-            t.sortname = CommonSettingsAndFuncs.convertToShortPinyin(mContext,t.name);
+            t.sortname = CommonUtils.convertToShortPinyin(mContext,t.name);
             t.picture = circleImage[new Random().nextInt(DefaultPicture.ImageID.length)];
             AL.add(t);
         }
@@ -336,6 +333,7 @@ public class TabContactsFragment extends PhoneFragment {
         user1.picture = picture;
         AL.add(user1);
         sortList();
+        adapter.notifyDataSetChanged();
     }
 
     @Override
