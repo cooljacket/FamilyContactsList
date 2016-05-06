@@ -18,18 +18,33 @@
                 android:layout_alignParentTop="true">
             </hw.happyjacket.com.familycontactlist.myphonebook.listview.ScrollListView>
 
-
+            <TextView
+                android:layout_width="320dp"
+                android:layout_height="0.8dp"
+                android:background="@drawable/vertical_divider"
+                android:id="@+id/divider1"
+                android:layout_below="@id/dialog_option_listview"
+                android:layout_gravity="center_horizontal" />
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/new_dialog_option"
-                android:layout_below="@id/dialog_option_listview"
+                android:textColor="#84CA8B"
+                android:layout_below="@id/divider1"
+                android:background="@drawable/button_selector"
                 />
+            <TextView
+                android:layout_width="320dp"
+                android:layout_height="0.8dp"
+                android:background="@drawable/vertical_divider"
+                android:id="@+id/divider2"
+                android:layout_below="@id/new_dialog_option"
+                android:layout_gravity="center_horizontal" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/new_dialog_option"
+                android:layout_below="@+id/divider2"
                 android:orientation="horizontal">
 
 
@@ -41,7 +56,7 @@
                     android:id="@+id/dialog_option_negative"
                     android:text="取消"
                     android:background="#ffffff"
-                    android:textColor="#111111"
+                    android:textColor="#84CA8B"
                     android:layout_alignParentRight="true"
                     android:layout_below="@+id/new_dialog_option"
                     android:fadingEdge="horizontal"
@@ -55,7 +70,7 @@
                     android:id="@+id/dialog_option_delete"
                     android:text="删除"
                     android:background="#ffffff"
-                    android:textColor="#111111"
+                    android:textColor="#84CA8B"
                     android:fadingEdge="horizontal"
                     android:fadingEdgeLength="5dp"
                     android:layout_alignParentLeft="true"
@@ -68,7 +83,7 @@
                     android:id="@+id/dialog_option_positive"
                     android:text="确定"
                     android:background="#ffffff"
-                    android:textColor="#111111"
+                    android:textColor="#84CA8B"
                     android:fadingEdge="horizontal"
                     android:fadingEdgeLength="5dp"
                     android:layout_alignParentLeft="true"
