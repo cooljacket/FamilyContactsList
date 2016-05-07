@@ -3,19 +3,21 @@
         <layer-list >
             <item >
                 <shape android:shape="rectangle">
-                    <stroke android:width="5dp"  android:color="#ff0000"/>
+                    <stroke android:width="5dp"  android:color="@color/bluegreen"/>
                 </shape>
             </item>
-            <item  android:bottom="5dp" >
+            <item android:bottom="2dp" >
                 <shape android:shape="rectangle" >
-                    <solid android:color="#fff"/>
+                    <solid android:color="@color/white"/>
                 </shape>
             </item>
             </layer-list>
         </item>
-    <item>
+
+
+    <item android:state_checked="false">
         <shape>
-            <solid android:color="#FAFAFA"/>
+            <solid android:color="@color/white"/>
         </shape>
     </item>
 </selector>

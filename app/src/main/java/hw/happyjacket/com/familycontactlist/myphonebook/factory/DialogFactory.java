@@ -402,9 +402,9 @@ public class DialogFactory {
         }
         View view = LayoutInflater.from(context).inflate(R.layout.dia_wheel,null);
         final EditText editText = (EditText) view.findViewById(R.id.dia_wheel_screen);
-        Button retrive = (Button) view.findViewById(R.id.dia_wheel_retrieve);
+        ImageButton retrive = (ImageButton) view.findViewById(R.id.dia_wheel_retrieve);
         ImageButton call = (ImageButton) view.findViewById(R.id.dia_wheel_call);
-        Button delete = (Button) view.findViewById(R.id.dia_wheel_delete);
+        ImageButton delete = (ImageButton) view.findViewById(R.id.dia_wheel_delete);
         call.setImageResource(R.drawable.ic_menu_call);
         call.setColorFilter(new LightingColorFilter(0,0xffffff));
         editText.clearFocus();

@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     android:id="@+id/main"
-    tools:context="hw.happyjacket.com.viewpagertest.MainActivity">
+    tools:context = ".MainActivity">
 
-    <android.support.v7.widget.Toolbar xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/toolbar"
+    <android.support.v7.widget.Toolbar
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:minHeight="?attr/actionBarSize"
-        android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        android:theme="@style/AppMainTop" >
-
+        android:layout_height="50dip"
+        android:background="@color/bar_blue"
+        android:id="@+id/main_toolbar"
+        >
     </android.support.v7.widget.Toolbar>
+
 
     <RadioGroup
         android:orientation="horizontal"
         android:id="@+id/tab_header"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="30dp"
+        android:layout_below="@+id/main_toolbar">
 
         <RadioButton
             android:id="@+id/record"
@@ -30,11 +30,12 @@
             android:clickable="true"
             android:layout_weight="1"
             android:button="@null"
-            android:textSize="23dp"
+            android:textSize="15dp"
             android:textColor="@color/black"
-            android:textAlignment="center"
+            android:gravity="center_horizontal|top"
             android:background="@drawable/tab_selector"
             android:layout_width="wrap_content"
+            android:layout_marginBottom="2dp"
             android:layout_height="match_parent" />
 
         <RadioButton
@@ -43,25 +44,26 @@
             android:clickable="true"
             android:layout_weight="1"
             android:button="@null"
-            android:textSize="23dp"
+            android:textSize="15dp"
             android:textColor="@color/black"
-            android:textAlignment="center"
+            android:gravity="center_horizontal|top"
+            android:layout_marginBottom="2dp"
             android:background="@drawable/tab_selector"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
 
         <!--<RadioButton-->
-            <!--android:id="@+id/settings"-->
-            <!--android:text="设置"-->
-            <!--android:clickable="true"-->
-            <!--android:layout_weight="1"-->
-            <!--android:button="@null"-->
-            <!--android:textSize="23dp"-->
-            <!--android:textColor="@color/tab_text_unfocus_color"-->
-            <!--android:textAlignment="center"-->
-            <!--android:background="@color/tab_bk_color"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="match_parent" />-->
+        <!--android:id="@+id/settings"-->
+        <!--android:text="设置"-->
+        <!--android:clickable="true"-->
+        <!--android:layout_weight="1"-->
+        <!--android:button="@null"-->
+        <!--android:textSize="23dp"-->
+        <!--android:textColor="@color/tab_text_unfocus_color"-->
+        <!--android:textAlignment="center"-->
+        <!--android:background="@color/tab_bk_color"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="match_parent" />-->
     </RadioGroup>
 
     <android.support.v4.view.ViewPager
@@ -70,5 +72,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </android.support.v4.view.ViewPager>
-
 </RelativeLayout>

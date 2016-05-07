@@ -29,10 +29,12 @@
     </GridView>
 
 
-    <Button
+    <ImageButton
         android:layout_width="20dp"
         android:layout_height="22dp"
-        android:background="@drawable/dialpad3x"
+        android:scaleType="centerInside"
+        android:src="@drawable/dialpad3x"
+        android:background="@null"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/dia_wheel_table"
         android:layout_marginTop="8dp"
@@ -42,16 +44,19 @@
     <ImageButton
         android:layout_width="100dp"
         android:layout_height="50dp"
+        android:scaleType="centerInside"
         android:background="@drawable/diawheel_call_selector"
         android:layout_centerHorizontal="true"
         android:layout_below="@+id/dia_wheel_table"
         android:layout_marginBottom="2dp"
         android:id="@+id/dia_wheel_call"/>
 
-    <Button
+    <ImageButton
         android:layout_width="30dp"
         android:layout_height="20dp"
-        android:background="@drawable/backspace"
+        android:scaleType="centerInside"
+        android:src="@drawable/backspace"
+        android:background="@null"
         android:layout_gravity="right"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/dia_wheel_table"

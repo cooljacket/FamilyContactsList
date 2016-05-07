@@ -32,13 +32,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:logo="@drawable/p1"
-        android:supportsRtl="true"
-        >
-        <!--android:theme="@style/AppMainTop"-->
+        android:supportsRtl="true">
 
         <activity android:name=".MainActivity"
-            android:theme="@style/Theme.AppCompat.Light"
-            >
+            android:theme="@style/AppMainTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -64,8 +61,8 @@
         </activity>
 
         <activity android:name=".CreatePeopleDetail"
-                  android:windowSoftInputMode="adjustResize"
-                  android:theme="@style/AppTop">
+            android:windowSoftInputMode="adjustResize"
+            android:theme="@style/AppTop">
             <intent-filter>
                 <action android:name="android.intent.action.CPD" />
                 <category android:name="android.intent.category.DEFAULT" />

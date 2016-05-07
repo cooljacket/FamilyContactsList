@@ -22,6 +22,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -47,14 +49,22 @@ public class MainActivity extends AppCompatActivity {
     public static List<HashMap<String,String>> phoneElement;
     private static final int FILE_SELECT_CODE = 0;
     private MenuItem login_register_item;
-    private Toolbar mActionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+
         InitFragments();
+
+
 
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mPagerAdapter);
@@ -75,18 +85,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mActionBar = (Toolbar) findViewById(R.id.toolbar);
-        // toolbar.setLogo(R.drawable.ic_launcher);
-        mActionBar.setTitle("关怀通话簿");// 标题的文字需在setSupportActionBar之前，不然会无效
-        // toolbar.setSubtitle("副标题");
-        setSupportActionBar(mActionBar);
-		/* 这些通过ActionBar来设置也是一样的，注意要在setSupportActionBar(toolbar);之后，不然就报错了 */
-        // getSupportActionBar().setTitle("标题");
-        // getSupportActionBar().setSubtitle("副标题");
-        // getSupportActionBar().setLogo(R.drawable.ic_launcher);
 
-		/* 菜单的监听可以在toolbar里设置，也可以像ActionBar那样，通过Activity的onOptionsItemSelected回调方法来处理 */
-//         mActionBar = getSupportActionBar();
 
 
 
@@ -96,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
     private void InitFragments() {
         mRecordTab = new TabRecordFragment();
         mContactTab = new TabContactsFragment();
-        mTabs = new ArrayList<PhoneFragment>();
+        mTabs = new ArrayList<>();
         mTabs.add(mRecordTab);
         mTabs.add(mContactTab);
 
@@ -112,42 +111,43 @@ public class MainActivity extends AppCompatActivity {
             }
         };
     }
+    private void InitTabHeader() {
+        tabs_group = (RadioGroup) findViewById(R.id.tab_header);
+        tab_record = (RadioButton) findViewById(R.id.record);
+        tab_contacts = (RadioButton) findViewById(R.id.contacts);
+        base_tab_id = tab_record.getId();
 
-     private void InitTabHeader() {
-         tabs_group = (RadioGroup) findViewById(R.id.tab_header);
-         tab_record = (RadioButton) findViewById(R.id.record);
-         tab_contacts = (RadioButton) findViewById(R.id.contacts);
-         base_tab_id = tab_record.getId();
+        tabs_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                ChangeTab(checkedId);
+                mPager.setCurrentItem(checkedId - base_tab_id);
+            }
+        });
 
-         tabs_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-             @Override
-             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                 ChangeTab(checkedId);
-                 mPager.setCurrentItem(checkedId - base_tab_id);
-             }
-         });
+        selected_tab = base_tab_id;
+        tab_record.setChecked(true);
+    }
 
-         selected_tab = base_tab_id;
-         tab_record.setChecked(true);
-     }
+    private RadioButton getTheTab(int id) {
+        if (id == base_tab_id)
+            return tab_record;
+        if (id == tab_contacts.getId())
+            return tab_contacts;
+        return tab_record;
+    }
 
-     private RadioButton getTheTab(int id) {
-         if (id == base_tab_id)
-             return tab_record;
-         if (id == tab_contacts.getId())
-             return tab_contacts;
-         return tab_record;
-     }
-
-     public void ChangeTab(int checkedId) {
-         RadioButton last = getTheTab(selected_tab);
-         last.setChecked(false);
+    public void ChangeTab(int checkedId) {
+        RadioButton last = getTheTab(selected_tab);
+        last.setChecked(false);
+        last.setTextColor(getResources().getColor(R.color.black));
         /* last.setBackgroundColor(getResources().getColor(R.color.tab_bk_color));
          last.setTextColor(getResources().getColor(R.color.tab_text_unfocus_color));*/
 
-         selected_tab = checkedId;
-         RadioButton it = getTheTab(selected_tab);
-         it.setChecked(true);
+        selected_tab = checkedId;
+        RadioButton it = getTheTab(selected_tab);
+        it.setChecked(true);
+        it.setTextColor(getResources().getColor(R.color.bluegreen));
         /* it.setBackgroundColor(getResources().getColor(R.color.tab_front_color));
          it.setTextColor(getResources().getColor(R.color.tab_text_focus_color));*/
 

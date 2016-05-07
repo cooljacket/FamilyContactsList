@@ -82,6 +82,7 @@ public class TabContactAdapter extends ArrayAdapter<TabContactUser> {
                 && t1 != null && t1.length() > 0 && 'A'<= (h1 = Character.toUpperCase(t1.charAt(0))) && h1 <= 'Z'){
             h2 = Character.toUpperCase(t2.charAt(0));
             if(h2 != h1) {
+                Log.i(TAG,position + " " + t1 + " " + t2);
                 myHolder.alphebat.setHeight(height);
                 myHolder.alphebat.setText(" " + h1);
             }
