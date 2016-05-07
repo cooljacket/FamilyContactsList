@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
     </style>
 
     <style name="AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -46,10 +47,11 @@
     <!-- Base application theme. -->
     <style name="AppTop" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
+
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-    
+
 
 
     <style name="AppMainTopContent" parent="@style/Theme.AppCompat.Light.DarkActionBar">
@@ -62,8 +64,10 @@
 
     <!-- 标题样式是ActionBar样式的一部分，所以要先定义ActionBar的样式 -->
     <style name="AppMainTop" parent="@style/AppTop">
+        <item name="android:statusBarColor">@color/bar_blue</item>
         <item name="android:itemBackground">@color/white</item>
         <item name="android:actionMenuTextColor">@drawable/button_text_selector</item>
+
     </style>
     <!--然后在ActionBar的样式中通过android:titleTextStyle定义标题的样式
         然后通过android：background定义actionBar颜色（不能在上边定义，否则设为整个页面背景色）

@@ -134,43 +134,43 @@ public class MainActivity extends AppCompatActivity {
             }
         };
     }
-     private void InitTabHeader() {
-         tabs_group = (RadioGroup) findViewById(R.id.tab_header);
-         tab_record = (RadioButton) findViewById(R.id.record);
-         tab_contacts = (RadioButton) findViewById(R.id.contacts);
-         base_tab_id = tab_record.getId();
+    private void InitTabHeader() {
+        tabs_group = (RadioGroup) findViewById(R.id.tab_header);
+        tab_record = (RadioButton) findViewById(R.id.record);
+        tab_contacts = (RadioButton) findViewById(R.id.contacts);
+        base_tab_id = tab_record.getId();
 
-         tabs_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-             @Override
-             public void onCheckedChanged(RadioGroup group, int checkedId) {
-                 ChangeTab(checkedId);
-                 mPager.setCurrentItem(checkedId - base_tab_id);
-             }
-         });
+        tabs_group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                ChangeTab(checkedId);
+                mPager.setCurrentItem(checkedId - base_tab_id);
+            }
+        });
 
-         selected_tab = base_tab_id;
-         tab_record.setChecked(true);
-     }
+        selected_tab = base_tab_id;
+        tab_record.setChecked(true);
+    }
 
-     private RadioButton getTheTab(int id) {
-         if (id == base_tab_id)
-             return tab_record;
-         if (id == tab_contacts.getId())
-             return tab_contacts;
-         return tab_record;
-     }
+    private RadioButton getTheTab(int id) {
+        if (id == base_tab_id)
+            return tab_record;
+        if (id == tab_contacts.getId())
+            return tab_contacts;
+        return tab_record;
+    }
 
-     public void ChangeTab(int checkedId) {
-         RadioButton last = getTheTab(selected_tab);
-         last.setChecked(false);
-         last.setTextColor(getResources().getColor(R.color.black));
+    public void ChangeTab(int checkedId) {
+        RadioButton last = getTheTab(selected_tab);
+        last.setChecked(false);
+        last.setTextColor(getResources().getColor(R.color.black));
         /* last.setBackgroundColor(getResources().getColor(R.color.tab_bk_color));
          last.setTextColor(getResources().getColor(R.color.tab_text_unfocus_color));*/
 
-         selected_tab = checkedId;
-         RadioButton it = getTheTab(selected_tab);
-         it.setChecked(true);
-         it.setTextColor(getResources().getColor(R.color.bluegreen));
+        selected_tab = checkedId;
+        RadioButton it = getTheTab(selected_tab);
+        it.setChecked(true);
+        it.setTextColor(getResources().getColor(R.color.bluegreen));
         /* it.setBackgroundColor(getResources().getColor(R.color.tab_front_color));
          it.setTextColor(getResources().getColor(R.color.tab_text_focus_color));*/
 

@@ -19,5 +19,6 @@
     <color name="deepgray">#ababab</color>
     <color name="black">#111111</color>
     <color name="green">#00CD00</color>
+    <color name="bar_blue">#85DAFF</color>
     <color name="bluegreen">#005faa</color>
 </resources>
