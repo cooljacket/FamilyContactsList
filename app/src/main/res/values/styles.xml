@@ -8,6 +8,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+
+
     <style name="AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
@@ -49,14 +51,29 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-    
-    <style name="AppMainTop" parent="@style/Theme.AppCompat.DayNight.DarkActionBar">
-        <item name="android:actionBarStyle">@style/Theme.AppCompat.DayNight.DarkActionBar</item>
-        <item name="android:actionMenuTextColor">@color/black</item>
-        <item name="actionMenuTextColor">@color/black</item>
+    <!--We use this!!-->
+    <style name="AppMainTop" parent="@style/Theme.AppCompat.Light">
+        <!--<item name="android:actionBarStyle">@style/Theme.AppCompat.Light</item>-->
+
+        <!-- colorPrimary 定义 ActionBar 的背景色 -->
+        <item name="colorPrimary">@color/bar_blue</item>
+
+        <!-- colorAccent 为 colorControlActivated 的默认值，该值用户显示控件的高亮状态 -->
+        <!--<item name="colorAccent">@color/light_red</item>-->
+
+        <!-- colorPrimaryDark 定义状态栏的背景色 不要动这个-->
+        <!--<item name="colorPrimaryDark">@color/bar_blue</item>-->
+        <item name="android:actionBarSize">50dip</item>
+        <item name="android:actionBarStyle">@style/ActionBarStyle</item>
+        <item name="android:actionMenuTextColor">@color/tab_bk_light_green</item>
+        <item name="android:textColor">@color/black</item>
         <item name="android:background">@color/white</item>
-        <item name="background">@color/white</item>
     </style>
+
+    <style name="ActionBarStyle" parent="@style/Widget.AppCompat.Light.ActionBar.Solid">
+        <item name="background">@color/bar_blue</item>
+    </style>      <!-- ActionBar字体 -->
+
 
 
 

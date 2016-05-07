@@ -34,8 +34,10 @@
         android:logo="@drawable/p1"
         android:supportsRtl="true"
         >
+        <!--android:theme="@style/AppMainTop"-->
+
         <activity android:name=".MainActivity"
-                  android:theme="@style/Theme.AppCompat.DayNight.DarkActionBar"
+            android:theme="@style/Theme.AppCompat.Light"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

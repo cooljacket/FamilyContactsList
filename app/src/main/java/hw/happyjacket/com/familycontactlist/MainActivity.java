@@ -17,6 +17,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
     public static List<HashMap<String,String>> phoneElement;
     private static final int FILE_SELECT_CODE = 0;
     private MenuItem login_register_item;
-    private ActionBar mActionBar;
+    private Toolbar mActionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +75,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mActionBar = getSupportActionBar();
+        mActionBar = (Toolbar) findViewById(R.id.toolbar);
+        // toolbar.setLogo(R.drawable.ic_launcher);
+        mActionBar.setTitle("关怀通话簿");// 标题的文字需在setSupportActionBar之前，不然会无效
+        // toolbar.setSubtitle("副标题");
+        setSupportActionBar(mActionBar);
+		/* 这些通过ActionBar来设置也是一样的，注意要在setSupportActionBar(toolbar);之后，不然就报错了 */
+        // getSupportActionBar().setTitle("标题");
+        // getSupportActionBar().setSubtitle("副标题");
+        // getSupportActionBar().setLogo(R.drawable.ic_launcher);
+
+		/* 菜单的监听可以在toolbar里设置，也可以像ActionBar那样，通过Activity的onOptionsItemSelected回调方法来处理 */
+//         mActionBar = getSupportActionBar();
+
 
 
         InitTabHeader();
