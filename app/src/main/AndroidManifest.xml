@@ -35,12 +35,22 @@
         android:supportsRtl="true">
 
         <activity android:name=".MainActivity"
-                  android:theme="@style/AppMainTop">
+                  android:theme="@style/AppMainTop"
+                  android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/phone_search" />
         </activity>
+
         <activity
             android:name=".BlackListActivity"
             android:label="@string/title_activity_black_list">

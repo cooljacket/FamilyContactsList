@@ -12,11 +12,13 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
+import android.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -42,8 +44,11 @@ public class TabContactsFragment extends PhoneFragment {
     public static String NUMBER = "number";
 
     public static final String DataBaseLock = "lock";
+    private Button search;
+    private SearchView mSearchView;
     private Context mContext;
     private ListView listview;
+    private Vector<User> ALBacckUp = new Vector<>();
     private Vector<TabContactUser> AL = new Vector<>();
     private int positionNew;
     private DBHelper dbHelper = null;
@@ -71,6 +76,28 @@ public class TabContactsFragment extends PhoneFragment {
             switch (msg.what){
                 case LIST_LOAD_SOME:
                 case LIST_LOAD_OK:
+                    mSearchView = (SearchView) getView().findViewById(R.id.search_view);
+                    mSearchView.setIconifiedByDefault(true);
+                    mSearchView.onActionViewExpanded();
+                    mSearchView.setFocusable(false);
+                    mSearchView.clearFocus();
+                    mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                        @Override
+                        public boolean onQueryTextSubmit(String query) {
+                            return false;
+                        }
+
+                        @Override
+                        public boolean onQueryTextChange(String newText) {
+                            Vector<Integer> chosen = CommonUtils.SearchAmongContacts(ALBacckUp, newText);
+                            AL.removeAllElements();
+                            for (int i = 0 ; i < chosen.size() ; ++i){
+                                AL.add((TabContactUser)ALBacckUp.get(chosen.get(i)));
+                            }
+                            adapter.notifyDataSetChanged();
+                            return true;
+                        }
+                    });
                     if (listview == null || adapter == null) {
                         if (adapter == null)
                             adapter = new TabContactAdapter(mContext,R.layout.list_item, AL);
@@ -149,7 +176,7 @@ public class TabContactsFragment extends PhoneFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = getContext();
+        mContext = getActivity();
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -194,9 +221,13 @@ public class TabContactsFragment extends PhoneFragment {
             }
             AL.setElementAt(copy, cut_in+1);
         }
+
         for (int i = 0 ; i < AL.size(); ++i){
             AL.get(i).pos = i;
+
         }
+        ALBacckUp.removeAllElements();
+        ALBacckUp.addAll(AL);
     }
 
     private void loadList() {

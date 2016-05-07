@@ -15,7 +15,9 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.InputDevice;
 import android.view.LayoutInflater;
+import android.view.SearchEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -390,7 +392,7 @@ public class DialogFactory {
         return builder.create();
     }
 
-    public static PhoneDialog DiaWheel(Activity context,int style, final MainShow mainShow){
+    public static PhoneDialog DiaWheel(final Activity context,int style, final MainShow mainShow){
 
         Vector<HashMap<String,Object>> imageItem = new Vector<>();
         final PhoneDialog phoneDialog = new DefaultDialog(context,style);

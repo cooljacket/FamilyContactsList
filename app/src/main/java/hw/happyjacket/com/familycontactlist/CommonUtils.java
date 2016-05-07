@@ -32,7 +32,7 @@ public class CommonUtils {
     public static final String OurHost = "http://188.166.252.165:8080", EXPORT_URL = OurHost + "/?r=item/saveItems", IMPORT_URL = OurHost + "/?r=item/getItems";
     public static final String LOGIN_URL = OurHost + "/?r=site/login", REGISTER_URL = OurHost + "/?r=site/register";
     public static final String TOKEN_SF = "FM_TOKEN", TOKEN_KEY = "token";
-    public static final int NUMBER_INPUT = 0, CHINESE_INPUT = 1, EN_INPUT = 2, UNKNOWN = -1;
+    public static final int NUMBER_INPUT = 0, CHINESE_INPUT = 1, EN_INPUT = 2, VOID = 3, UNKNOWN = -1;
     public static final String HAS_LOGIN = "退出登录", TO_LOGIN = "登录/注册";
 
     // 将字符串转换成指定的字符集格式（这里用到的是utf8）
@@ -177,6 +177,11 @@ public class CommonUtils {
     public static Vector<Integer> SearchAmongContacts(List<User> data, String pattern) {
         Vector<Integer> result = new Vector<>();
         int input_type = JudgePatternType(pattern);
+        if (input_type == VOID){
+            for (int i = 0 ; i < data.size(); ++i)
+                result.add(i);
+            return result;
+        }
         if (input_type == EN_INPUT)
             pattern = pattern.toLowerCase();
 
@@ -206,6 +211,8 @@ public class CommonUtils {
     public static int JudgePatternType(String pattern) {
         if (pattern == null)
             return UNKNOWN;
+        if(pattern.length() == 0)
+            return VOID;
 
         char ch = pattern.charAt(0);
         if (ch >= '0' && ch <= '9')

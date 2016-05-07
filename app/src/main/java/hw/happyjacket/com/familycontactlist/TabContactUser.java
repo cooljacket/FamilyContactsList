@@ -7,4 +7,13 @@ import android.graphics.Bitmap;
  */
 public class TabContactUser extends User {
     public Bitmap picture;
+
+    public TabContactUser(){
+        super();
+    }
+
+    public TabContactUser (TabContactUser user){
+        this.update(user);
+        this.picture = user.picture;
+    }
 }

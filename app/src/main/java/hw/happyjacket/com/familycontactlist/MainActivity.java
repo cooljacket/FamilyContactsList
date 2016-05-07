@@ -2,6 +2,7 @@ package hw.happyjacket.com.familycontactlist;
 
 
 import android.app.AlertDialog;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -22,6 +23,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.SearchEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.RadioButton;
@@ -38,6 +40,10 @@ import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 
 
 public class MainActivity extends AppCompatActivity {
+    public static final String SEARCHID = "searchID";
+    public static final String SEARCHCONTENT = "searchContent";
+    private static int searchID;
+    private static String searchContent;
     private ViewPager mPager;
     private int selected_tab = 0, base_tab_id = 0;
     private RadioGroup tabs_group;
@@ -51,6 +57,22 @@ public class MainActivity extends AppCompatActivity {
     private MenuItem login_register_item;
     private Toolbar mToolbar;
 
+    public static int getSearchID() {
+        return searchID;
+    }
+
+    public static void setSearchID(int searchID) {
+        MainActivity.searchID = searchID;
+    }
+
+    public static String getSearchContent() {
+        return searchContent;
+    }
+
+    public static void setSearchContent(String searchContent) {
+        MainActivity.searchContent = searchContent;
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +81,8 @@ public class MainActivity extends AppCompatActivity {
 
         mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(mToolbar);
+        ActionBar actionBar = getSupportActionBar();
+
 
 
         InitFragments();
@@ -313,5 +337,29 @@ public class MainActivity extends AppCompatActivity {
     public static void deletePeopleDetai(String number){
         for(PhoneFragment i : mTabs)
             i.deletePeopleDetail(number);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        setIntent(intent);
+        handleIntent(intent);
+    }
+
+    @Override
+    public boolean onSearchRequested() {
+        Bundle appSearchData = new Bundle();
+        appSearchData.putInt(SEARCHID, searchID);
+        appSearchData.putString(SEARCHCONTENT,searchContent);
+        startSearch(null, false, appSearchData, false);
+        return true;
+    }
+
+    private void handleIntent(Intent intent){
+        Log.i("hehe","hehe");
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            Bundle bundle = intent.getBundleExtra(SearchManager.APP_DATA);
+
+            Toast.makeText(this,bundle.getString(SEARCHCONTENT),Toast.LENGTH_SHORT).show();
+        }
     }
 }
