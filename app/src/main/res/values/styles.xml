@@ -44,19 +44,66 @@
 
 
     <!-- Base application theme. -->
-    <style name="AppTop" parent="@style/Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTop" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
     
-    <style name="AppMainTop" parent="@style/Theme.AppCompat.DayNight.DarkActionBar">
-        <item name="android:actionBarStyle">@style/Theme.AppCompat.DayNight.DarkActionBar</item>
+
+
+    <style name="AppMainTopContent" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <item name="android:actionMenuTextColor">@color/black</item>
         <item name="actionMenuTextColor">@color/black</item>
+        <item name="android:textColor">@color/black</item>
         <item name="android:background">@color/white</item>
         <item name="background">@color/white</item>
     </style>
+
+    <!-- 标题样式是ActionBar样式的一部分，所以要先定义ActionBar的样式 -->
+    <style name="AppMainTop" parent="@style/AppTop">
+        <item name="android:actionMenuTextColor">@color/black</item>
+        <item name="android:itemBackground">@color/white</item>
+    </style>
+    <!--然后在ActionBar的样式中通过android:titleTextStyle定义标题的样式
+        然后通过android：background定义actionBar颜色（不能在上边定义，否则设为整个页面背景色）
+    -->
+
+    <style name="CustomActionBar" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:background">@color/white</item>
+        <item name="android:titleTextStyle">@style/ActionBarTitle</item>
+    </style>
+
+    <!-- 自定义标题文字样式 -->
+    <style name="ActionBarTitle" parent="@android:style/TextAppearance.Holo.Large">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <!-- 自定义菜单文字样式 -->
+    <style name="ActionBarMenu" parent="@android:style/TextAppearance.Holo.Large">
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="ButtonText">
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:gravity">center</item>
+        <!-- 阴影风格,如粗体，斜体 -->
+        <!--<item name="android:textStyle">bold</item>-->
+        <!-- 阴影颜色,这里可以处理阴影,外发光,描边等效果 -->
+        <item name="android:shadowColor">#98F5FF</item>
+        <!-- 阴影x偏移 -->
+        <item name="android:shadowDx">0</item>
+        <!-- 阴影y偏移 -->
+        <item name="android:shadowDy">0</item>
+        <!-- 阴影半径 -->
+        <item name="android:shadowRadius">3</item>
+        <!-- 背景 -->
+        <item name="android:background">@drawable/button_selector</item>
+    </style>
+
+
 
 
 

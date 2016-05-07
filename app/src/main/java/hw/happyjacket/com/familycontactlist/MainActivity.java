@@ -17,10 +17,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -46,14 +49,22 @@ public class MainActivity extends AppCompatActivity {
     public static List<HashMap<String,String>> phoneElement;
     private static final int FILE_SELECT_CODE = 0;
     private MenuItem login_register_item;
-    private ActionBar mActionBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
+
         InitFragments();
+
+
 
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mPagerAdapter);
@@ -74,7 +85,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mActionBar = getSupportActionBar();
+
+
 
 
         InitTabHeader();
@@ -83,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
     private void InitFragments() {
         mRecordTab = new TabRecordFragment();
         mContactTab = new TabContactsFragment();
-        mTabs = new ArrayList<PhoneFragment>();
+        mTabs = new ArrayList<>();
         mTabs.add(mRecordTab);
         mTabs.add(mContactTab);
 
@@ -99,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
             }
         };
     }
-
      private void InitTabHeader() {
          tabs_group = (RadioGroup) findViewById(R.id.tab_header);
          tab_record = (RadioButton) findViewById(R.id.record);
@@ -129,12 +140,14 @@ public class MainActivity extends AppCompatActivity {
      public void ChangeTab(int checkedId) {
          RadioButton last = getTheTab(selected_tab);
          last.setChecked(false);
+         last.setTextColor(getResources().getColor(R.color.black));
         /* last.setBackgroundColor(getResources().getColor(R.color.tab_bk_color));
          last.setTextColor(getResources().getColor(R.color.tab_text_unfocus_color));*/
 
          selected_tab = checkedId;
          RadioButton it = getTheTab(selected_tab);
          it.setChecked(true);
+         it.setTextColor(getResources().getColor(R.color.bluegreen));
         /* it.setBackgroundColor(getResources().getColor(R.color.tab_front_color));
          it.setTextColor(getResources().getColor(R.color.tab_text_focus_color));*/
 

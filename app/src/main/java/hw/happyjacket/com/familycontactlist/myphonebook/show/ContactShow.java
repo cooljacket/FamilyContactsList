@@ -194,9 +194,9 @@ public class ContactShow extends PhoneShow {
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            ((CallLogAdapter)sPhoneAdapter).setMessage("");
             if(weatherInfo == null)
                 return;
-
             try {
                 String[] result = CommonUtils.ParseWeatherXML(new ByteArrayInputStream(weatherInfo.getBytes()));
                 weatherInfo = result[1] + " " + result[2] + " " + result[3] ;
@@ -208,8 +208,7 @@ public class ContactShow extends PhoneShow {
                 weatherInfo = "error";
                 e.printStackTrace();
             } finally {
-                mPhoneListElementList.get(1).put(PhoneDictionary.DATE,weatherInfo);
-                ((CallLogAdapter)sPhoneAdapter).setMessage("");
+                mPhoneListElementList.get(1).put(PhoneDictionary.DATE, weatherInfo);
                 sPhoneAdapter.notifyDataSetChanged();
             }
         }

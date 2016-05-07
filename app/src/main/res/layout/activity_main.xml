@@ -1,18 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+                android:background="@color/white"
     android:id="@+id/main"
-    tools:context="hw.happyjacket.com.viewpagertest.MainActivity">
+    tools:context = ".MainActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+
+        android:id="@+id/main_toolbar"
+      >
+    </android.support.v7.widget.Toolbar>
 
 
     <RadioGroup
         android:orientation="horizontal"
         android:id="@+id/tab_header"
         android:layout_width="match_parent"
-        android:layout_height="50dp">
+        android:layout_height="30dp"
+        android:layout_below="@+id/main_toolbar">
 
         <RadioButton
             android:id="@+id/record"
@@ -20,11 +30,12 @@
             android:clickable="true"
             android:layout_weight="1"
             android:button="@null"
-            android:textSize="23dp"
+            android:textSize="15dp"
             android:textColor="@color/black"
-            android:textAlignment="center"
+            android:gravity="center_horizontal|top"
             android:background="@drawable/tab_selector"
             android:layout_width="wrap_content"
+            android:layout_marginBottom="2dp"
             android:layout_height="match_parent" />
 
         <RadioButton
@@ -33,9 +44,10 @@
             android:clickable="true"
             android:layout_weight="1"
             android:button="@null"
-            android:textSize="23dp"
+            android:textSize="15dp"
             android:textColor="@color/black"
-            android:textAlignment="center"
+            android:gravity="center_horizontal|top"
+            android:layout_marginBottom="2dp"
             android:background="@drawable/tab_selector"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
@@ -60,5 +72,4 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </android.support.v4.view.ViewPager>
-
 </RelativeLayout>

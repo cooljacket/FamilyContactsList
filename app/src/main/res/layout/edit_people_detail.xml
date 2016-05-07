@@ -3,7 +3,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/change_people_toolbar"
@@ -152,12 +153,11 @@
                         android:textSize="16dp"
                         android:text="" />
                     <Button
-                        android:layout_width="40dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
                         android:id="@+id/group_name_button"
                         android:layout_alignParentRight="true"
-                        android:background="#00000000"
-                        android:drawableRight="@drawable/button_down"
+                        android:background="@drawable/arrow_drop_down"
                         android:layout_centerVertical="true"/>
 
                 </RelativeLayout>
@@ -173,10 +173,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:textSize="16dp"
-                    android:textColor="#84CA8B"
+                    android:textColor="@color/button_text_selector"
                     android:text="添加新项目"
                     android:id="@+id/add_info"
-                    android:background="@drawable/button_selector" />
+                    android:background="@color/white" />
                 <TextView
                     android:layout_width="320dp"
                     android:layout_height="0.8dp"
@@ -214,8 +214,9 @@
             android:id="@+id/btn_return"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:textColor="#84CA8B"
-            android:background="#F0F0F0"
+            android:background="@color/white"
+            android:textColor="@color/button_text_selector"
+
             android:text="取消"
             android:textSize="20dp"
             android:layout_gravity="bottom" />
@@ -226,8 +227,9 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:textColor="#84CA8B"
-            android:background="#F0F0F0"
+            android:background="@color/white"
+            android:textColor="@color/button_text_selector"
+
             android:text="确定"
             android:textSize="20dp"
             android:layout_gravity="bottom" />

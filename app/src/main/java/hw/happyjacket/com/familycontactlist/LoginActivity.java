@@ -42,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
+
         final CheckBox remember = (CheckBox) findViewById(R.id.cbRememberPwd);
 
         final EditText userName = (EditText) findViewById(R.id.username);
