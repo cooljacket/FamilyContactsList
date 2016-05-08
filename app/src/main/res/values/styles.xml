@@ -50,6 +50,7 @@
 
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+
     </style>
 
 
@@ -62,12 +63,24 @@
         <item name="background">@color/white</item>
     </style>
 
+    <style name="PopMenuColor">
+        <item name="android:popupBackground">@color/white</item>
+    </style>
+
+    <style name="PopMenuText">
+        <item name="android:textColor">@color/button_text_blue_selector</item>
+        <item name="android:textSize">17sp</item>
+    </style>
+
+
     <!-- 标题样式是ActionBar样式的一部分，所以要先定义ActionBar的样式 -->
     <style name="AppMainTop" parent="@style/AppTop">
-        <item name="android:statusBarColor">@color/bar_blue</item>
-        <item name="android:itemBackground">@color/white</item>
-        <item name="android:actionMenuTextColor">@drawable/button_text_selector</item>
 
+        <item name="android:itemBackground">@color/white</item>
+        <!--<item name="android:actionMenuTextColor">@drawable/button_text_selector</item>-->
+
+        <item name="android:textAppearanceSmallPopupMenu">@style/PopMenuText</item>
+        <item name="android:textAppearanceLargePopupMenu">@style/PopMenuText</item>
     </style>
     <!--然后在ActionBar的样式中通过android:titleTextStyle定义标题的样式
         然后通过android：background定义actionBar颜色（不能在上边定义，否则设为整个页面背景色）

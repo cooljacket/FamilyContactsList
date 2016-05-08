@@ -17,6 +17,7 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.InputDevice;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.SearchEvent;
 import android.view.View;
 import android.view.Window;
@@ -146,7 +147,7 @@ public class DialogFactory {
         return defaultDialog;
     }
 
-    public static PhoneDialog getCheckBoxDialog(final Activity context, int style, final List<String> content, String []  have,final Handler handler,final int index){
+    public static PhoneDialog getCheckBoxDialog(final Activity context, int style, final List<String> content, String [] have,final Handler handler,final int index){
         View view = LayoutInflater.from(context).inflate(R.layout.dialog_option,null);
         final CheckBoxAdapter checkBoxAdapter = new CheckBoxAdapter(context,R.layout.dialog_checkbox,content,have);
         final DBHelper dbHelper = new DBHelper(context);
@@ -406,7 +407,7 @@ public class DialogFactory {
         final EditText editText = (EditText) view.findViewById(R.id.dia_wheel_screen);
         ImageButton retrive = (ImageButton) view.findViewById(R.id.dia_wheel_retrieve);
         ImageButton call = (ImageButton) view.findViewById(R.id.dia_wheel_call);
-        ImageButton delete = (ImageButton) view.findViewById(R.id.dia_wheel_delete);
+        final ImageButton delete = (ImageButton) view.findViewById(R.id.dia_wheel_delete);
         call.setImageResource(R.drawable.ic_menu_call);
         call.setColorFilter(new LightingColorFilter(0,0xffffff));
         editText.clearFocus();
@@ -434,6 +435,7 @@ public class DialogFactory {
                 Operation.call(editText.getText().toString());
             }
         });
+
 
         delete.setOnClickListener(new View.OnClickListener() {
             @Override

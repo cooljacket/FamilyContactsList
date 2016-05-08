@@ -6,15 +6,19 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.LightingColorFilter;
 import android.graphics.drawable.ColorDrawable;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -26,6 +30,8 @@ import android.view.MenuItem;
 import android.view.SearchEvent;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
@@ -56,6 +62,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int FILE_SELECT_CODE = 0;
     private MenuItem login_register_item;
     private Toolbar mToolbar;
+    private ActionBar mActionBar;
+    private ImageButton menu;
 
     public static int getSearchID() {
         return searchID;
@@ -78,16 +86,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
-
-        mToolbar = (Toolbar) findViewById(R.id.main_toolbar);
-        setSupportActionBar(mToolbar);
-        ActionBar actionBar = getSupportActionBar();
-
-
-
         InitFragments();
-
-
 
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mPagerAdapter);
@@ -109,11 +108,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-
-
+        menu = (ImageButton) findViewById(R.id.main_menu);
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onCreatePopupMenu(v);
+            }
+        });
+        menu.setColorFilter(new LightingColorFilter(0,menu.getSolidColor()));
 
         InitTabHeader();
     }
+
+
 
     private void InitFragments() {
         mRecordTab = new TabRecordFragment();
@@ -216,6 +223,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
     }
 
     @Override
@@ -340,26 +353,64 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        setIntent(intent);
-        handleIntent(intent);
+    public void openOptionsMenu() {
+        super.openOptionsMenu();
     }
 
-    @Override
-    public boolean onSearchRequested() {
-        Bundle appSearchData = new Bundle();
-        appSearchData.putInt(SEARCHID, searchID);
-        appSearchData.putString(SEARCHCONTENT,searchContent);
-        startSearch(null, false, appSearchData, false);
-        return true;
-    }
+    private void onCreatePopupMenu(View v){
+        final ImageButton menu1 = menu;
+        final int color = menu.getSolidColor();
+        menu1.setColorFilter(new LightingColorFilter(0,0x00afff));
+        PopupMenu popupMenu = new PopupMenu(this,v);
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_activity_actions, popupMenu.getMenu());
+        login_register_item = popupMenu.getMenu().getItem(0);
+        if (LoginActivity.getRememberState(MainActivity.this))
+            LoginActivity.SetToken(MainActivity.this, null);
+        if (LoginActivity.getToken(MainActivity.this) != null)
+            login_register_item.setTitle(CommonUtils.HAS_LOGIN);
+        popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
+            @Override
+            public void onDismiss(PopupMenu menu) {
+                menu1.setColorFilter(new LightingColorFilter(0,color));
+            }
+        });
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                // 处理动作按钮的点击事件
+                switch (item.getItemId()) {
+                    case R.id.action_export:
+                        Intent intent = new Intent(DirPicker.ACTION);
+                        startActivityForResult(intent, DirPicker.TO_PICK_A_DIR);
+                        break;
+                    case R.id.action_import:
+                        chooseFile();
+                        break;
+                    case R.id.action_export_web:
+                        ContactsDataUtils.ExportContactsToWeb(MainActivity.this, handler);
+                        break;
+                    case R.id.action_import_web:
+                        ContactsDataUtils.ImportContactsFromWeb(MainActivity.this, handler);
+                        break;
+                    case R.id.action_fm:
+                        Intent fm = new Intent(MainActivity.this, FamilyMoney.class);
+                        startActivity(fm);
+                        break;
+                    case R.id.action_account:
+                        LoginOrRegister(MainActivity.this);
+                        break;
+                    case R.id.action_add_contact:
+                        CreatePeopleDetail.actionStart(MainActivity.this, null);
+                        break;
+                    default:
+                        break;
+                }
 
-    private void handleIntent(Intent intent){
-        Log.i("hehe","hehe");
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            Bundle bundle = intent.getBundleExtra(SearchManager.APP_DATA);
+                return true;
+            }
+        });
+        popupMenu.show();
 
-            Toast.makeText(this,bundle.getString(SEARCHCONTENT),Toast.LENGTH_SHORT).show();
-        }
     }
 }

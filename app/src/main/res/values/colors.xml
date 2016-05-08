@@ -17,8 +17,10 @@
     <color name="tab_bk_light_green">#98fb98</color>
     <color name="gray">#DCDCDC</color>
     <color name="deepgray">#ababab</color>
+    <color name="deepdeepgray">#787878</color>
     <color name="black">#111111</color>
     <color name="green">#00CD00</color>
     <color name="bar_blue">#85DAFF</color>
     <color name="bluegreen">#005faa</color>
+    <color name="lightblue">#00afff</color>
 </resources>

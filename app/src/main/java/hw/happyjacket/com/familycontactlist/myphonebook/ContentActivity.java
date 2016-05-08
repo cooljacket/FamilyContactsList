@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.CallLog;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -95,13 +97,14 @@ public class ContentActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.content_top_menu);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationContentDescription(name);
+        toolbar.setNavigationIcon(R.drawable.arrow_back_selector);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onBackPressed();
             }
         });
+
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.content_head);
         collapsingToolbarLayout.setTitle(name);
         collapsingToolbarLayout.setExpandedTitleColor(Color.WHITE);

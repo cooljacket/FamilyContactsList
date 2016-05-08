@@ -168,9 +168,10 @@ public class CreatePeopleDetail extends AppCompatActivity {
         et_name.setText("");
 
 
-        toolbar.setTitle("编辑联系人");
+        toolbar.setTitle("新建联系人");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.arrow_back_selector2);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

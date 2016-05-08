@@ -10,7 +10,7 @@ import android.widget.ImageButton;
  */
 
 /*One kind of button which can save name and number*/
-public class PhoneButton extends Button{
+public class PhoneButton extends ImageButton{
 
     private int index = -1;
 
@@ -19,6 +19,8 @@ public class PhoneButton extends Button{
     private String number;
 
     private String location;
+
+
 
     public PhoneButton(Context context) {
         super(context);

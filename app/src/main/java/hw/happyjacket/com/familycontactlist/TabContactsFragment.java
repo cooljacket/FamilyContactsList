@@ -76,28 +76,7 @@ public class TabContactsFragment extends PhoneFragment {
             switch (msg.what){
                 case LIST_LOAD_SOME:
                 case LIST_LOAD_OK:
-                    mSearchView = (SearchView) getView().findViewById(R.id.search_view);
-                    mSearchView.setIconifiedByDefault(true);
-                    mSearchView.onActionViewExpanded();
-                    mSearchView.setFocusable(false);
-                    mSearchView.clearFocus();
-                    mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-                        @Override
-                        public boolean onQueryTextSubmit(String query) {
-                            return false;
-                        }
-
-                        @Override
-                        public boolean onQueryTextChange(String newText) {
-                            Vector<Integer> chosen = CommonUtils.SearchAmongContacts(ALBacckUp, newText);
-                            AL.removeAllElements();
-                            for (int i = 0 ; i < chosen.size() ; ++i){
-                                AL.add((TabContactUser)ALBacckUp.get(chosen.get(i)));
-                            }
-                            adapter.notifyDataSetChanged();
-                            return true;
-                        }
-                    });
+                    initSearch();
                     if (listview == null || adapter == null) {
                         if (adapter == null)
                             adapter = new TabContactAdapter(mContext,R.layout.list_item, AL);
@@ -387,5 +366,31 @@ public class TabContactsFragment extends PhoneFragment {
                 break;
             }
         }
+    }
+
+    private void initSearch(){
+        mSearchView = (SearchView) getView().findViewById(R.id.search_view);
+        mSearchView.setIconifiedByDefault(true);
+        mSearchView.onActionViewExpanded();
+        mSearchView.setFocusable(false);
+        mSearchView.clearFocus();
+        mSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                Vector<Integer> chosen = CommonUtils.SearchAmongContacts(ALBacckUp, newText);
+                AL.removeAllElements();
+                for (int i = 0 ; i < chosen.size() ; ++i){
+                    AL.add((TabContactUser)ALBacckUp.get(chosen.get(i)));
+                }
+                adapter.notifyDataSetChanged();
+                return true;
+            }
+        });
+
     }
 }

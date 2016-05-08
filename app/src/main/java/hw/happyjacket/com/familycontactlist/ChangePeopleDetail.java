@@ -182,6 +182,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
         toolbar.setTitle("编辑联系人");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.arrow_back_selector2);
         toolbar.setNavigationOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

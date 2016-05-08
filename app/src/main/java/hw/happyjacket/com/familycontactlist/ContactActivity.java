@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -84,6 +85,7 @@ public class ContactActivity extends AppCompatActivity{
         mToolbar = (Toolbar) findViewById(R.id.contact_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.setNavigationIcon(R.drawable.arrow_back_selector);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,6 +94,9 @@ public class ContactActivity extends AppCompatActivity{
         });
 
         head.setTitle(name);
+        head.setExpandedTitleColor(Color.WHITE);
+        head.setCollapsedTitleTextColor(Color.WHITE);
+        head.setContentScrimColor(getResources().getColor(R.color.bluegreen));
         uid = data.uid;
 
         mContactShow = new ContactShow(this, R.layout.call_log_list, name);
