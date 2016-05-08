@@ -72,7 +72,7 @@
                             android:textColorHint="#C0C0C0" />
 
                         <EditText
-                            android:layout_width="220dp"
+                            android:layout_width="240dp"
                             android:layout_height="0.8dp"
                             android:background="@drawable/vertical_divider"
                             android:layout_gravity="center_horizontal" />
@@ -93,9 +93,10 @@
                             android:hint="昵称"
                             android:textColorHint="#C0C0C0" />
                         <EditText
-                            android:layout_width="220dp"
+                            android:layout_width="240dp"
                             android:layout_height="0.8dp"
-                            android:background="@drawable/vertical_divider" />
+                            android:background="@drawable/vertical_divider"
+                            android:layout_gravity="center_horizontal" />
 
                     </LinearLayout>
 
