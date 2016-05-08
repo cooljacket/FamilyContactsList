@@ -17,72 +17,81 @@
         >
     </android.support.v7.widget.Toolbar>-->
 
-
-    <RadioGroup
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tab_all_header"
+        android:background="@color/bar_blue"
         android:orientation="horizontal"
-        android:id="@+id/tab_header"
-        android:layout_width="250dp"
-        android:layout_height="37dp"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:layout_centerHorizontal="true"
         >
+        <RadioGroup
+            android:orientation="horizontal"
+            android:id="@+id/tab_header"
+            android:layout_width="250dp"
+            android:layout_height="45dp"
+            android:layout_marginLeft="65dp"
+            >
 
-        <RadioButton
-            android:id="@+id/record"
-            android:text="通话记录"
-            android:clickable="true"
-            android:layout_weight="1"
-            android:button="@null"
-            android:textSize="22dp"
-            android:textColor="@color/black"
-            android:gravity="center_horizontal|top"
-            android:background="@drawable/tab_selector"
-            android:layout_width="wrap_content"
-            android:layout_marginBottom="2dp"
-            android:layout_height="match_parent" />
+            <RadioButton
+                android:id="@+id/record"
+                android:text="通话记录"
+                android:clickable="true"
+                android:layout_weight="1"
+                android:button="@null"
+                android:textSize="22dp"
+                android:textColor="@color/black"
+                android:gravity="center_horizontal|center"
+                android:background="@drawable/tab_selector"
+                android:layout_width="wrap_content"
+                android:layout_marginBottom="2dp"
+                android:layout_height="match_parent" />
 
-        <RadioButton
-            android:id="@+id/contacts"
-            android:text="联系人"
-            android:clickable="true"
-            android:layout_weight="1"
-            android:button="@null"
-            android:textSize="22dp"
-            android:textColor="@color/black"
-            android:gravity="center_horizontal|top"
-            android:layout_marginBottom="2dp"
-            android:background="@drawable/tab_selector"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent" />
+            <RadioButton
+                android:id="@+id/contacts"
+                android:text="联系人"
+                android:clickable="true"
+                android:layout_weight="1"
+                android:button="@null"
+                android:textSize="22dp"
+                android:textColor="@color/black"
+                android:gravity="center_horizontal|center"
+                android:layout_marginBottom="2dp"
+                android:background="@drawable/tab_selector"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent" />
 
-        <!--<RadioButton-->
-        <!--android:id="@+id/settings"-->
-        <!--android:text="设置"-->
-        <!--android:clickable="true"-->
-        <!--android:layout_weight="1"-->
-        <!--android:button="@null"-->
-        <!--android:textSize="23dp"-->
-        <!--android:textColor="@color/tab_text_unfocus_color"-->
-        <!--android:textAlignment="center"-->
-        <!--android:background="@color/tab_bk_color"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="match_parent" />-->
-    </RadioGroup>
+            <!--<RadioButton-->
+            <!--android:id="@+id/settings"-->
+            <!--android:text="设置"-->
+            <!--android:clickable="true"-->
+            <!--android:layout_weight="1"-->
+            <!--android:button="@null"-->
+            <!--android:textSize="23dp"-->
+            <!--android:textColor="@color/tab_text_unfocus_color"-->
+            <!--android:textAlignment="center"-->
+            <!--android:background="@color/tab_bk_color"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent" />-->
+        </RadioGroup>
 
-    <ImageButton
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:id="@+id/main_menu"
-        android:src="@drawable/button_menu"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@color/white"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"/>
+        <ImageButton
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/main_menu"
+            android:src="@drawable/button_menu"
+            android:layout_marginTop="14dp"
+            android:layout_marginLeft="15dp"
+            android:background="@color/bar_blue"
+
+            />
+
+
+    </LinearLayout>
+
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
-        android:layout_below="@+id/tab_header"
+        android:layout_below="@+id/tab_all_header"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </android.support.v4.view.ViewPager>
