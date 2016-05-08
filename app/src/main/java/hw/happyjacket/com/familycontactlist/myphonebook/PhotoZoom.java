@@ -67,8 +67,9 @@ public class PhotoZoom {
         Canvas canvas = new Canvas(target);
         /*
         首先绘制圆形
+        -10 是为了减去边框
          */
-        canvas.drawCircle(width/2,height/2,Math.min(width,height)/2,paint);
+        canvas.drawCircle(width/2,height/2,Math.min(width,height)/2 - 9,paint);
         /*
         使用SRC_IN
          */

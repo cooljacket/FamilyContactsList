@@ -86,6 +86,25 @@ public class RecordList extends PhoneList {
         super(context,uri.toString(),db,DataBaseDictionary.databaseVersion,table,projection,selection,argument,orderby);
     }
 
+    public HashMap<String,Long> getDate(String numbers[]){
+        projection = new String[] {PhoneDictionary.NUMBER,PhoneDictionary.DATE};
+        selection = "";
+        for (int i = 0 ; i < numbers.length - 1; ++i)
+            selection += PhoneDictionary.NUMBER + "=? or ";
+        selection += PhoneDictionary.NUMBER + "=?";
+        argument = numbers;
+        orderby = PhoneDictionary.DATE;
+        HashMap<String,Long> result = new HashMap<>();
+        connectDataBase();
+        if(cursor.moveToFirst()){
+            do{
+                result.put(cursor.getString(0),cursor.getLong(1));
+            }while (cursor.moveToNext());
+        }
+
+        return result;
+    }
+
 
     private boolean CallLogChanged()
     {

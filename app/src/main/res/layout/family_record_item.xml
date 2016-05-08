@@ -5,16 +5,23 @@
 
     <TextView
         android:id="@+id/family_record_name"
-        android:layout_marginLeft="10dp"
+        android:layout_centerVertical="true"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:textSize="17sp"
         android:layout_alignParentLeft="true"
         android:layout_width="wrap_content"
         android:layout_height="match_parent" />
 
     <TextView
         android:id="@+id/family_record_time"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_alignParentRight="true"
-        android:textSize="@dimen/fm_text_size"
+        android:textSize="17sp"
         android:layout_width="wrap_content"
         android:layout_height="match_parent" />
 

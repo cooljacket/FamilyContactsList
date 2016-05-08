@@ -231,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
+   /* @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // 为ActionBar扩展菜单项
         MenuInflater inflater = getMenuInflater();
@@ -277,7 +277,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return true;
-    }
+    }*/
 
     private void chooseFile() {
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -352,15 +352,12 @@ public class MainActivity extends AppCompatActivity {
             i.deletePeopleDetail(number);
     }
 
-    @Override
-    public void openOptionsMenu() {
-        super.openOptionsMenu();
-    }
 
     private void onCreatePopupMenu(View v){
         final ImageButton menu1 = menu;
         final int color = menu.getSolidColor();
         menu1.setColorFilter(new LightingColorFilter(0,0x00afff));
+
         PopupMenu popupMenu = new PopupMenu(this,v);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_activity_actions, popupMenu.getMenu());
@@ -369,12 +366,14 @@ public class MainActivity extends AppCompatActivity {
             LoginActivity.SetToken(MainActivity.this, null);
         if (LoginActivity.getToken(MainActivity.this) != null)
             login_register_item.setTitle(CommonUtils.HAS_LOGIN);
+
         popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
             @Override
             public void onDismiss(PopupMenu menu) {
                 menu1.setColorFilter(new LightingColorFilter(0,color));
             }
         });
+
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {

@@ -122,12 +122,13 @@ public class MainShow extends PhoneShow {
         sPhoneAdapter.notifyDataSetChanged();
     }
 
-    public void notifyDataSetChanged(Vector<Integer> pos){
-        if(pos == null || pos.size() == 0)
+    public void notifyDataSetChanged(Vector<Integer> pos, Vector<Integer> key){
+        if(pos == null)
             return;
         mPhoneListElementList.removeAllElements();
         for (int i = 0; i < pos.size(); ++i) {
             mPhoneListElementList.add(new HashMap<>(MainActivity.phoneElement.get(pos.get(i))));
+            mPhoneListElementList.get(i).put(PhoneDictionary.DIVIDER,key.get(i).toString());
         }
         mDecorate.decorate(mPhoneListElementList);
         sPhoneAdapter.notifyDataSetChanged();

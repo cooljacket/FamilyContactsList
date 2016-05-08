@@ -66,7 +66,7 @@ public class DialogFactory {
 
 
 
-    private static String Number = "";
+    public static String Number = "";
 
     public static String getNumber() {
         return Number;
@@ -472,8 +472,9 @@ public class DialogFactory {
                 if(Number.equals(t))
                     return;
                 Number = t;
-                Vector<Integer> pos = CommonUtils.SearchAmongRecords(MainActivity.phoneElement, Number);
-                mainShow.notifyDataSetChanged(pos);
+                Vector<Integer> key = new Vector<Integer>();
+                Vector<Integer> pos = CommonUtils.SearchAmongRecords(MainActivity.phoneElement, Number,key);
+                mainShow.notifyDataSetChanged(pos,key);
             }
         });
         editText.setText(Number);

@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import java.util.Calendar;
 import java.util.HashSet;
@@ -31,6 +32,7 @@ public class FamilyMoney extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.login_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationIcon(R.drawable.arrow_back_selector2);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -53,10 +55,23 @@ public class FamilyMoney extends AppCompatActivity {
         });
 
 
+
         List<FamilyRecord> data = FamilyRecord.GetAllFamilies(FamilyMoney.this);
         FamilyRecordAdapter adapter = new FamilyRecordAdapter(FamilyMoney.this, R.layout.family_record_item, data);
         ListView fmList = (ListView) findViewById(R.id.families);
         fmList.setAdapter(adapter);
+
+        TextView family_money = (TextView) findViewById(R.id.family_money);
+        double sum = 0.0;
+        int count = 0;
+        for (FamilyRecord record : data) {
+            if(record.time > 0) {
+                sum += record.time;
+                ++count;
+            }
+        }
+        sum /= FamilyRecord.DAY;
+        family_money.setText((int)(sum/count) + "");
     }
 
 

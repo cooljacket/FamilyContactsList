@@ -217,15 +217,11 @@ public class DBHelper extends SQLiteOpenHelper {
 
     public Vector<User> getFamilies() {
         Vector<User> families = new Vector<User>();
-        Cursor cursor = db.query(DB_TABLENAME, null, GROUPNAME + "=?", new String[]{"家庭"}, null, null, null);
-
-        Log.d("get families", "in");
-
+        Cursor cursor = db.query(DB_TABLENAME, null, GROUPNAME + " like '%家庭%'", null, null, null, null);
         while (cursor.moveToNext()) {
             User user = new User();
             user.name = cursor.getString(cursor.getColumnIndex("name"));
             user.mobilephone = cursor.getString(cursor.getColumnIndex("mobilephone"));
-            Log.d("get families", user.name + ", " + user.mobilephone);
             families.add(user);
         }
 

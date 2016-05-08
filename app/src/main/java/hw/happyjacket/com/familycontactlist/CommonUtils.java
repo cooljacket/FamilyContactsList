@@ -155,7 +155,7 @@ public class CommonUtils {
         return j == pLen ? i-j : -1;
     }
 
-    public static Vector<Integer> SearchAmongRecords(List<HashMap<String, String>> data, String pattern) {
+    public static Vector<Integer> SearchAmongRecords(List<HashMap<String, String>> data, String pattern, Vector<Integer> position) {
         Vector<Integer> result = new Vector<>();
         Vector<Integer> keys = new Vector<>();
 
@@ -171,6 +171,7 @@ public class CommonUtils {
             keys.insertElementAt(pos, index);
             result.insertElementAt(i, index);
         }
+        position.addAll(keys);
         return result;
     }
 

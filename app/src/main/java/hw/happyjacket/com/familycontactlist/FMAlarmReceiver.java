@@ -28,8 +28,10 @@ public class FMAlarmReceiver extends BroadcastReceiver {
 
         double sum = 0.0;
         for (FamilyRecord record : records) {
-            sum += record.time / FamilyRecord.DAY;
+            if(record.time > 0)
+                sum += record.time;
         }
+        sum /= FamilyRecord.DAY;
 
         int DayNoCommunicate = (int) sum / records.size();
         if (DayNoCommunicate > FamilyMoney.MOST_MONEY) {
