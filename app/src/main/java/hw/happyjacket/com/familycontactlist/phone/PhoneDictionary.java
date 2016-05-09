@@ -69,7 +69,7 @@ public class PhoneDictionary {
     public static final String ContentItems2[] = {"呼叫","删除"};
     public static final String PhoneCallNumber[] = {"1","2","3","4","5","6","7","8","9","*","0","#"};
     public static final String PhoneCallAlphabet[] = {"","abc","def","ghi","jkl","nmo","pqrs","tuv","wxyz",",","+",""};
-    public static final String PhoneCallChoices[] = {"手机", "邮箱","地址","公司","QQ","传真","注释"};
+    public static final String PhoneCallChoices[] = {"手机", "邮箱","地址","公司","QQ","微信号","传真","备注"};
     public static final String AllPhoneChoices[] = {"手机" ,"邮箱", "地址"};
 
 
