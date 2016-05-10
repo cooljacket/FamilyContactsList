@@ -47,7 +47,7 @@ public class ContactShow extends PhoneShow {
             switch (msg.what){
                 case 0:
                     if(msg.obj == null || "".equals((location = (String)msg.obj))) {
-                        mPhoneListElementList.get(1).put(PhoneDictionary.DATE, "无信息");
+                        mPhoneListElementList.get(1).put(PhoneDictionary.WEATHERINFO, "无信息");
                         sPhoneAdapter.notifyDataSetChanged();
                         break;
                     }
@@ -143,7 +143,11 @@ public class ContactShow extends PhoneShow {
             numbers.put(PhoneDictionary.NUMBER, defaultNumber);
 
         data.add(numbers);
-        for(int i = 0 ; i < defaultList.length ; i++){
+
+        HashMap<String,String> tt = new HashMap<>();
+        tt.put (PhoneDictionary.WEATHERINFO,defaultList[0]);
+        data.add(tt);
+        for(int i = 1 ; i < defaultList.length ; i++){
             HashMap<String,String> point = new HashMap<>();
             point.put(PhoneDictionary.DATE, defaultList[i]);
             data.add(point);
@@ -207,7 +211,6 @@ public class ContactShow extends PhoneShow {
             try {
                 String[] result = CommonUtils.ParseWeatherXML(new ByteArrayInputStream(weatherInfo.getBytes()));
                 if (result != null) {
-                    Log.i("weathersss", result[0]);
                     weatherInfo =  result[3].replace("/","~");
                     weather = result[2].length() > 1 ? result[2].substring(result[2].length() - 2,result[2].length()) : result[2];
                     ((CallLogAdapter) sPhoneAdapter).setMessage(String.format(result[0], name));

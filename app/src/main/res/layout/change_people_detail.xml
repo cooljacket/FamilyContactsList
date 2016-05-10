@@ -38,7 +38,7 @@
             android:id="@+id/text_clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/text_delete"
+            android:background="@drawable/text_delete_selector"
             android:layout_marginRight="30dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"/>
