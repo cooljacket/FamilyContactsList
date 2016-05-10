@@ -9,14 +9,17 @@
     <color name="dark_black">#000000</color>
     <color name="tab_text_unfocus_color">#ffffff</color>
     <color name="button_color_highlight">#ffffff</color>
+    <color name="littlewhite">#FAFAFA</color>
     <color name="button_color">#999999</color>
     <color name="light_red">#ff3344</color>
     <color name="dark_red">#dd0000</color>
     <color name="medium_red">#ee0000</color>
     <color name="tab_bk_deep_green">#469448</color>
     <color name="tab_bk_light_green">#98fb98</color>
+    <color name="lightgray">#EDEDED</color>
     <color name="gray">#DCDCDC</color>
     <color name="deepgray">#ababab</color>
+    <color name="littledeepgray">#969696</color>
     <color name="deepdeepgray">#787878</color>
     <color name="lightblack">#222222</color>
     <color name="black">#111111</color>
@@ -24,4 +27,7 @@
     <color name="bar_blue">#85DAFF</color>
     <color name="bluegreen">#005faa</color>
     <color name="lightblue">#00afff</color>
+    <color name="oceanblue">#01BCD4</color>
+    <color name="menu">#4F5154</color>
+
 </resources>

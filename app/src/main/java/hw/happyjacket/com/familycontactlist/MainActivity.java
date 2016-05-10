@@ -3,10 +3,12 @@ package hw.happyjacket.com.familycontactlist;
 
 import android.app.AlertDialog;
 import android.app.SearchManager;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.LightingColorFilter;
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
     private Toolbar mToolbar;
     private ActionBar mActionBar;
     private ImageButton menu;
+    private Resources mResources;
 
     public static int getSearchID() {
         return searchID;
@@ -87,6 +90,7 @@ public class MainActivity extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
         InitFragments();
+        mResources = getResources();
 
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mPagerAdapter);
@@ -115,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 onCreatePopupMenu(v);
             }
         });
-        menu.setColorFilter(new LightingColorFilter(0,menu.getSolidColor()));
+        menu.setColorFilter(new LightingColorFilter(0,mResources.getColor(R.color.menu)));
 
         InitTabHeader();
     }
@@ -170,14 +174,14 @@ public class MainActivity extends AppCompatActivity {
     public void ChangeTab(int checkedId) {
         RadioButton last = getTheTab(selected_tab);
         last.setChecked(false);
-        last.setTextColor(getResources().getColor(R.color.black));
+        last.setTextColor(getResources().getColor(R.color.littledeepgray));
         /* last.setBackgroundColor(getResources().getColor(R.color.tab_bk_color));
          last.setTextColor(getResources().getColor(R.color.tab_text_unfocus_color));*/
 
         selected_tab = checkedId;
         RadioButton it = getTheTab(selected_tab);
         it.setChecked(true);
-        it.setTextColor(getResources().getColor(R.color.bluegreen));
+        it.setTextColor(getResources().getColor(R.color.oceanblue));
         /* it.setBackgroundColor(getResources().getColor(R.color.tab_front_color));
          it.setTextColor(getResources().getColor(R.color.tab_text_focus_color));*/
 
@@ -356,7 +360,7 @@ public class MainActivity extends AppCompatActivity {
     private void onCreatePopupMenu(View v){
         final ImageButton menu1 = menu;
         final int color = menu.getSolidColor();
-        menu1.setColorFilter(new LightingColorFilter(0,0x00afff));
+        menu1.setColorFilter(new LightingColorFilter(0,mResources.getColor(R.color.oceanblue)));
 
         PopupMenu popupMenu = new PopupMenu(this,v);
         MenuInflater inflater = getMenuInflater();
@@ -370,7 +374,7 @@ public class MainActivity extends AppCompatActivity {
         popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
             @Override
             public void onDismiss(PopupMenu menu) {
-                menu1.setColorFilter(new LightingColorFilter(0,color));
+                menu1.setColorFilter(new LightingColorFilter(0,mResources.getColor(R.color.menu)));
             }
         });
 

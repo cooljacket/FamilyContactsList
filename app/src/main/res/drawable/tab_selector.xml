@@ -3,12 +3,12 @@
         <layer-list >
             <item >
                 <shape android:shape="rectangle">
-                    <stroke android:width="5dp"  android:color="@color/bluegreen"/>
+                    <stroke android:width="5dp"  android:color="@color/oceanblue"/>
                 </shape>
             </item>
             <item android:bottom="2dp" >
                 <shape android:shape="rectangle" >
-                    <solid android:color="@color/bar_blue"/>
+                    <solid android:color="@color/littlewhite"/>
                 </shape>
             </item>
             </layer-list>
@@ -17,7 +17,7 @@
 
     <item android:state_checked="false">
         <shape>
-            <solid android:color="@color/bar_blue"/>
+            <solid android:color="@color/littlewhite"/>
         </shape>
     </item>
 </selector>
