@@ -8,9 +8,9 @@
 
 
     <gradient
-        android:startColor="@color/green"
-        android:endColor="@color/tab_bk_deep_green"
-        android:centerColor="@color/tab_bk_color"
+        android:startColor="@color/lightoringe"
+        android:endColor="@color/deeporinge"
+        android:centerColor="@color/oringe"
         android:angle="45"
         android:type="radial"
         android:centerX="0"

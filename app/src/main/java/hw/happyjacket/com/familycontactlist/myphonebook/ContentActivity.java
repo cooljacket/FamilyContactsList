@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import java.util.HashMap;
 
@@ -109,6 +110,7 @@ public class ContentActivity extends AppCompatActivity {
         collapsingToolbarLayout.setTitle(name);
         collapsingToolbarLayout.setExpandedTitleColor(Color.WHITE);
         collapsingToolbarLayout.setCollapsedTitleTextColor(Color.WHITE);
+        collapsingToolbarLayout.setContentScrimColor(getResources().getColor(R.color.lightoringe));
 
 
         mListView = (ScrollListView) findViewById(R.id.content_number_and_detail);

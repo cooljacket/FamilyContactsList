@@ -3,6 +3,7 @@ package hw.happyjacket.com.familycontactlist;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -73,6 +74,7 @@ public class CommonUtils {
     public static String[] ParseWeatherXML(InputStream xml) throws XmlPullParserException, IOException {
         try {
             ArrayList<String> weather = ParseXMLHelper(xml);
+            Log.i("weather",weather.toString());
             String location = weather.get(1);
             String wea = weather.get(7).split(" ")[1];
             String temperature = weather.get(8);
@@ -85,7 +87,7 @@ public class CommonUtils {
                 content = m.group(2) + "；" + m.group(4) + "；" + m.group(7);
 
             String[] result = new String[] {
-                    String.format("%%s，今天%s%s，气温%s，%s%s。注意好身体，爱你们。", location, wea, temperature, sun, content).replaceAll("您", ""),
+                    String.format("%%s，今天%s%s，气温%s，%s%s。注意好身体，爱你。", location, wea, temperature, sun, content).replaceAll("您", ""),
                     location, wea, temperature, sun, content
             };
 

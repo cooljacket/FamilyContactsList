@@ -29,5 +29,8 @@
     <color name="lightblue">#00afff</color>
     <color name="oceanblue">#01BCD4</color>
     <color name="menu">#4F5154</color>
+    <color name="lightoringe">#EE8262</color>
+    <color name="oringe">#EE5C42</color>
+    <color name="deeporinge">#EE3B3B</color>
 
 </resources>

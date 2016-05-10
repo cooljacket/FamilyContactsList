@@ -44,8 +44,9 @@ public class ContentShow extends PhoneShow {
     }
 
     public void setDefaultNumber(String defaultNumber) {
-        if(defaultNumber != null && !defaultNumber.equals(""))
-            this.defaultNumber = defaultNumber;
+        String t;
+        if(defaultNumber != null && (t = defaultNumber.replace(" ","")).length() > 0)
+            this.defaultNumber = t;
     }
 
     public String getDefaultList() {

@@ -23,6 +23,7 @@ import java.util.List;
 public class CallLogAdapter extends PhoneAdapter {
 
     private int sms  = -1;
+    private int weather = -1;
     private String number = "";
     private String message = "";
 
@@ -78,12 +79,21 @@ public class CallLogAdapter extends PhoneAdapter {
         this.message = message;
     }
 
+    public int getWeather() {
+        return weather;
+    }
+
+    public void setWeather(int weather) {
+        this.weather = weather;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
         final HashMap<String,String> data = getItem(position);
         View view;
         ViewHolder viewHolder;
+        String wea;
         if(convertView == null)
         {
             view = LayoutInflater.from(getContext()).inflate(resourceId, null);
@@ -92,6 +102,9 @@ public class CallLogAdapter extends PhoneAdapter {
             viewHolder.info2 = (TextView) view.findViewById(R.id.call_log_info2);
             viewHolder.info3 = (TextView) view.findViewById(R.id.call_log_info3);
             viewHolder.info4 = (Button) view.findViewById(R.id.call_log_info4);
+            viewHolder.info5 = (ImageView) view.findViewById(R.id.weather);
+            viewHolder.info6 = (TextView) view.findViewById(R.id.weather_info);
+            viewHolder.height2 = viewHolder.info5.getMeasuredHeight();
             viewHolder.height = viewHolder.info2.getLineHeight();
             view.setTag(viewHolder);
         }
@@ -102,8 +115,10 @@ public class CallLogAdapter extends PhoneAdapter {
         }
 
         viewHolder.info1.setText(data.get(PhoneDictionary.DATE));
+        viewHolder.info5.setVisibility(View.INVISIBLE);
+        viewHolder.info6.setText("");
 
-        if(sms == position) {
+        if (sms == position) {
             viewHolder.info4.setVisibility(View.VISIBLE);
             viewHolder.info4.setBackgroundResource(android.R.drawable.sym_action_chat);
             viewHolder.info4.setOnClickListener(new View.OnClickListener() {
@@ -117,6 +132,32 @@ public class CallLogAdapter extends PhoneAdapter {
         else
             viewHolder.info4.setVisibility(View.INVISIBLE);
 
+        if (weather == position && (wea = data.get(PhoneDictionary.WEATHER)) != null){
+            viewHolder.info5.setVisibility(View.VISIBLE);
+            switch (wea){
+                case "小雨":
+                    viewHolder.info5.setImageResource(R.drawable.rainy);
+                    break;
+                case "中雨":
+                    viewHolder.info5.setImageResource(R.drawable.rainy);
+                    break;
+                case "多云":
+                    viewHolder.info5.setImageResource(R.drawable.cloudy);
+                    break;
+                default:
+                    char tt = wea.charAt(wea.length() - 1);
+                    if (tt == '晴')
+                        viewHolder.info5.setImageResource(R.drawable.sunny);
+                    else if (tt == '雪')
+                        viewHolder.info5.setImageResource(R.drawable.snowy);
+                    else
+                        viewHolder.info5.setVisibility(View.INVISIBLE);
+            }
+        }
+
+        if ((wea = data.get(PhoneDictionary.WEATHERINFO)) != null){
+            viewHolder.info6.setText(wea);
+        }
 
         if(data.get(PhoneDictionary.NUMBER) != null) {
             viewHolder.info2.setHeight(viewHolder.height);
@@ -145,6 +186,9 @@ public class CallLogAdapter extends PhoneAdapter {
         TextView info2;
         TextView info3;
         Button info4;
+        ImageView info5;
+        TextView info6;
         int height;
+        int height2;
     }
 }

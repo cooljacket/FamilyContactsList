@@ -30,6 +30,7 @@ public class FamilyMoney extends AppCompatActivity {
         setContentView(R.layout.activity_family_money);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.login_toolbar);
+        toolbar.setTitle("亲情余额");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationIcon(R.drawable.arrow_back_selector2);
@@ -71,7 +72,7 @@ public class FamilyMoney extends AppCompatActivity {
             }
         }
         sum /= FamilyRecord.DAY;
-        family_money.setText((int)(sum/count) + "");
+        family_money.setText((int)(MOST_MONEY - sum/count) + "");
     }
 
 

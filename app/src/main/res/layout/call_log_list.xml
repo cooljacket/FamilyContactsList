@@ -1,7 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
+              android:background="@drawable/dd"
               android:layout_height="match_parent">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginBottom="@dimen/activity_vertical_margin"
+        android:id="@+id/weather"
+        android:layout_alignParentLeft="true"
+        android:layout_centerHorizontal="true"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:layout_toRightOf="@id/weather"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_centerVertical="true"
+        android:id="@+id/weather_info"/>
+
 
     <TextView
         android:id="@+id/call_log_info1"
@@ -19,8 +40,8 @@
         android:textStyle="normal"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
-        android:layout_alignParentLeft="true"
         android:layout_below="@id/call_log_info1"
+        android:layout_alignParentLeft="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -44,5 +65,9 @@
         android:focusable="false"
         android:clickable="true"
         />
+
+
+
+
 
 </RelativeLayout>

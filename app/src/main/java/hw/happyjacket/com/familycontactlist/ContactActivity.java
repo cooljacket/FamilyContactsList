@@ -96,7 +96,7 @@ public class ContactActivity extends AppCompatActivity{
         head.setTitle(name);
         head.setExpandedTitleColor(Color.WHITE);
         head.setCollapsedTitleTextColor(Color.WHITE);
-        head.setContentScrimColor(getResources().getColor(R.color.bluegreen));
+        head.setContentScrimColor(getResources().getColor(R.color.lightoringe));
         uid = data.uid;
 
         mContactShow = new ContactShow(this, R.layout.call_log_list, name);

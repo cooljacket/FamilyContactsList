@@ -20,6 +20,7 @@ import hw.happyjacket.com.familycontactlist.CommonUtils;
 import hw.happyjacket.com.familycontactlist.HttpConnectionUtil;
 import hw.happyjacket.com.familycontactlist.extention.Accessory;
 import hw.happyjacket.com.familycontactlist.extention.Decorate;
+import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.CallLogAdapter;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 import hw.happyjacket.com.familycontactlist.phone.phonelistener.PhoneLocationThread;
@@ -127,6 +128,7 @@ public class ContactShow extends PhoneShow {
 
     public Vector<HashMap<String,String>> getDefaultData()
     {
+        String t;
         if(inBlackList)
             defaultList[2] = BlackOption[1];
         else
@@ -134,7 +136,12 @@ public class ContactShow extends PhoneShow {
         Vector<HashMap<String,String>> data = new Vector<>(1 + defaultList.length);
         HashMap<String,String> numbers = new HashMap<>();
         numbers.put(PhoneDictionary.DATE, number);
-        numbers.put(PhoneDictionary.NUMBER,defaultNumber);
+
+        if ((t = Operation.getLocation(number))!= null && t.length() > 0)
+            numbers.put(PhoneDictionary.NUMBER, t);
+        else
+            numbers.put(PhoneDictionary.NUMBER, defaultNumber);
+
         data.add(numbers);
         for(int i = 0 ; i < defaultList.length ; i++){
             HashMap<String,String> point = new HashMap<>();
@@ -167,8 +174,8 @@ public class ContactShow extends PhoneShow {
     }
 
      class GetWeather extends AsyncTask<Void, Void, Void> {
-        private String weatherInfo, location;
-        public GetWeather (String loc) {
+         private String weatherInfo, weather, location;
+         public GetWeather (String loc) {
             location = loc;
         }
 
@@ -199,8 +206,15 @@ public class ContactShow extends PhoneShow {
                 return;
             try {
                 String[] result = CommonUtils.ParseWeatherXML(new ByteArrayInputStream(weatherInfo.getBytes()));
-                weatherInfo = result[1] + " " + result[2] + " " + result[3] ;
-                ((CallLogAdapter)sPhoneAdapter).setMessage(String.format(result[0],name));
+                if (result != null) {
+                    Log.i("weathersss", result[0]);
+                    weatherInfo =  result[3].replace("/","~");
+                    weather = result[2].length() > 1 ? result[2].substring(result[2].length() - 2,result[2].length()) : result[2];
+                    ((CallLogAdapter) sPhoneAdapter).setMessage(String.format(result[0], name));
+                }
+                else {
+                    weatherInfo = "无信息";
+                }
             } catch (XmlPullParserException e) {
                 weatherInfo = "error";
                 e.printStackTrace();
@@ -208,8 +222,12 @@ public class ContactShow extends PhoneShow {
                 weatherInfo = "error";
                 e.printStackTrace();
             } finally {
-                mPhoneListElementList.get(1).put(PhoneDictionary.DATE, weatherInfo);
+                ((CallLogAdapter) sPhoneAdapter).setWeather(1);
+                mPhoneListElementList.get(1).put(PhoneDictionary.DATE,"");
+                mPhoneListElementList.get(1).put(PhoneDictionary.WEATHERINFO, weatherInfo);
+                mPhoneListElementList.get(1).put(PhoneDictionary.WEATHER, weather);
                 sPhoneAdapter.notifyDataSetChanged();
+
             }
         }
     }

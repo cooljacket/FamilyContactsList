@@ -119,7 +119,7 @@ public class MainActivity extends AppCompatActivity {
                 onCreatePopupMenu(v);
             }
         });
-        menu.setColorFilter(new LightingColorFilter(0,mResources.getColor(R.color.menu)));
+        menu.setColorFilter(new LightingColorFilter(0,mResources.getColor(R.color.littledeepgray)));
 
         InitTabHeader();
     }
@@ -374,7 +374,7 @@ public class MainActivity extends AppCompatActivity {
         popupMenu.setOnDismissListener(new PopupMenu.OnDismissListener() {
             @Override
             public void onDismiss(PopupMenu menu) {
-                menu1.setColorFilter(new LightingColorFilter(0,mResources.getColor(R.color.menu)));
+                menu1.setColorFilter(new LightingColorFilter(0,mResources.getColor(R.color.littledeepgray)));
             }
         });
 

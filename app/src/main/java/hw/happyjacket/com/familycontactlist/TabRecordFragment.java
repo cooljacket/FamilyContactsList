@@ -66,6 +66,7 @@ public class TabRecordFragment extends PhoneFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mContext = getActivity();
+        DialogFactory.Number = "";
     }
 
     @Override
@@ -171,25 +172,6 @@ public class TabRecordFragment extends PhoneFragment {
                 return true;
             }
         });
-    }
-
-    public void initService(){
-        ServiceConnection connection = new ServiceConnection() {
-            @Override
-            public void onServiceConnected(ComponentName name, IBinder service) {
-                InitService.MyBinder myBinder = (InitService.MyBinder) service;
-                ArrayList<String> phoneNumberList = new ArrayList<>();
-                for (HashMap<String,String> i : mainShow.getPhoneListElementList())
-                    phoneNumberList.add(i.get(PhoneDictionary.NUMBER));
-                myBinder.start(mainShow.getIndex(),phoneNumberList);
-            }
-
-            @Override
-            public void onServiceDisconnected(ComponentName name) {
-            }
-        };
-        Intent intent = new Intent(getActivity(), InitService.class);
-        getActivity().bindService(intent, connection, Context.BIND_AUTO_CREATE);
     }
 
 
