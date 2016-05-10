@@ -34,7 +34,7 @@
 
             <RadioButton
                 android:id="@+id/record"
-                android:text="通话记录"
+                android:text="˙﹏˙通话记录"
                 android:clickable="true"
                 android:layout_weight="1"
                 android:button="@null"
@@ -48,7 +48,7 @@
 
             <RadioButton
                 android:id="@+id/contacts"
-                android:text="联系人"
+                android:text="˙﹏˙联系人"
                 android:clickable="true"
                 android:layout_weight="1"
                 android:button="@null"
