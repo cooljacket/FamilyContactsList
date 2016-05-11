@@ -44,6 +44,7 @@ import java.util.List;
 import java.util.Vector;
 
 import hw.happyjacket.com.familycontactlist.MyDirPicker.DirPicker;
+import hw.happyjacket.com.familycontactlist.myphonebook.InitService;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 
 
@@ -89,6 +90,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_main);
+
+        if (!InitService.isStart) {
+            Intent intent = new Intent(this, InitService.class);
+            startService(intent);
+        }
+
+
         InitFragments();
         mResources = getResources();
 
@@ -330,10 +338,16 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, str, Toast.LENGTH_LONG).show();
                     break;
                 case ContactsDataUtils.IMPORT_FROM_WEB:
-                    Vector<User> newUsers = (Vector<User>) msg.obj;
-                    // 已插入到数据库中，记得更新列表的显示
-
                     Toast.makeText(MainActivity.this, "从云端导入联系人成功", Toast.LENGTH_SHORT).show();
+                    Vector<User> newUsers = (Vector<User>) msg.obj;
+                    mContactTab.AddNewUser(newUsers);
+//                    Log.d("hehheheeeee", "从云端导入联系人成功");
+//                    CommonUtils.AlertMsg(MainActivity.this, "ok", "从云端导入联系人成功");
+//
+//                    // 已插入到数据库中，记得更新列表的显示\
+//                    for (User user : newUsers) {
+//                        Log.d("new users", user.name + ", " + user.mobilephone);
+//                    }
                     break;
                 default:
                     break;
@@ -351,9 +365,9 @@ public class MainActivity extends AppCompatActivity {
             i.createPeopleDetail(user, picture);
     }
 
-    public static void deletePeopleDetai(String number){
+    public static void deletePeopleDetai(String number, int pos){
         for(PhoneFragment i : mTabs)
-            i.deletePeopleDetail(number);
+            i.deletePeopleDetail(number,pos);
     }
 
 

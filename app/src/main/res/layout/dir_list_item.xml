@@ -6,7 +6,7 @@
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/directory"
+        android:src="@drawable/folder"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
@@ -18,7 +18,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@+id/dir_icon"
-        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginLeft="6dp"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:layout_marginBottom="@dimen/activity_vertical_margin"/>
 
@@ -29,6 +29,7 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_centerVertical="true"
         android:id="@+id/dir_arrow"
-        android:src="@drawable/arrow_right"/>
+        android:src="@drawable/white24"
+        android:scaleType="centerInside"/>
 
 </RelativeLayout>

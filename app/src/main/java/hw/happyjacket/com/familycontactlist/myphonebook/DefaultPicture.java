@@ -22,6 +22,19 @@ public class DefaultPicture {
             R.drawable.p31
     };
 
+    public static final int Weather[] = {
+            R.drawable.a_0,R.drawable.a_1,R.drawable.a_2,
+            R.drawable.a_3,R.drawable.a_4,R.drawable.a_5,
+            R.drawable.a_6,R.drawable.a_7,R.drawable.a_8, R.drawable.a_9,
+            R.drawable.a_10,R.drawable.a_11,R.drawable.a_2,
+            R.drawable.a_13,R.drawable.a_14,R.drawable.a_15,
+            R.drawable.a_16,R.drawable.a_17,R.drawable.a_18, R.drawable.a_19,
+            R.drawable.a_20,R.drawable.a_21,R.drawable.a_22,
+            R.drawable.a_23,R.drawable.a_24,R.drawable.a_25,
+            R.drawable.a_26,R.drawable.a_27,R.drawable.a_28, R.drawable.a_29,
+            R.drawable.a_30,R.drawable.a_31
+    };
+
     public static int ImagePosition = -1;
 
     public static Bitmap ImagePicture;

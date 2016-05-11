@@ -15,10 +15,16 @@
         android:layout_centerHorizontal="true"/>
 
     <TextView
+        android:layout_width="23dp"
+        android:layout_height="match_parent"
+        android:id="@+id/call_log_divider"
+        android:layout_toRightOf="@+id/weather"/>
+
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textStyle="bold"
-        android:layout_toRightOf="@id/weather"
+        android:layout_toRightOf="@id/call_log_divider"
         android:textSize="16dp"
         android:layout_centerVertical="true"
         android:id="@+id/weather_info"/>

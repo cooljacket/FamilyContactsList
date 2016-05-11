@@ -27,6 +27,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:allowBackup="true"
@@ -129,6 +130,11 @@
 
         <receiver android:name=".FMAlarmReceiver"></receiver>
 
+        <receiver android:name=".Boot">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
 
         <!-- 监听短信的广播消息 -->
         <receiver android:name=".SMSFireWall">
@@ -138,12 +144,12 @@
         </receiver>
 
         <!-- 监听电话状态 -->
-        <receiver android:name=".phone.phonelistener.PhoneStateReceiver">
-            <intent-filter android:priority="1000">
-                <action android:name="android.intent.action.PHONE_STATE" />
-                <action android:name="android.intent.action.NEW_OUTGOING_CALL" />
-            </intent-filter>
-        </receiver>
+        <!--<receiver android:name=".phone.phonelistener.PhoneStateReceiver">-->
+            <!--<intent-filter android:priority="1000">-->
+                <!--<action android:name="android.intent.action.PHONE_STATE" />-->
+                <!--<action android:name="android.intent.action.NEW_OUTGOING_CALL" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
     </application>
 
 </manifest>

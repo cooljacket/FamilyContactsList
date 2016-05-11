@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import hw.happyjacket.com.familycontactlist.R;
+import hw.happyjacket.com.familycontactlist.myphonebook.DefaultPicture;
 import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.PhoneAdapter;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
@@ -104,7 +105,8 @@ public class CallLogAdapter extends PhoneAdapter {
             viewHolder.info4 = (Button) view.findViewById(R.id.call_log_info4);
             viewHolder.info5 = (ImageView) view.findViewById(R.id.weather);
             viewHolder.info6 = (TextView) view.findViewById(R.id.weather_info);
-            viewHolder.height2 = viewHolder.info5.getMeasuredHeight();
+            viewHolder.divider = (TextView) view.findViewById(R.id.call_log_divider);
+            viewHolder.height2 = viewHolder.divider.getWidth();
             viewHolder.height = viewHolder.info2.getLineHeight();
             view.setTag(viewHolder);
         }
@@ -117,6 +119,7 @@ public class CallLogAdapter extends PhoneAdapter {
         viewHolder.info1.setText(data.get(PhoneDictionary.DATE));
         viewHolder.info5.setVisibility(View.INVISIBLE);
         viewHolder.info6.setText("");
+        viewHolder.divider.setWidth(0);
 
         if (sms == position) {
             viewHolder.info4.setVisibility(View.VISIBLE);
@@ -134,25 +137,9 @@ public class CallLogAdapter extends PhoneAdapter {
 
         if (weather == position && (wea = data.get(PhoneDictionary.WEATHER)) != null){
             viewHolder.info5.setVisibility(View.VISIBLE);
-            switch (wea){
-                case "小雨":
-                    viewHolder.info5.setImageResource(R.drawable.rainy);
-                    break;
-                case "中雨":
-                    viewHolder.info5.setImageResource(R.drawable.rainy);
-                    break;
-                case "多云":
-                    viewHolder.info5.setImageResource(R.drawable.cloudy);
-                    break;
-                default:
-                    char tt = wea.charAt(wea.length() - 1);
-                    if (tt == '晴')
-                        viewHolder.info5.setImageResource(R.drawable.sunny);
-                    else if (tt == '雪')
-                        viewHolder.info5.setImageResource(R.drawable.snowy);
-                    else
-                        viewHolder.info5.setVisibility(View.INVISIBLE);
-            }
+            int twea = Integer.parseInt(wea);
+            viewHolder.info5.setImageResource(DefaultPicture.Weather[twea]);
+            viewHolder.divider.setWidth(viewHolder.height2);
         }
 
         if ((wea = data.get(PhoneDictionary.WEATHERINFO)) != null){
@@ -188,6 +175,7 @@ public class CallLogAdapter extends PhoneAdapter {
         Button info4;
         ImageView info5;
         TextView info6;
+        TextView divider;
         int height;
         int height2;
     }

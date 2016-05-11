@@ -3,6 +3,7 @@ package hw.happyjacket.com.familycontactlist.phone.phonelistener;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Vector;
@@ -141,6 +142,7 @@ public class PhoneLocationThread {
 
             @Override
             public void onError(Exception e) {
+                Log.i("error",e.toString());
                 errorOfGetingLocation = true;
             }
         });

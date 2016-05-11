@@ -74,11 +74,13 @@ public class CommonUtils {
     public static String[] ParseWeatherXML(InputStream xml) throws XmlPullParserException, IOException {
         try {
             ArrayList<String> weather = ParseXMLHelper(xml);
-            Log.i("weather",weather.toString());
+            Log.i("weather", weather.toString());
             String location = weather.get(1);
             String wea = weather.get(7).split(" ")[1];
             String temperature = weather.get(8);
             String sun = weather.get(5).replace("：", "").replace("。", "，");
+            String icon = weather.get(10);
+            icon = icon.substring(0, icon.length() - 4);
 
             String content = weather.get(6);
             Pattern p = Pattern.compile("(感冒指数：[^，]*，([^。]*)。)(穿衣指数：[^，]*，([^。]*)。)(洗车指数：[^。]*。)(运动指数：[^，]*，([^。]*)。)");
@@ -86,9 +88,11 @@ public class CommonUtils {
             if (m.find())
                 content = m.group(2) + "；" + m.group(4) + "；" + m.group(7);
 
+            Log.d("weatherHere", icon);
+
             String[] result = new String[] {
                     String.format("%%s，今天%s%s，气温%s，%s%s。注意好身体，爱你。", location, wea, temperature, sun, content).replaceAll("您", ""),
-                    location, wea, temperature, sun, content
+                    location, wea, temperature, sun, content, icon
             };
             return result;
         }

@@ -164,13 +164,14 @@ public class ContactShow extends PhoneShow {
     @Override
     public void InitAdapter(Accessory accessory, String[] projection, String selection, String[] argument, String orderby) {
         mDecorate = new Decorate(accessory);
-        inBlackList = new BlackListMaster(context).isInBlackList(number);
+        inBlackList = Operation.isBlackList(number);
+        Log.d("lalala-find", number + ", " + inBlackList);
         mPhoneListElementList = getDefaultData();
         sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index,1,number);
         mThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                PhoneLocationThread.CheckLocation(mHandler,number,context);
+                PhoneLocationThread.CheckLocation(mHandler, number, context);
             }
         });
         mThread.start();
@@ -183,8 +184,13 @@ public class ContactShow extends PhoneShow {
             location = loc;
         }
 
-        @Override
-        protected Void doInBackground(Void... params) {
+         @Override
+         protected void onPreExecute() {
+             Log.d("hehehe-start", location);
+         }
+
+         @Override
+         protected Void doInBackground(Void... params) {
             String weatherURL = CommonUtils.W_Host + String.format(CommonUtils.GetWeatherURLFormat,
                     CommonUtils.changeCharset(location, "UTF-8"));
             Log.d("hehehe", weatherURL + ", " + location);
@@ -211,8 +217,8 @@ public class ContactShow extends PhoneShow {
             try {
                 String[] result = CommonUtils.ParseWeatherXML(new ByteArrayInputStream(weatherInfo.getBytes()));
                 if (result != null) {
-                    weatherInfo =  result[3].replace("/","~");
-                    weather = result[2].length() > 1 ? result[2].substring(result[2].length() - 2,result[2].length()) : result[2];
+                    weatherInfo =  result[2] + "\n" + result[3].replace("/","~");
+                    weather = result[result.length - 1];
                     ((CallLogAdapter) sPhoneAdapter).setMessage(String.format(result[0], name));
                 }
                 else {

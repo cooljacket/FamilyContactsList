@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,9 @@ public class BlackListMaster {
         values.put(BlackListDBHelper.PN_COLUMN_NAME, phoneNumber);
         long result = db.insert(BlackListDBHelper.BL_TABLE_NAME, BlackListDBHelper.ID_COLUMN_NAME, values);
         db.close();
+
+        Log.d("lalala", "add " + phoneNumber + " result is " + result + ", " + isInBlackList(phoneNumber));
+
         return result != -1;
     }
 
@@ -51,6 +55,9 @@ public class BlackListMaster {
         boolean result = cursor.getCount() > 0;
         cursor.close();
         db.close();
+
+        Log.d("lalala finding...", phoneNumber + ", " + result);
+
         return result;
     }
 

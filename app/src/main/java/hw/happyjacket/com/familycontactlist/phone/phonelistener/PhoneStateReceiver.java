@@ -27,7 +27,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        Log.i("PhoneStateListener",status + "");
+        Log.i("boom PhoneStateListener", status + "");
         String action = intent.getAction();
         if ("android.intent.action.PHONE_STATE".equals(action)) {
             String phoneNumber = intent.getStringExtra("incoming_number");

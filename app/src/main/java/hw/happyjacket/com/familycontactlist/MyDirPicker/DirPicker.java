@@ -31,6 +31,7 @@ public class DirPicker extends AppCompatActivity {
     private Stack<File> thePath;
     private Button back, select;
     private AlertDialog.Builder dlg;
+    private boolean cancel = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +129,7 @@ public class DirPicker extends AppCompatActivity {
             refreshView(false);
             updateBackBtnText();
         } else if (thePath.size() == 1) {
+            cancel = true;
             ReadyToQuit();
         }
     }
@@ -136,7 +138,8 @@ public class DirPicker extends AppCompatActivity {
         Intent from = getIntent();
         Intent intent = new Intent(from.getAction());
         intent.putExtra(PATH_KEY, currentFile.getAbsolutePath());
-        setResult(RESULT_OK, intent);
+        if (!cancel)
+            setResult(RESULT_OK, intent);
         finish();
     }
 

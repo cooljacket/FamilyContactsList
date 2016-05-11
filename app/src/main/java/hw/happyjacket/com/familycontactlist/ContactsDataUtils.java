@@ -184,12 +184,12 @@ public class ContactsDataUtils {
 
         JSONTokener jsonParser = new JSONTokener(content);
         Log.d("import-content", content);
-        User user = new User();
 
         try {
             JSONArray data = (JSONArray) jsonParser.nextValue();
             for (int i = 0; i < data.length(); ++i) {
                 JSONObject one = (JSONObject) data.get(i);
+                User user = new User();
                 user.name = one.getString("name");
                 user.sortname = one.getString("sortname");
                 user.mobilephone = one.getString("mobilephone");
@@ -203,7 +203,7 @@ public class ContactsDataUtils {
                     newUsers.add(user);
                     Log.d("haha-new", user.name + ", " + user.mobilephone);
                 } else {
-                    Log.d("haha-old", user.name + ", " + user.mobilephone);
+                    //Log.d("haha-old", user.name + ", " + user.mobilephone);
                 }
             }
         } catch (JSONException e) {

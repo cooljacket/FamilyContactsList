@@ -305,7 +305,7 @@ public class DialogFactory {
         return  builder.create();
     }
 
-    public static AlertDialog DeleteDialog (final Activity context, final String number) {
+    public static AlertDialog DeleteDialog (final Activity context, final String number, final int pos) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle("是否删除该联系人?");
         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
@@ -319,7 +319,7 @@ public class DialogFactory {
             public void onClick(DialogInterface dialog, int which) {
                 DBHelper mDBHelper = new DBHelper(context);
                 mDBHelper.deleteUser(number);
-                MainActivity.deletePeopleDetai(number);
+                MainActivity.deletePeopleDetai(number,pos);
                 context.finish();
                 dialog.dismiss();
             }

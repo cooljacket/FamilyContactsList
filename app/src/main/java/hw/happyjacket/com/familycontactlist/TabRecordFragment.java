@@ -2,6 +2,7 @@ package hw.happyjacket.com.familycontactlist;
 
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -54,6 +55,7 @@ public class TabRecordFragment extends PhoneFragment {
     private PhoneDialog option;
     private FloatingActionButton Dial;
     private Handler mHandler;
+    public static boolean closed = false;
 
 
     @Nullable
@@ -88,6 +90,7 @@ public class TabRecordFragment extends PhoneFragment {
         //  phoneBlueTooth.destroyBlueToothRegister();
         mainShow.destroy();
         PhoneRegister.unRegister(mainShow.getIndex());
+        closed = true;
         super.onDestroy();
     }
 
@@ -99,7 +102,6 @@ public class TabRecordFragment extends PhoneFragment {
     {
         try {
 
-            Operation.setContext(mContext);
             mHandler = new Handler(){
                 @Override
                 public void handleMessage(Message msg) {
@@ -186,7 +188,20 @@ public class TabRecordFragment extends PhoneFragment {
     }
 
     @Override
-    public void deletePeopleDetail(String number) {
-        mainShow.check();
+    public void deletePeopleDetail(String number, int pos) {
+        Integer t;
+        if ( (t = mainShow.getNmapp().get(number)) != null){
+            mainShow.getPhoneListElementList_backup().get(t).remove(PhoneDictionary.NAME);
+            ContentValues contentValues = new ContentValues();
+            contentValues.putNull(PhoneDictionary.NAME);
+            mainShow.getPhoneList().update(contentValues,PhoneDictionary.NUMBER + " = ? ",new String[]{number});
+        }
+        for (int i = 0 ; i < mainShow.getPhoneListElementList().size(); ++i){
+            if (mainShow.getPhoneListElementList().get(i).get(PhoneDictionary.NUMBER).equals(number)) {
+                mainShow.getPhoneListElementList().get(i).remove(PhoneDictionary.NAME);
+                break;
+            }
+        }
+        mainShow.getPhoneAdapter().notifyDataSetChanged();
     }
 }

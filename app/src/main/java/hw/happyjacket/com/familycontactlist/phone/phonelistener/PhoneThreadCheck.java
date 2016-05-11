@@ -11,6 +11,7 @@ import java.util.Vector;
 
 import hw.happyjacket.com.familycontactlist.DBHelper;
 import hw.happyjacket.com.familycontactlist.TabContactsFragment;
+import hw.happyjacket.com.familycontactlist.TabRecordFragment;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 import hw.happyjacket.com.familycontactlist.phone.list.RecordList;
 
@@ -45,6 +46,8 @@ public class PhoneThreadCheck implements Runnable {
             synchronized (TabContactsFragment.DataBaseLock) {
             try {
                 for (HashMap<String, String> i : data) {
+                    if (TabRecordFragment.closed)
+                        break;
                     realNumber = i.get(PhoneDictionary.NUMBER).replace(" ","").replace("+86","").replace("+","");
                     t = mDBHelper.getUser(new String[]{"name"}, "mobilephone = ?", new String[]{realNumber}, "limit 1");
                     if (t.moveToFirst()) {
@@ -68,9 +71,12 @@ public class PhoneThreadCheck implements Runnable {
                 Message message = mHandler.obtainMessage();
                 message.what = -1;
                 mHandler.sendMessage(message);
-                t.close();
             } catch (NullPointerException e) {
                 e.printStackTrace();
+            }
+                finally {
+                if (t != null)
+                    t.close();
             }
         }
     }

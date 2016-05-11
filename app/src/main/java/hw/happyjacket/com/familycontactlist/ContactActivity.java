@@ -120,16 +120,15 @@ public class ContactActivity extends AppCompatActivity{
                         startActivityForResult(intent1, PhoneDictionary.CONTACT_REQUEST_CODE);
                         break;
                     case 3:
-                        BlackListMaster blackListMaster = new BlackListMaster(ContactActivity.this);
                         if(mContactShow.isInBlackList())
-                            blackListMaster.delete(mContactShow.getNumber());
+                            Operation.deleteBlackList(mContactShow.getNumber());
                         else
-                            blackListMaster.add(mContactShow.getNumber());
+                            Operation.addBlackList(mContactShow.getNumber());
                         mContactShow.setInBlackList(!mContactShow.isInBlackList());
                         mContactShow.notifyDataSetChanged();
                         break;
                     case 4:
-                        DialogFactory.DeleteDialog(ContactActivity.this,data.mobilephone).show();
+                        DialogFactory.DeleteDialog(ContactActivity.this,data.mobilephone,position).show();
                         break;
                     case 5:
                         break;

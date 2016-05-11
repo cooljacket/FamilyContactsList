@@ -1,7 +1,9 @@
 package hw.happyjacket.com.familycontactlist;
 
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -100,10 +102,29 @@ public class TabContactsFragment extends PhoneFragment {
                         });
                         listview.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
                             @Override
-                            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                            public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
+                                AlertDialog.Builder dialog = new AlertDialog.Builder(mContext);
+                                dialog.setTitle("删除联系人");
+                                dialog.setMessage(String.format("请问您真的要删除%s的信息吗？", AL.get(position).name));
+                                dialog.setPositiveButton("删了", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        DBHelper dbHelper = new DBHelper(mContext);
+                                        dbHelper.deleteUser(AL.get(position).mobilephone);
+                                        MainActivity.deletePeopleDetai(AL.get(position).mobilephone, position);
+                                    }
+                                });
+                                dialog.setNegativeButton("按错了", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+                                dialog.show();
                                 return true;
                             }
                         });
+
                     }
                     adapter.notifyDataSetChanged();
 
@@ -312,13 +333,15 @@ public class TabContactsFragment extends PhoneFragment {
 
     // 追加新插入的用户到AL的尾部，然后插入排序，最后notify一下adapter
     public void AddNewUser(Vector<User> newUsers) {
-        TabContactUser t = new TabContactUser();
+        Random random = new Random();
         for (User i : newUsers){
+            TabContactUser t = new TabContactUser();
             t.update(i);
+            Log.i ("ContactActivity", t.name + " " + t.mobilephone);
             if (t.name == null || t.mobilephone == null)
                 continue;
             t.sortname = CommonUtils.convertToShortPinyin(mContext,t.name);
-            t.picture = circleImage[new Random().nextInt(DefaultPicture.ImageID.length)];
+            t.picture = circleImage[random.nextInt(DefaultPicture.ImageID.length)];
             AL.add(t);
         }
         sortList();
@@ -348,15 +371,20 @@ public class TabContactsFragment extends PhoneFragment {
     }
 
     @Override
-    public void deletePeopleDetail(String number) {
-        for(int i = 0 ; i < AL.size() ; ++i) {
-            Log.i("changePeople",AL.get(i).mobilephone + " " + number);
-            if(AL.get(i).mobilephone.equals(number)){
-                Log.i("changePeople",AL.get(i).mobilephone + " " + i + "  " + number);
-                delete(i);
-                break;
-            }
+    public void deletePeopleDetail(String number, int pos) {
+        delete(pos);
+    }
+
+    public void addPeople (Vector<User> newUser) {
+        Random random = new Random();
+        for (User i : newUser) {
+            TabContactUser tt = new TabContactUser();
+            tt.update(i);
+            tt.picture = circleImage[random.nextInt(DefaultPicture.ImageID.length)];
+            AL.add(tt);
         }
+        sortList();
+        adapter.notifyDataSetChanged();
     }
 
     private void initSearch(){
