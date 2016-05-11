@@ -41,6 +41,7 @@ import java.util.Objects;
 import hw.happyjacket.com.familycontactlist.extention.XiaoMiAccessory;
 import hw.happyjacket.com.familycontactlist.myphonebook.ContentActivity;
 import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
+import hw.happyjacket.com.familycontactlist.myphonebook.factory.DialogFactory;
 import hw.happyjacket.com.familycontactlist.myphonebook.listview.ScrollListView;
 import hw.happyjacket.com.familycontactlist.myphonebook.show.ContactShow;
 import hw.happyjacket.com.familycontactlist.myphonebook.show.PhoneRegister;
@@ -128,9 +129,7 @@ public class ContactActivity extends AppCompatActivity{
                         mContactShow.notifyDataSetChanged();
                         break;
                     case 4:
-                        mDBHelper.deleteUser(data.mobilephone);
-                        MainActivity.deletePeopleDetai(data.mobilephone);
-                        finish();
+                        DialogFactory.DeleteDialog(ContactActivity.this,data.mobilephone).show();
                         break;
                     case 5:
                         break;

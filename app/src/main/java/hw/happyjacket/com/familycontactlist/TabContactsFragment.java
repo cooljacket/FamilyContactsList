@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.util.Log;
@@ -23,6 +24,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Vector;
 
@@ -51,6 +53,7 @@ public class TabContactsFragment extends PhoneFragment {
     private Context mContext;
     private ListView listview;
     private RadioGroup forward;
+    private ArrayList<RadioButton> alphebat = new ArrayList<>();
     private Vector<User> ALBacckUp = new Vector<>();
     private Vector<TabContactUser> AL = new Vector<>();
     private int positionNew;
@@ -382,14 +385,5 @@ public class TabContactsFragment extends PhoneFragment {
 
     }
 
-    public void pingpoint (char pos){
-        String t;
-        for (int i = 0; i < AL.size(); ++i) {
-            t = AL.get(i).sortname;
-            if (t != null && t.length() > 0 && t.charAt(0) == pos) {
-                listview.setSelection(i);
-                break;
-            }
-        }
-    }
+
 }

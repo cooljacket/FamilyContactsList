@@ -305,6 +305,28 @@ public class DialogFactory {
         return  builder.create();
     }
 
+    public static AlertDialog DeleteDialog (final Activity context, final String number) {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("是否删除该联系人?");
+        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                DBHelper mDBHelper = new DBHelper(context);
+                mDBHelper.deleteUser(number);
+                MainActivity.deletePeopleDetai(number);
+                context.finish();
+                dialog.dismiss();
+            }
+        });
+        return builder.create();
+    }
+
 
     public static AlertDialog getPhotoDialog(final Activity context, String title, final String [] content, final ViewSwitcher.ViewFactory factory, final ImageButton btn_img, final Handler handler){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
