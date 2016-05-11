@@ -42,7 +42,7 @@ public class RegisterActivity extends AppCompatActivity {
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                username.setText("");
+//                username.setText("");
                 psw1.setText("");
                 psw2.setText("");
             }

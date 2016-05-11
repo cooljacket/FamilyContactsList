@@ -53,7 +53,7 @@ public class InitService extends Service {
         registerReceiver(psReceiver, intentFilter);
         isStart = true;
         Log.i("boom", "init service");
-        Toast.makeText(this, "boom init service", Toast.LENGTH_LONG).show();
+       /* Toast.makeText(this, "boom init service", Toast.LENGTH_LONG).show();*/
     }
 
     @Override

@@ -14,6 +14,7 @@ import hw.happyjacket.com.familycontactlist.myphonebook.DefaultPicture;
 import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.PhoneAdapter;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
+import hw.happyjacket.com.familycontactlist.phone.PhoneOperation;
 
 import java.util.HashMap;
 import java.util.List;
@@ -127,7 +128,7 @@ public class CallLogAdapter extends PhoneAdapter {
             viewHolder.info4.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Operation.sms(number,message);
+                    new PhoneOperation(getContext()).sms(number,message);
                 }
             });
         }

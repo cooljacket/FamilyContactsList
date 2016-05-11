@@ -110,7 +110,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".FamilyMoney"
+        <activity
+            android:name=".FamilyMoney"
+            android:launchMode="singleTop"
             android:theme="@style/AppTop" />
 
 

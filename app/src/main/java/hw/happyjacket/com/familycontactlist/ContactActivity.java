@@ -46,6 +46,7 @@ import hw.happyjacket.com.familycontactlist.myphonebook.listview.ScrollListView;
 import hw.happyjacket.com.familycontactlist.myphonebook.show.ContactShow;
 import hw.happyjacket.com.familycontactlist.myphonebook.show.PhoneRegister;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
+import hw.happyjacket.com.familycontactlist.phone.PhoneOperation;
 
 /**
  * Created by root on 16-4-13.
@@ -86,7 +87,7 @@ public class ContactActivity extends AppCompatActivity{
         mToolbar = (Toolbar) findViewById(R.id.contact_toolbar);
         setSupportActionBar(mToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mToolbar.setNavigationIcon(R.drawable.arrow_back_selector);
+        mToolbar.setNavigationIcon(R.drawable.arrow_back_selector2);
         mToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -95,9 +96,9 @@ public class ContactActivity extends AppCompatActivity{
         });
 
         head.setTitle(name);
-        head.setExpandedTitleColor(Color.WHITE);
-        head.setCollapsedTitleTextColor(Color.WHITE);
-        head.setContentScrimColor(getResources().getColor(R.color.lightoringe));
+        head.setExpandedTitleColor(Color.BLACK);
+        head.setCollapsedTitleTextColor(Color.BLACK);
+        head.setContentScrimColor(getResources().getColor(R.color.littlewhite));
 
         mContactShow = new ContactShow(this, R.layout.call_log_list, name, number);
         mContactShow.getPhoneList().setDb(DBHelper.DB_NAME);
@@ -109,7 +110,7 @@ public class ContactActivity extends AppCompatActivity{
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        Operation.call(mContactShow.getNumber());
+                        new PhoneOperation(ContactActivity.this).call(mContactShow.getNumber());
                         break;
                     case 1:
                         break;
@@ -128,7 +129,7 @@ public class ContactActivity extends AppCompatActivity{
                         mContactShow.notifyDataSetChanged();
                         break;
                     case 4:
-                        DialogFactory.DeleteDialog(ContactActivity.this,data.mobilephone,position).show();
+                        DialogFactory.DeleteDialog(ContactActivity.this,data.mobilephone,data.pos).show();
                         break;
                     case 5:
                         break;

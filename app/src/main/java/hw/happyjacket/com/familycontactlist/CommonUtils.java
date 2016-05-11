@@ -188,22 +188,23 @@ public class CommonUtils {
                 result.add(i);
             return result;
         }
-        if (input_type == EN_INPUT)
-            pattern = pattern.toLowerCase();
 
         for (int i = 0; i < data.size(); ++i) {
             User user = data.get(i);
+            pattern = pattern.toLowerCase();
             switch (input_type) {
                 case NUMBER_INPUT:
                     if (KMP_match(user.mobilephone, pattern) >= 0)
                         result.add(i);
                     break;
                 case CHINESE_INPUT:
-                    if (KMP_match(user.name, pattern) >= 0)
+                    if (KMP_match(user.name.toLowerCase(), pattern) >= 0)
                         result.add(i);
                     break;
                 case EN_INPUT:
                     if (KMP_match(user.sortname, pattern) >= 0)
+                        result.add(i);
+                    else if (KMP_match(user.name.toLowerCase(), pattern) >= 0)
                         result.add(i);
                     break;
                 default:

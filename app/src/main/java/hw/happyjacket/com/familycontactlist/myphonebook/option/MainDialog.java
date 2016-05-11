@@ -12,6 +12,7 @@ import hw.happyjacket.com.familycontactlist.myphonebook.Operation;
 import hw.happyjacket.com.familycontactlist.myphonebook.factory.PhoneDialog;
 import hw.happyjacket.com.familycontactlist.myphonebook.show.PhoneRegister;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
+import hw.happyjacket.com.familycontactlist.phone.PhoneOperation;
 
 /**
  * Created by root on 16-4-12.
@@ -39,7 +40,7 @@ public class MainDialog extends PhoneDialog {
         HashMap<String,String> data = PhoneRegister.get(getIndex()).getPhoneListElementList().get(getPos());
         switch (position){
             case 0:
-                Operation.call(data.get(PhoneDictionary.NUMBER));
+                new PhoneOperation(getContext()).call(data.get(PhoneDictionary.NUMBER));
                 break;
             case 1:
                 Operation.delete(true,data.get(PhoneDictionary.ID),data.get(PhoneDictionary.NUMBER));

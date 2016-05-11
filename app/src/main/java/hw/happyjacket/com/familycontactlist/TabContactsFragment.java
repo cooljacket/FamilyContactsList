@@ -154,11 +154,20 @@ public class TabContactsFragment extends PhoneFragment {
     }
 
     public void delete(int pos){
-        if(0 <= pos && pos < AL.size()){
-            AL.remove(pos);
+        if(0 <= pos && pos < ALBacckUp.size()){
+            ALBacckUp.remove(pos);
         }
-        for(int i = 0 ; i < AL.size(); ++i)
-            AL.get(i).pos = i;
+        for(int i = 0 ; i < ALBacckUp.size(); ++i)
+            ALBacckUp.get(i).pos = i;
+        AL.removeAllElements();
+        for (User i : ALBacckUp){
+            TabContactUser j = new TabContactUser();
+            j.update(i);
+            j.picture = ((TabContactUser)i).picture;
+            AL.add(j);
+        }
+        sortList();
+        Log.i("eee",pos + "");
         adapter.notifyDataSetChanged();
     }
 
@@ -372,7 +381,19 @@ public class TabContactsFragment extends PhoneFragment {
 
     @Override
     public void deletePeopleDetail(String number, int pos) {
-        delete(pos);
+       for (int i = 0 ; i < ALBacckUp.size(); ++i){
+           if (ALBacckUp.get(i).mobilephone.equals(number)){
+               ALBacckUp.remove(i);
+               break;
+           }
+       }
+        for (int i = 0 ; i < AL.size(); ++i){
+            if (AL.get(i).mobilephone.equals(number)){
+                AL.remove(i);
+                break;
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 
     public void addPeople (Vector<User> newUser) {
