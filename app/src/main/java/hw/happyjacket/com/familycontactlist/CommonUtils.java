@@ -90,7 +90,6 @@ public class CommonUtils {
                     String.format("%%s，今天%s%s，气温%s，%s%s。注意好身体，爱你。", location, wea, temperature, sun, content).replaceAll("您", ""),
                     location, wea, temperature, sun, content
             };
-
             return result;
         }
         catch (Exception e){

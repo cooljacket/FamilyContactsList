@@ -3,7 +3,8 @@
                                                  xmlns:app="http://schemas.android.com/apk/res-auto"
                                                  android:layout_height="match_parent"
                                                  android:layout_width="match_parent"
-                                                 android:fitsSystemWindows="true">
+                                                 android:fitsSystemWindows="true"
+                                                 android:background="@color/white">
 
 
 
@@ -57,7 +58,6 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
     <hw.happyjacket.com.familycontactlist.myphonebook.listview.ScrollListView
-        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:id="@+id/content_number_and_detail"
         android:layout_width="wrap_content"
         android:layout_height="0dp"

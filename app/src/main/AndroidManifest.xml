@@ -43,7 +43,6 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH"/>
             </intent-filter>
@@ -92,7 +91,7 @@
         <activity
             android:name=".myphonebook.ContentActivity"
             android:label="Phone Content"
-            android:theme="@style/AppTop" />
+            android:theme="@style/AppRedTop" />
         <activity
             android:name=".myphonebook.CallLogActivity"
             android:label="CallLog Detail"

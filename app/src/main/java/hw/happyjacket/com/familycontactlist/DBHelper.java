@@ -118,8 +118,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
 
     public void deleteUser(User user) {
-        int uid = user.uid;
-        db.delete("user", "uid = " + uid, null);
+        String number = user.mobilephone;
+        db.delete(DB_TABLENAME, NUMBER + " = ? ", new String[] {number});
+    }
+
+    public void deleteUser (String number){
+        db.delete(DB_TABLENAME,NUMBER + " = ? ",new String[] {number});
     }
 
     public void initGroup(Group group){//初始化数据库，或者新建组群

@@ -12,6 +12,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
+import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ import java.util.Vector;
 
 import hw.happyjacket.com.familycontactlist.myphonebook.DefaultPicture;
 import hw.happyjacket.com.familycontactlist.myphonebook.PhotoZoom;
+import hw.happyjacket.com.familycontactlist.myphonebook.adapter.AlphebatAdapter;
 import hw.happyjacket.com.familycontactlist.myphonebook.adapter.TabContactAdapter;
 import hw.happyjacket.com.familycontactlist.phone.PhoneDictionary;
 
@@ -48,6 +50,7 @@ public class TabContactsFragment extends PhoneFragment {
     private SearchView mSearchView;
     private Context mContext;
     private ListView listview;
+    private RadioGroup forward;
     private Vector<User> ALBacckUp = new Vector<>();
     private Vector<TabContactUser> AL = new Vector<>();
     private int positionNew;
@@ -100,6 +103,8 @@ public class TabContactsFragment extends PhoneFragment {
                         });
                     }
                     adapter.notifyDataSetChanged();
+
+
                     break;
                 default:
                     break;
@@ -273,21 +278,6 @@ public class TabContactsFragment extends PhoneFragment {
                             user.photo = random.nextInt(31);
                             dbHelper.insertAUser(user);
                         }
-//                        cursor = db.query(DBHelper.DB_TABLENAME, null, DBHelper.CONTACTID + " = " + contactid, null, null, null, null);
-//
-//                        if (!cursor.moveToFirst()) {
-//                            User user = new User();
-//                            user.name = contactName;
-//                            user.sortname = contactSortname;
-//                            user.mobilephone = contactPhone;
-//                            user.groupname = "无";
-//                            user.nickname = "";
-//                            v.add(contactid);
-//                            Random random = new Random();
-//                            user.photo = random.nextInt(31);
-//                            dbHelper.insertAUser(user);
-//                        }
-//                        cursor.close();
                     }
                     phoneCursor.close();
                 }
@@ -302,8 +292,7 @@ public class TabContactsFragment extends PhoneFragment {
     public void getPhoneContacts() {
         ContentResolver resolver1 = mContext.getContentResolver();
         // 获取手机联系人
-
-        Cursor cursor = db.query(DBHelper.DB_TABLENAME, new String[]{DBHelper.NAME,DBHelper.SORTNAME,DBHelper.NUMBER,DBHelper.PHOTO,DBHelper.ID}, null, null, null, null, null);
+        Cursor cursor = db.query(DBHelper.DB_TABLENAME, new String[]{DBHelper.NAME,DBHelper.SORTNAME,DBHelper.NUMBER,DBHelper.PHOTO}, null, null, null, null, null);
         if (cursor != null){
             if(cursor.moveToFirst()) {
                 do {
@@ -312,7 +301,6 @@ public class TabContactsFragment extends PhoneFragment {
                     user.sortname = cursor.getString(1);
                     user.mobilephone = cursor.getString(2);
                     user.photo = cursor.getInt(3);
-                    user.uid = cursor.getInt(4);
                     AL.add(user);
                 }while (cursor.moveToNext());
             }
@@ -339,7 +327,7 @@ public class TabContactsFragment extends PhoneFragment {
         for(TabContactUser i : AL){
             if(i.mobilephone.equals(user.mobilephone)){
                 i.picture = picture;
-                i.name = user.name;
+                i.update(user);
                 break;
             }
         }
@@ -392,5 +380,16 @@ public class TabContactsFragment extends PhoneFragment {
             }
         });
 
+    }
+
+    public void pingpoint (char pos){
+        String t;
+        for (int i = 0; i < AL.size(); ++i) {
+            t = AL.get(i).sortname;
+            if (t != null && t.length() > 0 && t.charAt(0) == pos) {
+                listview.setSelection(i);
+                break;
+            }
+        }
     }
 }

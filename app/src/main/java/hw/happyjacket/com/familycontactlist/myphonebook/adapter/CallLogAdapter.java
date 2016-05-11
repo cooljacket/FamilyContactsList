@@ -120,7 +120,7 @@ public class CallLogAdapter extends PhoneAdapter {
 
         if (sms == position) {
             viewHolder.info4.setVisibility(View.VISIBLE);
-            viewHolder.info4.setBackgroundResource(android.R.drawable.sym_action_chat);
+            viewHolder.info4.setBackgroundResource(R.drawable.sms_selector);
             viewHolder.info4.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

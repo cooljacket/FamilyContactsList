@@ -70,6 +70,11 @@ public class ContactShow extends PhoneShow {
         this.name = name;
     }
 
+    public ContactShow(Activity context, int table, String name, String number) {
+        super(context, table);
+        this.name = name;
+        this.number = number;
+    }
 
     public String getDefaultNumber() {
         return defaultNumber;
@@ -159,11 +164,6 @@ public class ContactShow extends PhoneShow {
     @Override
     public void InitAdapter(Accessory accessory, String[] projection, String selection, String[] argument, String orderby) {
         mDecorate = new Decorate(accessory);
-        phoneList.setProjection(projection);
-        phoneList.setSelection(selection);
-        phoneList.setArgument(argument);
-        phoneList.setOrderby(orderby);
-        phoneList.connectDataBase();
         inBlackList = new BlackListMaster(context).isInBlackList(number);
         mPhoneListElementList = getDefaultData();
         sPhoneAdapter = new CallLogAdapter(context, table, mPhoneListElementList,index,1,number);

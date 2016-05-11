@@ -417,9 +417,10 @@ public class ChangePeopleDetail extends AppCompatActivity {
         try {
             DBHelper helper = new DBHelper(ChangePeopleDetail.this.getApplicationContext());
             SQLiteDatabase db = helper.openDatabase();
-            Cursor cursor = db.query(DBHelper.DB_TABLENAME, new String[]{DBHelper.ID,DBHelper.SORTNAME, DBHelper.PHOTO, DBHelper.GROUPNAME, DBHelper.INFO, DBHelper.NICKNAME}, DBHelper.NUMBER + " = " + user.mobilephone, null, null, null, null, "1");
+            Cursor cursor = db.query(DBHelper.DB_TABLENAME, new String[]{DBHelper.ID,DBHelper.SORTNAME, DBHelper.PHOTO, DBHelper.GROUPNAME, DBHelper.INFO, DBHelper.NICKNAME}, DBHelper.NUMBER + " = ?" ,new String[]{user.mobilephone}, null, null, null, "1");
 //        Toast.makeText(getApplicationContext(),"get"+Userid, Toast.LENGTH_SHORT).show();
             String groupname = null, infos = null, nickName = null;
+            Log.i(TAG,cursor.moveToFirst() + "");
             if (cursor.moveToFirst()) {
                 user.uid = cursor.getInt(0);
                 user.sortname = cursor.getString(1);
@@ -429,6 +430,7 @@ public class ChangePeopleDetail extends AppCompatActivity {
                 nickName = user.nickname = cursor.getString(5);
             }
             cursor.close();
+
             info.add(new String[]{"手机", user.mobilephone});
             String pname = "", parameter = "";
             if (infos != null && !infos.equals("")) {

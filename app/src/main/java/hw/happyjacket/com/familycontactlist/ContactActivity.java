@@ -97,13 +97,11 @@ public class ContactActivity extends AppCompatActivity{
         head.setExpandedTitleColor(Color.WHITE);
         head.setCollapsedTitleTextColor(Color.WHITE);
         head.setContentScrimColor(getResources().getColor(R.color.lightoringe));
-        uid = data.uid;
 
-        mContactShow = new ContactShow(this, R.layout.call_log_list, name);
+        mContactShow = new ContactShow(this, R.layout.call_log_list, name, number);
         mContactShow.getPhoneList().setDb(DBHelper.DB_NAME);
         mContactShow.getPhoneList().setTable(DBHelper.DB_TABLENAME);
-        mContactShow.setNumber(number);
-        mContactShow.InitAdapter(new XiaoMiAccessory(), new String[]{DBHelper.NUMBER}, DBHelper.ID + " = ? ", new String[]{"" + uid}, null);
+        mContactShow.InitAdapter(new XiaoMiAccessory(), null, null, null, null);
         ContactListView.setAdapter(mContactShow.getPhoneAdapter());
         ContactListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -130,9 +128,7 @@ public class ContactActivity extends AppCompatActivity{
                         mContactShow.notifyDataSetChanged();
                         break;
                     case 4:
-                        User user = new User();
-                        user.uid = uid;
-                        mDBHelper.deleteUser(user);
+                        mDBHelper.deleteUser(data.mobilephone);
                         MainActivity.deletePeopleDetai(data.mobilephone);
                         finish();
                         break;

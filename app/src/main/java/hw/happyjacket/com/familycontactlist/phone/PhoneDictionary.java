@@ -73,6 +73,7 @@ public class PhoneDictionary {
     public static final String PhoneCallAlphabet[] = {"","abc","def","ghi","jkl","nmo","pqrs","tuv","wxyz",",","+",""};
     public static final String PhoneCallChoices[] = {"手机", "邮箱","地址","公司","QQ","微信号","传真","备注"};
     public static final String AllPhoneChoices[] = {"手机" ,"邮箱", "地址"};
+    public static final Character Alphebat[] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'};
 
 
 

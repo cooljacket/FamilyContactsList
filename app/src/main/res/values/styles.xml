@@ -47,8 +47,6 @@
     <!-- Base application theme. -->
     <style name="AppTop" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/bar_blue</item>
-        <item name="colorPrimaryDark">@color/bar_blue</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
 
@@ -75,8 +73,14 @@
 
 
     <!-- 标题样式是ActionBar样式的一部分，所以要先定义ActionBar的样式 -->
+    <style name="AppRedTop" parent="@style/AppTop">
+        <item name="colorPrimary">@color/lightoringe</item>
+        <item name="colorPrimaryDark">@color/lightoringe</item>
+    </style>
     <style name="AppMainTop" parent="@style/AppTop">
 
+        <item name="colorPrimary">@color/bar_blue</item>
+        <item name="colorPrimaryDark">@color/bar_blue</item>
         <item name="android:itemBackground">@color/white</item>
         <!--<item name="android:actionMenuTextColor">@drawable/button_text_selector</item>-->
 
